@@ -87,18 +87,19 @@ void Update()
         myAnimator.SetBool(isJumpingParam, isJumping);
         myAnimator.SetBool(isGroundedParam, charController.isGrounded);
         myAnimator.SetFloat(yVelocityParam, yVelocity);
+
         Move();
         UpdateIsSprinting();
     }
 
     void Jump()
     {
-        // MADE CHANGES TO HOW JUMP WORKS!
-        
+        // Checks current jumping state
         if(!isJumping)
         {
             isJumping = true;
 
+            // Adds upward velocity based on jumpVelocity
             yVelocity += jumpVelocity;
         }
     }
@@ -143,12 +144,10 @@ void Update()
         if(isSprinting)
         {
             moveSpeed = sprintSpeed;
-            turnSpeed = 5f;
         }
         else
         {
             moveSpeed = 5f;
-            turnSpeed = 15f;
         }
     }
 }
