@@ -7,16 +7,18 @@ using Cinemachine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] CharacterController charController = null;
+    PlayerStats playerStats = null;
+    CharacterController charController = null;
     Animator myAnimator;
     [SerializeField] GameObject myCamera;
     [SerializeField] CinemachineFreeLook freeLook;
 
     [Header("Movement Settings")]
     [SerializeField] float moveSpeed = 5f;
-    [SerializeField] float sprintSpeed = 8f;
+    float currentMoveSpeed = 0f;
+    [SerializeField] float sprintMultiplier = 2f;
     [SerializeField] float turnSpeed = 15f;
-    Vector2 previousInput;
+    bool isSprinting = false;
 
     // Gravity-related variables
     float yVelocity = 0;
@@ -54,11 +56,16 @@ public class PlayerMovement : MonoBehaviour
     {
         myAnimator = GetComponentInChildren<Animator>();
         charController = GetComponent<CharacterController>();
+        playerStats = GetComponent<PlayerStats>();
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
         PlayerControls.Locomotion.Jump.performed += ctx => Jump();
+        PlayerControls.Locomotion.Sprint.started += ctx => UpdateIsSprinting();
+        PlayerControls.Locomotion.Sprint.canceled += ctx => UpdateIsSprinting();
+
+        currentMoveSpeed = moveSpeed;
     }
 
 void Update()
@@ -89,7 +96,6 @@ void Update()
         myAnimator.SetFloat(yVelocityParam, yVelocity);
 
         Move();
-        UpdateIsSprinting();
     }
 
     void Jump()
@@ -133,21 +139,26 @@ void Update()
         myAnimator.SetFloat(inputYParam, movement.z);
 
         // MOVES THE PLAYER
-        charController.Move((verticalMovement + (rotationMovement * moveSpeed)) * Time.deltaTime);
+        charController.Move((verticalMovement + (rotationMovement * currentMoveSpeed)) * Time.deltaTime);
     }
 
     void UpdateIsSprinting()
     {
-        bool isSprinting = (PlayerControls.Locomotion.Sprint.activeControl != null) ? true : false;
+        isSprinting = !isSprinting;
         myAnimator.SetBool(isSprintingParam, isSprinting);
 
         if(isSprinting)
         {
-            moveSpeed = sprintSpeed;
+            currentMoveSpeed *= sprintMultiplier;
         }
         else
         {
-            moveSpeed = 5f;
+            currentMoveSpeed = moveSpeed;
         }
+    }
+
+    void UpdateStaminaUsage()
+    {
+        
     }
 }
