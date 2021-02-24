@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement Settings")]
     [SerializeField] float moveSpeed = 5f;
+    [SerializeField] float sprintSpeed = 8f;
     [SerializeField] float turnSpeed = 15f;
     Vector2 previousInput;
 
@@ -24,6 +25,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump Settings")]
     [SerializeField] bool isJumping;
     [SerializeField] float jumpVelocity = 5f;
+
+    #region Animator Parameters
+    // My Animator parameters turned from costly Strings to cheap Ints
+    int isSprintingParam = Animator.StringToHash("isSprinting");
+    int isJumpingParam = Animator.StringToHash("isJumping");
+    int isGroundedParam = Animator.StringToHash("isGrounded");
+    int yVelocityParam = Animator.StringToHash("yVelocity");
+    int inputXParam = Animator.StringToHash("InputX");
+    int inputYParam = Animator.StringToHash("InputY");
+    #endregion
     
     // Input System references
     PlayerControls playerControls;
@@ -73,10 +84,11 @@ void Update()
             }
         }
 
-        myAnimator.SetBool("isJumping", isJumping);
-        myAnimator.SetBool("isGrounded", charController.isGrounded);
-        myAnimator.SetFloat("yVelocity", yVelocity);
+        myAnimator.SetBool(isJumpingParam, isJumping);
+        myAnimator.SetBool(isGroundedParam, charController.isGrounded);
+        myAnimator.SetFloat(yVelocityParam, yVelocity);
         Move();
+        UpdateIsSprinting();
     }
 
     void Jump()
@@ -116,10 +128,27 @@ void Update()
         }
 
         // HANDLES ANIMATIONS
-        myAnimator.SetFloat("InputX", movement.x);
-        myAnimator.SetFloat("InputY", movement.z);
+        myAnimator.SetFloat(inputXParam, movement.x);
+        myAnimator.SetFloat(inputYParam, movement.z);
 
         // MOVES THE PLAYER
         charController.Move((verticalMovement + (rotationMovement * moveSpeed)) * Time.deltaTime);
+    }
+
+    void UpdateIsSprinting()
+    {
+        bool isSprinting = (PlayerControls.Locomotion.Sprint.activeControl != null) ? true : false;
+        myAnimator.SetBool(isSprintingParam, isSprinting);
+
+        if(isSprinting)
+        {
+            moveSpeed = sprintSpeed;
+            turnSpeed = 5f;
+        }
+        else
+        {
+            moveSpeed = 5f;
+            turnSpeed = 15f;
+        }
     }
 }
