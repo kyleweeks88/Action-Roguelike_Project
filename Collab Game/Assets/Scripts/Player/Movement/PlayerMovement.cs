@@ -81,6 +81,8 @@ void Update()
 
     void Jump()
     {
+        // MADE CHANGES TO HOW JUMP WORKS!
+        
         if(!isJumping)
         {
             isJumping = true;
