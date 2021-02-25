@@ -48,7 +48,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""id"": ""48f5f25c-ff1f-4562-8fbf-79346c5843f0"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -141,6 +141,33 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Testing"",
+            ""id"": ""3a6266a4-b5f3-46e8-84c3-d0c9d2b53e43"",
+            ""actions"": [
+                {
+                    ""name"": ""Enter"",
+                    ""type"": ""Button"",
+                    ""id"": ""03213dcf-a365-4aa8-9ddd-13c3d16b3990"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ec33504b-ef19-43ec-bc41-77898b8202d1"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""M&K"",
+                    ""action"": ""Enter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -168,6 +195,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Locomotion_Jump = m_Locomotion.FindAction("Jump", throwIfNotFound: true);
         m_Locomotion_Look = m_Locomotion.FindAction("Look", throwIfNotFound: true);
         m_Locomotion_Sprint = m_Locomotion.FindAction("Sprint", throwIfNotFound: true);
+        // Testing
+        m_Testing = asset.FindActionMap("Testing", throwIfNotFound: true);
+        m_Testing_Enter = m_Testing.FindAction("Enter", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -270,6 +300,39 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         }
     }
     public LocomotionActions @Locomotion => new LocomotionActions(this);
+
+    // Testing
+    private readonly InputActionMap m_Testing;
+    private ITestingActions m_TestingActionsCallbackInterface;
+    private readonly InputAction m_Testing_Enter;
+    public struct TestingActions
+    {
+        private @PlayerControls m_Wrapper;
+        public TestingActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Enter => m_Wrapper.m_Testing_Enter;
+        public InputActionMap Get() { return m_Wrapper.m_Testing; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(TestingActions set) { return set.Get(); }
+        public void SetCallbacks(ITestingActions instance)
+        {
+            if (m_Wrapper.m_TestingActionsCallbackInterface != null)
+            {
+                @Enter.started -= m_Wrapper.m_TestingActionsCallbackInterface.OnEnter;
+                @Enter.performed -= m_Wrapper.m_TestingActionsCallbackInterface.OnEnter;
+                @Enter.canceled -= m_Wrapper.m_TestingActionsCallbackInterface.OnEnter;
+            }
+            m_Wrapper.m_TestingActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Enter.started += instance.OnEnter;
+                @Enter.performed += instance.OnEnter;
+                @Enter.canceled += instance.OnEnter;
+            }
+        }
+    }
+    public TestingActions @Testing => new TestingActions(this);
     private int m_MKSchemeIndex = -1;
     public InputControlScheme MKScheme
     {
@@ -285,5 +348,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+    }
+    public interface ITestingActions
+    {
+        void OnEnter(InputAction.CallbackContext context);
     }
 }

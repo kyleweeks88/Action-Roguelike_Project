@@ -7,16 +7,18 @@ using Cinemachine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] CharacterController charController = null;
+    PlayerStats playerStats = null;
+    CharacterController charController = null;
     Animator myAnimator;
     [SerializeField] GameObject myCamera;
     [SerializeField] CinemachineFreeLook freeLook;
 
     [Header("Movement Settings")]
     [SerializeField] float moveSpeed = 5f;
-    [SerializeField] float sprintSpeed = 8f;
+    float currentMoveSpeed = 0f;
+    [SerializeField] float sprintMultiplier = 2f;
     [SerializeField] float turnSpeed = 15f;
-    Vector2 previousInput;
+    bool isSprinting = false;
 
     // Gravity-related variables
     float yVelocity = 0;
@@ -54,14 +56,19 @@ public class PlayerMovement : MonoBehaviour
     {
         myAnimator = GetComponentInChildren<Animator>();
         charController = GetComponent<CharacterController>();
+        playerStats = GetComponent<PlayerStats>();
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
         PlayerControls.Locomotion.Jump.performed += ctx => Jump();
+        PlayerControls.Locomotion.Sprint.started += ctx => SprintPressed();
+        PlayerControls.Locomotion.Sprint.canceled += ctx => SprintReleased();
+
+        currentMoveSpeed = moveSpeed;
     }
 
-void Update()
+    void Update()
     {
         // Applies gravity to player if not grounded
         if(!charController.isGrounded)
@@ -89,6 +96,7 @@ void Update()
         myAnimator.SetFloat(yVelocityParam, yVelocity);
 
         Move();
+
         UpdateIsSprinting();
     }
 
@@ -133,21 +141,39 @@ void Update()
         myAnimator.SetFloat(inputYParam, movement.z);
 
         // MOVES THE PLAYER
-        charController.Move((verticalMovement + (rotationMovement * moveSpeed)) * Time.deltaTime);
+        charController.Move((verticalMovement + (rotationMovement * currentMoveSpeed)) * Time.deltaTime);
+    }
+
+    void SprintPressed()
+    {
+        if(playerStats.currentStamina - playerStats.staminaDrainAmount > 0)
+        {
+            currentMoveSpeed *= sprintMultiplier;
+            isSprinting = true;
+        }
+    }
+
+    void SprintReleased()
+    {
+        isSprinting = false;
+        currentMoveSpeed = moveSpeed;
     }
 
     void UpdateIsSprinting()
     {
-        bool isSprinting = (PlayerControls.Locomotion.Sprint.activeControl != null) ? true : false;
-        myAnimator.SetBool(isSprintingParam, isSprinting);
-
         if(isSprinting)
         {
-            moveSpeed = sprintSpeed;
+            if(playerStats.currentStamina - playerStats.staminaDrainAmount > 0)
+            {
+                playerStats.StaminaDrain();
+            }
+            else
+            {
+                SprintReleased();
+                return;
+            }
         }
-        else
-        {
-            moveSpeed = 5f;
-        }
+
+        myAnimator.SetBool(isSprintingParam, isSprinting);
     }
 }
