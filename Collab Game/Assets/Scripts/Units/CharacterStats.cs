@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterStats : MonoBehaviour
 { 
     public string charName = string.Empty;
-
+     
     [Header("Stamina Settings")]
     public float maxStamina = 100f;
     public float staminaDrainInterval = 0f;
@@ -59,7 +59,7 @@ public class CharacterStats : MonoBehaviour
         if(ShouldDrainStamina())
         {
             UseStamina(staminaDrainAmount);
-            staminaDrainInterval = Time.time + 0.5f;
+            staminaDrainInterval = Time.time + 0.1f;
         }
     }
 
