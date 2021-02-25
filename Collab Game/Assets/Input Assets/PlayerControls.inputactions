@@ -35,7 +35,7 @@
                     "id": "48f5f25c-ff1f-4562-8fbf-79346c5843f0",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -124,6 +124,33 @@
                     "processors": "",
                     "groups": "M&K",
                     "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Testing",
+            "id": "3a6266a4-b5f3-46e8-84c3-d0c9d2b53e43",
+            "actions": [
+                {
+                    "name": "Enter",
+                    "type": "Button",
+                    "id": "03213dcf-a365-4aa8-9ddd-13c3d16b3990",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ec33504b-ef19-43ec-bc41-77898b8202d1",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "Enter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

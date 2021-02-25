@@ -1134,6 +1134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4044275495374730345}
   - component: {fileID: 1185579455583828360}
+  - component: {fileID: 3165283041937103026}
   m_Layer: 0
   m_Name: Stamina Parent
   m_TagString: Untagged
@@ -1170,6 +1171,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4912577773927048664}
   m_CullTransparentMesh: 0
+--- !u!114 &3165283041937103026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4912577773927048664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 114bed9366621764497960d8702b5d37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerStats: {fileID: 6645608020595630737}
+  staminaBarImage: {fileID: 8760349825052293292}
 --- !u!1 &5215270743591278185
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,7 +1335,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0

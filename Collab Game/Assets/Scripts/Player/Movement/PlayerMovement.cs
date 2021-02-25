@@ -62,13 +62,13 @@ public class PlayerMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         PlayerControls.Locomotion.Jump.performed += ctx => Jump();
-        PlayerControls.Locomotion.Sprint.started += ctx => UpdateIsSprinting();
-        PlayerControls.Locomotion.Sprint.canceled += ctx => UpdateIsSprinting();
+        PlayerControls.Locomotion.Sprint.started += ctx => SprintPressed();
+        PlayerControls.Locomotion.Sprint.canceled += ctx => SprintReleased();
 
         currentMoveSpeed = moveSpeed;
     }
 
-void Update()
+    void Update()
     {
         // Applies gravity to player if not grounded
         if(!charController.isGrounded)
@@ -96,6 +96,8 @@ void Update()
         myAnimator.SetFloat(yVelocityParam, yVelocity);
 
         Move();
+
+        UpdateIsSprinting();
     }
 
     void Jump()
@@ -142,23 +144,36 @@ void Update()
         charController.Move((verticalMovement + (rotationMovement * currentMoveSpeed)) * Time.deltaTime);
     }
 
-    void UpdateIsSprinting()
+    void SprintPressed()
     {
-        isSprinting = !isSprinting;
-        myAnimator.SetBool(isSprintingParam, isSprinting);
-
-        if(isSprinting)
+        if(playerStats.currentStamina - playerStats.staminaDrainAmount > 0)
         {
             currentMoveSpeed *= sprintMultiplier;
-        }
-        else
-        {
-            currentMoveSpeed = moveSpeed;
+            isSprinting = true;
         }
     }
 
-    void UpdateStaminaUsage()
+    void SprintReleased()
     {
-        
+        isSprinting = false;
+        currentMoveSpeed = moveSpeed;
+    }
+
+    void UpdateIsSprinting()
+    {
+        if(isSprinting)
+        {
+            if(playerStats.currentStamina - playerStats.staminaDrainAmount > 0)
+            {
+                playerStats.StaminaDrain();
+            }
+            else
+            {
+                SprintReleased();
+                return;
+            }
+        }
+
+        myAnimator.SetBool(isSprintingParam, isSprinting);
     }
 }
