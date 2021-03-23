@@ -2,7 +2,7 @@
     "name": "PlayerControls",
     "maps": [
         {
-            "name": "Locomotion",
+            "name": "Player",
             "id": "d218a5af-753c-4658-aea3-9195030adbae",
             "actions": [
                 {
@@ -33,6 +33,30 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "48f5f25c-ff1f-4562-8fbf-79346c5843f0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "e70f7be1-3f80-45e0-b808-c77f34f9a474",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "b7b1f6db-3a28-47f0-a62c-68386f9496c6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "UserInterface",
+                    "type": "Button",
+                    "id": "496e2920-f625-46a1-826a-8024c59169a3",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
@@ -126,15 +150,48 @@
                     "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4804a113-95fc-4c68-9f7f-d18d78531dd1",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9a640596-4236-497b-ae47-477ec3e63481",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8ef35dd9-db77-4639-bf7a-b19ace747a30",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UserInterface",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
         {
-            "name": "Testing",
+            "name": "UserInterface",
             "id": "3a6266a4-b5f3-46e8-84c3-d0c9d2b53e43",
             "actions": [
                 {
-                    "name": "Enter",
+                    "name": "UserInterface",
                     "type": "Button",
                     "id": "03213dcf-a365-4aa8-9ddd-13c3d16b3990",
                     "expectedControlType": "Button",
@@ -150,7 +207,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "M&K",
-                    "action": "Enter",
+                    "action": "UserInterface",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

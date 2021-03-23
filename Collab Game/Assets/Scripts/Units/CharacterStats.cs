@@ -1,85 +1,60 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
-public class CharacterStats : MonoBehaviour
-{ 
-    public string charName = string.Empty;
-     
-    [Header("Stamina Settings")]
-    public float maxStamina = 100f;
-    public float staminaDrainInterval = 0f;
-    public float staminaDrainAmount = 0f;
-    [HideInInspector] public float currentStamina;
+// I think this script will handle character leveling, dying, all the attributes/stats
+// and the way they modify or mitigate incoming/outgoing damage.
+public class CharacterStats : MonoBehaviour, IKillable
+{
+    [Header("General settings")]
+    public string charName;
 
-    public delegate void OnStaminaChanged(float currentStamina, float maxStamina);
-    public event OnStaminaChanged Event_StaminaChanged;
+    [Header("Locomotion settings")]
+    public float moveSpeed = 5f;
+    public float sprintMultiplier = 2f;
+    public float jumpVelocity = 5f;
 
-    #region Input Ref
-    // Input System references
-    PlayerControls playerControls;
-    PlayerControls PlayerControls
+    [Header("Combat settings")]
+    public float baseAttackDamage = 1f;
+
+    [Header("Stamina vital")]
+    public float staminaGainAmount;
+    public float staminaGainDelay;
+    public float staminaDrainAmount;
+    public float staminaDrainDelay;
+    [Header("Health vital")]
+    public float healthGainAmount;
+    public float healthGainDelay;
+    public float healthDrainAmount;
+    public float healthDrainDelay;
+
+    public void Invulnerability()
     {
-        get
-        {
-            if(playerControls != null) { return playerControls; }
-            return playerControls = new PlayerControls();
-        }
+        StartCoroutine(Invulnerable(0.25f));
+    }
+
+    #region Death!!!
+    public virtual void Death()
+    {
+        Debug.Log(charName + " has died!");
     }
     #endregion
 
-    void OnEnable() => PlayerControls.Enable();
-    void OnDisable() => PlayerControls.Disable();
-
-    public virtual void Start() 
+    IEnumerator Invulnerable(float timer)
     {
-        currentStamina = maxStamina;
-        this.Event_StaminaChanged?.Invoke(currentStamina, maxStamina);
-    }
+        string originalTag = gameObject.tag;
 
-    #region Stamina
-    public virtual void ModifyStamina(float value)
-    {
-        currentStamina += value;
-
-        this.Event_StaminaChanged?.Invoke(currentStamina, maxStamina);
-    }
-
-    #region Drain
-    void UseStamina(float staminaDrain)
-    {
-        if(currentStamina - staminaDrain >= 0)
+        WaitForEndOfFrame wait = new WaitForEndOfFrame();
+        while(timer > 0)
         {
-            ModifyStamina(staminaDrain * -1f);
+            this.gameObject.tag = "Invulnerable";
+            timer -= Time.deltaTime;
+            yield return wait;
         }
+
+        gameObject.tag = originalTag;
     }
-
-    public void StaminaDrain()
-    {
-        if(ShouldDrainStamina())
-        {
-            UseStamina(staminaDrainAmount);
-            staminaDrainInterval = Time.time + 0.1f;
-        }
-    }
-
-    bool ShouldDrainStamina()
-    {
-        bool result = (Time.time >= staminaDrainInterval);
-
-        return result;
-    }
-    #endregion
-
-    #region Gain
-    void GainStamina(float staminaGain)
-    {
-        if(currentStamina + staminaGain <= maxStamina)
-        {
-            ModifyStamina(staminaGain);
-        }
-    }
-    #endregion
-
-    #endregion
 }

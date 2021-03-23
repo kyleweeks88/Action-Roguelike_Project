@@ -15,7 +15,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     ""name"": ""PlayerControls"",
     ""maps"": [
         {
-            ""name"": ""Locomotion"",
+            ""name"": ""Player"",
             ""id"": ""d218a5af-753c-4658-aea3-9195030adbae"",
             ""actions"": [
                 {
@@ -46,6 +46,30 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""48f5f25c-ff1f-4562-8fbf-79346c5843f0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""e70f7be1-3f80-45e0-b808-c77f34f9a474"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""b7b1f6db-3a28-47f0-a62c-68386f9496c6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""UserInterface"",
+                    ""type"": ""Button"",
+                    ""id"": ""496e2920-f625-46a1-826a-8024c59169a3"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
@@ -139,15 +163,48 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4804a113-95fc-4c68-9f7f-d18d78531dd1"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a640596-4236-497b-ae47-477ec3e63481"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8ef35dd9-db77-4639-bf7a-b19ace747a30"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UserInterface"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
         {
-            ""name"": ""Testing"",
+            ""name"": ""UserInterface"",
             ""id"": ""3a6266a4-b5f3-46e8-84c3-d0c9d2b53e43"",
             ""actions"": [
                 {
-                    ""name"": ""Enter"",
+                    ""name"": ""UserInterface"",
                     ""type"": ""Button"",
                     ""id"": ""03213dcf-a365-4aa8-9ddd-13c3d16b3990"",
                     ""expectedControlType"": ""Button"",
@@ -163,7 +220,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""M&K"",
-                    ""action"": ""Enter"",
+                    ""action"": ""UserInterface"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -189,15 +246,18 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         }
     ]
 }");
-        // Locomotion
-        m_Locomotion = asset.FindActionMap("Locomotion", throwIfNotFound: true);
-        m_Locomotion_Movement = m_Locomotion.FindAction("Movement", throwIfNotFound: true);
-        m_Locomotion_Jump = m_Locomotion.FindAction("Jump", throwIfNotFound: true);
-        m_Locomotion_Look = m_Locomotion.FindAction("Look", throwIfNotFound: true);
-        m_Locomotion_Sprint = m_Locomotion.FindAction("Sprint", throwIfNotFound: true);
-        // Testing
-        m_Testing = asset.FindActionMap("Testing", throwIfNotFound: true);
-        m_Testing_Enter = m_Testing.FindAction("Enter", throwIfNotFound: true);
+        // Player
+        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
+        m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
+        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+        m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
+        m_Player_UserInterface = m_Player.FindAction("UserInterface", throwIfNotFound: true);
+        // UserInterface
+        m_UserInterface = asset.FindActionMap("UserInterface", throwIfNotFound: true);
+        m_UserInterface_UserInterface = m_UserInterface.FindAction("UserInterface", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -244,44 +304,59 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         asset.Disable();
     }
 
-    // Locomotion
-    private readonly InputActionMap m_Locomotion;
-    private ILocomotionActions m_LocomotionActionsCallbackInterface;
-    private readonly InputAction m_Locomotion_Movement;
-    private readonly InputAction m_Locomotion_Jump;
-    private readonly InputAction m_Locomotion_Look;
-    private readonly InputAction m_Locomotion_Sprint;
-    public struct LocomotionActions
+    // Player
+    private readonly InputActionMap m_Player;
+    private IPlayerActions m_PlayerActionsCallbackInterface;
+    private readonly InputAction m_Player_Movement;
+    private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Look;
+    private readonly InputAction m_Player_Sprint;
+    private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_Attack;
+    private readonly InputAction m_Player_UserInterface;
+    public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
-        public LocomotionActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Movement => m_Wrapper.m_Locomotion_Movement;
-        public InputAction @Jump => m_Wrapper.m_Locomotion_Jump;
-        public InputAction @Look => m_Wrapper.m_Locomotion_Look;
-        public InputAction @Sprint => m_Wrapper.m_Locomotion_Sprint;
-        public InputActionMap Get() { return m_Wrapper.m_Locomotion; }
+        public PlayerActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_Player_Movement;
+        public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @Look => m_Wrapper.m_Player_Look;
+        public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @Attack => m_Wrapper.m_Player_Attack;
+        public InputAction @UserInterface => m_Wrapper.m_Player_UserInterface;
+        public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(LocomotionActions set) { return set.Get(); }
-        public void SetCallbacks(ILocomotionActions instance)
+        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerActions instance)
         {
-            if (m_Wrapper.m_LocomotionActionsCallbackInterface != null)
+            if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                @Movement.started -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnMovement;
-                @Movement.performed -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnMovement;
-                @Movement.canceled -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnMovement;
-                @Jump.started -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnJump;
-                @Jump.performed -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnJump;
-                @Jump.canceled -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnJump;
-                @Look.started -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnLook;
-                @Look.performed -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnLook;
-                @Look.canceled -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnLook;
-                @Sprint.started -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnSprint;
-                @Sprint.performed -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnSprint;
-                @Sprint.canceled -= m_Wrapper.m_LocomotionActionsCallbackInterface.OnSprint;
+                @Movement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Sprint.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                @Sprint.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                @Sprint.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Attack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                @Attack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                @Attack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                @UserInterface.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUserInterface;
+                @UserInterface.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUserInterface;
+                @UserInterface.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUserInterface;
             }
-            m_Wrapper.m_LocomotionActionsCallbackInterface = instance;
+            m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Movement.started += instance.OnMovement;
@@ -296,43 +371,52 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
+                @UserInterface.started += instance.OnUserInterface;
+                @UserInterface.performed += instance.OnUserInterface;
+                @UserInterface.canceled += instance.OnUserInterface;
             }
         }
     }
-    public LocomotionActions @Locomotion => new LocomotionActions(this);
+    public PlayerActions @Player => new PlayerActions(this);
 
-    // Testing
-    private readonly InputActionMap m_Testing;
-    private ITestingActions m_TestingActionsCallbackInterface;
-    private readonly InputAction m_Testing_Enter;
-    public struct TestingActions
+    // UserInterface
+    private readonly InputActionMap m_UserInterface;
+    private IUserInterfaceActions m_UserInterfaceActionsCallbackInterface;
+    private readonly InputAction m_UserInterface_UserInterface;
+    public struct UserInterfaceActions
     {
         private @PlayerControls m_Wrapper;
-        public TestingActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Enter => m_Wrapper.m_Testing_Enter;
-        public InputActionMap Get() { return m_Wrapper.m_Testing; }
+        public UserInterfaceActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @UserInterface => m_Wrapper.m_UserInterface_UserInterface;
+        public InputActionMap Get() { return m_Wrapper.m_UserInterface; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(TestingActions set) { return set.Get(); }
-        public void SetCallbacks(ITestingActions instance)
+        public static implicit operator InputActionMap(UserInterfaceActions set) { return set.Get(); }
+        public void SetCallbacks(IUserInterfaceActions instance)
         {
-            if (m_Wrapper.m_TestingActionsCallbackInterface != null)
+            if (m_Wrapper.m_UserInterfaceActionsCallbackInterface != null)
             {
-                @Enter.started -= m_Wrapper.m_TestingActionsCallbackInterface.OnEnter;
-                @Enter.performed -= m_Wrapper.m_TestingActionsCallbackInterface.OnEnter;
-                @Enter.canceled -= m_Wrapper.m_TestingActionsCallbackInterface.OnEnter;
+                @UserInterface.started -= m_Wrapper.m_UserInterfaceActionsCallbackInterface.OnUserInterface;
+                @UserInterface.performed -= m_Wrapper.m_UserInterfaceActionsCallbackInterface.OnUserInterface;
+                @UserInterface.canceled -= m_Wrapper.m_UserInterfaceActionsCallbackInterface.OnUserInterface;
             }
-            m_Wrapper.m_TestingActionsCallbackInterface = instance;
+            m_Wrapper.m_UserInterfaceActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Enter.started += instance.OnEnter;
-                @Enter.performed += instance.OnEnter;
-                @Enter.canceled += instance.OnEnter;
+                @UserInterface.started += instance.OnUserInterface;
+                @UserInterface.performed += instance.OnUserInterface;
+                @UserInterface.canceled += instance.OnUserInterface;
             }
         }
     }
-    public TestingActions @Testing => new TestingActions(this);
+    public UserInterfaceActions @UserInterface => new UserInterfaceActions(this);
     private int m_MKSchemeIndex = -1;
     public InputControlScheme MKScheme
     {
@@ -342,15 +426,18 @@ public class @PlayerControls : IInputActionCollection, IDisposable
             return asset.controlSchemes[m_MKSchemeIndex];
         }
     }
-    public interface ILocomotionActions
+    public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
+        void OnUserInterface(InputAction.CallbackContext context);
     }
-    public interface ITestingActions
+    public interface IUserInterfaceActions
     {
-        void OnEnter(InputAction.CallbackContext context);
+        void OnUserInterface(InputAction.CallbackContext context);
     }
 }
