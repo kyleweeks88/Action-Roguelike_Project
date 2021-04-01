@@ -17,11 +17,14 @@ public class AnimationManager : MonoBehaviour
     [HideInInspector] public int inputYParam = Animator.StringToHash("InputY");
     int inCombatParam = Animator.StringToHash("inCombat");
     int isInteractingParam = Animator.StringToHash("isInteracting");
+    int isSlidingParam = Animator.StringToHash("isSliding");
     #endregion
 
 
     void Update()
     {
+        myAnim.SetFloat("moveAnimSpeed", 1f);
+        myAnim.SetBool(isSlidingParam, playerMgmt.playerMovement.isSliding);
         myAnim.SetBool(isSprintingParam, playerMgmt.playerMovement.isSprinting);
         myAnim.SetBool(isJumpingParam, playerMgmt.playerMovement.isJumping);
         myAnim.SetBool(isGroundedParam, playerMgmt.playerMovement.isGrounded);
@@ -37,6 +40,15 @@ public class AnimationManager : MonoBehaviour
                 if((playerMgmt.vitalsMgmt.stamina.GetCurrentValue() - myWeapon.meleeData.staminaCost) > 0)
                     myAnim.SetTrigger(playerMgmt.combatMgmt.attackAnim);
             }
+        }
+
+        if (playerMgmt.combatMgmt.attackInputHeld)
+        {
+            myAnim.SetFloat("moveAnimSpeed", 0.5f);
+        }
+        else
+        {
+            myAnim.SetFloat("moveAnimSpeed", 1f);
         }
     }
 

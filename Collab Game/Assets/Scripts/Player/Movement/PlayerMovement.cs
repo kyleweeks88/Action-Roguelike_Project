@@ -1,61 +1,82 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Cinemachine;
+﻿using Cinemachine;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public Transform groundColPos;
-    public LayerMask whatIsWalkable;
-
     [Header("Component Ref")]
     [SerializeField] PlayerManager playerMgmt = null;
 
-    Vector3 movement;
-    Vector2 _previousMovementInput;
-
-    float playerGravity = -9.81f;
-    float currentMoveSpeed = 0f;
-    float turnSpeed = 15f;
-    [HideInInspector] public float yVelocity = 0;
-
-    [HideInInspector] public bool isSprinting = false;
-    [HideInInspector] public bool isJumping;
+    [Header("Ground detection")]
+    public LayerMask whatIsWalkable;
+    public Transform groundColPos;
     public bool isGrounded;
 
+    [Header("Slide settings")]
+    public float slideVelocity;
+    float currentSlideVelocity;
+    public bool isSliding;
+
+    Vector3 movement;
+    Vector3 rotationMovement;
+    Vector2 _previousMovementInput;
+
+    //[HideInInspector] public float currentMoveSpeed = 0f;
+    float turnSpeed = 15f;
+
+    [HideInInspector] public bool isSprinting = false;
+    public bool isJumping = false;
+    bool jumpInputHeld = false;
+
     FloatVariable stamina;
-    FloatVariable health;
+    PhysicMaterial physMat;
 
     void Start()
     {
-        //playerMgmt.inputSystem.jumpEvent += Jump;
-        //playerMgmt.inputMgmt.jumpEvent += Jump;
-        //playerMgmt.inputMgmt.sprintEventStarted += SprintPressed;
-        //playerMgmt.inputMgmt.sprintEventCancelled += SprintReleased;
-        //playerMgmt.inputMgmt.moveEvent += OnMove;
+        playerMgmt.inputMgmt.jumpEventStarted += Jump;
+        playerMgmt.inputMgmt.jumpEventCancelled += JumpReleased;
+        playerMgmt.inputMgmt.sprintEventStarted += SprintPressed;
+        playerMgmt.inputMgmt.sprintEventCancelled += SprintReleased;
+        playerMgmt.inputMgmt.moveEvent += OnMove;
 
         stamina = playerMgmt.vitalsMgmt.stamina;
-        health = playerMgmt.vitalsMgmt.health;
+        physMat = gameObject.GetComponent<CapsuleCollider>().material;
 
-        currentMoveSpeed = playerMgmt.playerStats.moveSpeed;
+        currentSlideVelocity = slideVelocity;
     }
 
     private void FixedUpdate()
     {
-        GroundCheck();
-
-        if (isJumping && playerMgmt.myRb.velocity.y < -5f)
+        // Handles the player's PhysicMaterial to prevent slow-sliding down shallow slopes when standing still.
+        // but turns friction to zero when the player is moving.
+        if (_previousMovementInput.sqrMagnitude != 0)
         {
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f, whatIsWalkable))
-            {
-                isJumping = false;
-            }
+            physMat.dynamicFriction = 0f;
+        }
+        else if(_previousMovementInput.sqrMagnitude == 0 && !isSliding)
+        {
+            physMat.dynamicFriction = 1f;
         }
 
+        HandleSliding();
+        GroundCheck();
         UpdateIsSprinting();
         Move();
+    }
+
+    void HandleSliding()
+    {
+        Vector3 adjustedPos = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
+        if (!CheckSlope(adjustedPos, Vector3.down, 10f))
+        {
+            isSliding = false;
+            currentSlideVelocity = 0f;
+        }
+        else
+        {
+            isSliding = true;
+            currentSlideVelocity = slideVelocity;
+            physMat.dynamicFriction = 0f;
+        }
     }
 
     void GroundCheck()
@@ -65,13 +86,66 @@ public class PlayerMovement : MonoBehaviour
         if (groundCollisions.Length <= 0)
         {
             isGrounded = false;
-            playerMgmt.myRb.velocity += -Vector3.up * playerMgmt.playerStats.playerGravity;
+            // Add the aerialMovementModifier if it isn't already affecting _moveSpeed.
+            if (!playerMgmt.playerStats.moveSpeed.StatModifiers.Contains(playerMgmt.playerStats.aerialMovementModifier))
+                playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.aerialMovementModifier);
+
+            // Makes jumping and falling feel better
+            if (playerMgmt.myRb.velocity.y < 0f)
+            {
+                playerMgmt.myRb.velocity += Vector3.up * Physics.gravity.y * (10f - 1f) * Time.deltaTime;
+            }
+            else if(playerMgmt.myRb.velocity.y > 0f && !jumpInputHeld)
+            {
+                playerMgmt.myRb.velocity += Vector3.up * Physics.gravity.y * (8f - 1f) * Time.deltaTime;
+            }
+
+            // If the player has jumped and is now falling downwards, cast a ray 
+            // to check for ground and turn isJumping false if hit.
+            if (isJumping && playerMgmt.myRb.velocity.y < 0f)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f, whatIsWalkable))
+                {
+                    //playerMgmt.playerStats._moveSpeed.RemoveModifier(playerMgmt.playerStats.aerialMovementModifier);
+                    isJumping = false;
+                }
+            }
         }
         else
         {
-            isJumping = false;
             isGrounded = true;
+
+            // Remove the aerialMovementModifier if it is still affecting _moveSpeed.
+            if (playerMgmt.playerStats.moveSpeed.StatModifiers.Contains(playerMgmt.playerStats.aerialMovementModifier))
+                playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.aerialMovementModifier);
+
+            // This stops the ground collision from pre-emptively turning isJumping to false when the player jumps.
+            if (Mathf.Abs(playerMgmt.myRb.velocity.y) < 0.01f && Mathf.Abs(playerMgmt.myRb.velocity.y) > -0.01f)
+                isJumping = false;
         }
+    }
+
+    bool CheckSlope(Vector3 position, Vector3 desiredDirection, float distance)
+    {
+        Debug.DrawRay(position, desiredDirection, Color.green);
+
+        Ray myRay = new Ray(position, desiredDirection); // cast a Ray from the position of our gameObject into our desired direction. Add the slopeRayHeight to the Y parameter.
+        RaycastHit hit;
+
+        if (Physics.Raycast(myRay, out hit, distance, whatIsWalkable))
+        {
+            float slopeAngle = Mathf.Deg2Rad * Vector3.Angle(Vector3.up, hit.normal); // Here we get the angle between the Up Vector and the normal of the wall we are checking against: 90 for straight up walls, 0 for flat ground.
+
+            if (slopeAngle >= 45f * Mathf.Deg2Rad) //You can set "steepSlopeAngle" to any angle you wish.
+            {
+                return true; // return false if we are very near / on the slope && the slope is steep
+            }
+
+            return false; // return true if the slope is not steep
+        }
+
+        return false;
     }
 
     void OnMove(Vector2 movement)
@@ -85,12 +159,12 @@ public class PlayerMovement : MonoBehaviour
         movement = new Vector3
         {
             x = _previousMovementInput.x,
+            y = -currentSlideVelocity,
             z = _previousMovementInput.y
         }.normalized;
 
         // MAKES THE CHARACTER'S FORWARD AXIS MATCH THE CAMERA'S FORWARD AXIS
-        Vector3 rotationMovement = Quaternion.Euler(0, playerMgmt.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
-        Vector3 verticalMovement = Vector3.up * yVelocity;
+        rotationMovement = Quaternion.Euler(0, playerMgmt.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
 
         // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
         float cameraYaw = playerMgmt.myCamera.transform.rotation.eulerAngles.y;
@@ -100,16 +174,17 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
         }
 
-        if(movement.z <= 0)
+        // Only allows the player to sprint forwards
+        if(isSprinting && movement.z <= 0)
         {
             SprintReleased();
         }
 
         // HANDLES ANIMATIONS
-        //playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
+        playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
 
         // MOVES THE PLAYER
-        playerMgmt.myRb.AddForce((verticalMovement + (rotationMovement * currentMoveSpeed)) / Time.deltaTime);
+        playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
     }
 
     #region Sprinting
@@ -118,9 +193,11 @@ public class PlayerMovement : MonoBehaviour
         if (movement.z > 0.1 && stamina.GetCurrentValue() 
             - playerMgmt.playerStats.staminaDrainAmount > 0)
         {
-            currentMoveSpeed *= playerMgmt.playerStats.sprintMultiplier;
             isSprinting = true;
             playerMgmt.isInteracting = true;
+
+            // adds moveSpeed StatModifier
+            playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.sprintMovementModifier);
 
             playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 11;
         }
@@ -129,7 +206,9 @@ public class PlayerMovement : MonoBehaviour
     public void SprintReleased()
     {
         isSprinting = false;
-        currentMoveSpeed = playerMgmt.playerStats.moveSpeed;
+
+        // removes moveSpeed StatModifier
+        playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.sprintMovementModifier);
 
         playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 9;
     }
@@ -138,7 +217,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isSprinting)
         {
-            //vitalsMgmt.staminaVal.GetCurrentValue() - playerMgmt.playerStats.staminaDrainAmount > 0
             if (stamina.GetCurrentValue() 
                 - playerMgmt.playerStats.staminaDrainAmount > 0)
             {
@@ -158,18 +236,25 @@ public class PlayerMovement : MonoBehaviour
     public void Jump()
     {
         if (playerMgmt.isInteracting) { return; }
+        if (isSliding) { return; }
 
-        if(!isJumping && isGrounded)
+        jumpInputHeld = true;
+        Debug.Log("JUMP PRESSED");
+        if (!isJumping && isGrounded)
         {
             if (stamina.GetCurrentValue() - 10f > 0)
             {
-                playerMgmt.isInteracting = true;
                 isJumping = true;
-                isGrounded = false;
+                playerMgmt.isInteracting = true;
                 playerMgmt.vitalsMgmt.TakeDamage(stamina, 10f);
-
                 playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpVelocity;
+                playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpVelocity;
             }
         }
+    }
+
+    void JumpReleased()
+    {
+        jumpInputHeld = false;
     }
 }

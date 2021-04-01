@@ -18,6 +18,24 @@ public class PlayerStats : CharacterStats
     {
         base.Death();
         this.transform.position = Vector3.zero;
+        //CmdDeath();
     }
+
+    //[Command]
+    //public virtual void CmdDeath()
+    //{
+    //    Debug.Log(charName + " has died!");
+    //    this.transform.position = Vector3.zero;
+    //    RpcDeath();
+    //}
+
+    //[ClientRpc]
+    //void RpcDeath()
+    //{
+    //    if (base.hasAuthority) { return; }
+
+    //    Debug.Log(charName + " has died!");
+    //    this.transform.position = Vector3.zero;
+    //}
 }
 

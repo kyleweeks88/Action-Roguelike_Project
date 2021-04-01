@@ -6,13 +6,11 @@ using UnityEngine.Events;
 
 public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, PlayerControls.IUserInterfaceActions
 {
-    [Header("Component Ref")]
-    [SerializeField] PlayerManager playerMgmt = null;
-
     public event UnityAction<Vector2> moveEvent;
     public event UnityAction sprintEventStarted;
     public event UnityAction sprintEventCancelled;
-    public event UnityAction jumpEvent;
+    public event UnityAction jumpEventStarted;
+    public event UnityAction jumpEventCancelled;
     public event UnityAction dodgeEvent;
     public event UnityAction attackEventStarted;
     public event UnityAction attackEventCancelled;
@@ -23,7 +21,7 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction userInterfaceEvent;
 
     PlayerControls controls;
-    public PlayerControls PlayerControls
+    public PlayerControls Controls
     {
         get
         {
@@ -34,7 +32,7 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
 
     private void OnEnable()
     {
-        PlayerControls.Player.SetCallbacks(this);
+        Controls.Player.SetCallbacks(this);
         EnableGameplayInput();
     }
 
@@ -42,16 +40,16 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
 
     public void EnableGameplayInput()
     {
-        PlayerControls.UserInterface.Disable();
-        PlayerControls.Player.Enable();
-        PlayerControls.Player.SetCallbacks(this);
+        Controls.UserInterface.Disable();
+        Controls.Player.Enable();
+        Controls.Player.SetCallbacks(this);
     }
 
     public void EnableUserInterfaceInput()
     {
-        PlayerControls.Player.Disable();
-        PlayerControls.UserInterface.Enable();
-        PlayerControls.UserInterface.SetCallbacks(this);
+        Controls.Player.Disable();
+        Controls.UserInterface.Enable();
+        Controls.UserInterface.SetCallbacks(this);
     }
 
     public void DisableAllInput()
@@ -98,9 +96,13 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (jumpEvent != null &&
-            context.phase == InputActionPhase.Performed)
-            jumpEvent.Invoke();
+        if (jumpEventStarted != null &&
+            context.phase == InputActionPhase.Started)
+            jumpEventStarted.Invoke();
+
+        if (jumpEventCancelled != null &&
+            context.phase == InputActionPhase.Canceled)
+            jumpEventCancelled.Invoke();
     }
 
     public void OnLook(InputAction.CallbackContext context)

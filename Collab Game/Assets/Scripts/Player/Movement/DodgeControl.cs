@@ -18,8 +18,8 @@ public class DodgeControl : MonoBehaviour
 
     void Start()
     {
-        //playerMgmt.inputMgmt.dodgeEvent += Dodge;
-        //playerMgmt.inputMgmt.moveEvent += DodgeDirection;
+        playerMgmt.inputMgmt.dodgeEvent += Dodge;
+        playerMgmt.inputMgmt.moveEvent += DodgeDirection;
     }
 
     private void FixedUpdate()
@@ -57,7 +57,7 @@ public class DodgeControl : MonoBehaviour
             playerMgmt.vitalsMgmt.TakeDamage(playerMgmt.vitalsMgmt.stamina, 10f);
 
             // INVULNERABLE FUNCTION CALLED HERE
-            //playerMgmt.playerStats.Invulnerability();
+            playerMgmt.playerStats.Invulnerability();
 
             // normalizes the dir vector
             Vector3 _dir = new Vector3
@@ -84,7 +84,7 @@ public class DodgeControl : MonoBehaviour
             }
 
             // PLAY DODGE ANIMATION FROM AnimationManager
-            //playerMgmt.animMgmt.netAnim.SetTrigger("dodge");
+            playerMgmt.animMgmt.myAnim.SetTrigger("dodge");
 
             // Resets the cooldown timer
             cooldown = dodgeCooldown;

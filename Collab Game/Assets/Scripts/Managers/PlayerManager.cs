@@ -52,7 +52,7 @@ public class PlayerManager : MonoBehaviour
 
         myCamera.SetActive(true);
         freeLook.SetActive(true);
-        sprintCamera.SetActive(true);
+        //sprintCamera.SetActive(true);
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;

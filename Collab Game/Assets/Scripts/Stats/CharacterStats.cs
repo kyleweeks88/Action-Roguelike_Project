@@ -12,13 +12,17 @@ public class CharacterStats : MonoBehaviour, IKillable
     [Header("General settings")]
     public string charName;
 
-    [Header("Locomotion settings")]
-    public float moveSpeed = 5f;
-    public float sprintMultiplier = 2f;
+    [Header("Locomotion stats")]
+    public Stat moveSpeed;
+    [Tooltip("")]
     public float jumpVelocity = 5f;
 
+    public StatModifier sprintMovementModifier = new StatModifier(1f, StatModType.PercentAdd);
+    public StatModifier aerialMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
+    public StatModifier combatMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
+
     [Header("Combat settings")]
-    public float baseAttackDamage = 1f;
+    public Stat attackDamage;
 
     [Header("Stamina vital")]
     public float staminaGainAmount;
@@ -30,6 +34,11 @@ public class CharacterStats : MonoBehaviour, IKillable
     public float healthGainDelay;
     public float healthDrainAmount;
     public float healthDrainDelay;
+
+    void Update()
+    {
+        //Debug.Log(attackDamage.value);
+    }
 
     public void Invulnerability()
     {
