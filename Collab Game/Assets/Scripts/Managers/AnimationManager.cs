@@ -70,6 +70,7 @@ public class AnimationManager : MonoBehaviour
     public void HandleMeleeAttackAnimation(bool boolVal)
     {
         myAnim.SetBool(playerMgmt.combatMgmt.attackAnim, boolVal);
+        Debug.Log(boolVal);
     }
 
     public void HandleRangedAttackAnimation(bool boolVal)
