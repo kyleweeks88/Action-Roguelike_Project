@@ -51,10 +51,10 @@ public class DodgeControl : MonoBehaviour
         if (cooldown > 0) { return; }
 
         // If the entity has enough stamina to dodge
-        if ((playerMgmt.vitalsMgmt.stamina.GetCurrentValue() - 10f) > 0)
+        if ((playerMgmt.playerStats.GetCurrentStamina() - 10f) > 0)
         {
             playerMgmt.isInteracting = true;
-            playerMgmt.vitalsMgmt.TakeDamage(playerMgmt.vitalsMgmt.stamina, 10f);
+            playerMgmt.playerStats.DamageStamina(10f);
 
             // INVULNERABLE FUNCTION CALLED HERE
             playerMgmt.playerStats.Invulnerability();

@@ -24,9 +24,6 @@ public class CombatManager : MonoBehaviour
     float nextShotTime = 0f;
     [SerializeField] float msBetweenShots = 0f;
 
-    FloatVariable health;
-    FloatVariable stamina;
-
     public bool canRecieveAttackInput;
     public bool attackInputRecieved;
     public bool attackInputHeld;
@@ -41,9 +38,6 @@ public class CombatManager : MonoBehaviour
         playerMgmt.inputMgmt.attackEventCancelled += AttackReleased;
         playerMgmt.inputMgmt.rangedAttackEventStarted += RangedAttackPerformed;
         playerMgmt.inputMgmt.rangedAttackEventCancelled += RangedAttackReleased;
-
-        stamina = playerMgmt.vitalsMgmt.stamina;
-        health = playerMgmt.vitalsMgmt.health;
     }
 
     private void Update()
@@ -113,20 +107,8 @@ public class CombatManager : MonoBehaviour
     public void CheckRangedAttack()
     {
         // Ask the server to check your pos, and spawn a projectile for the server
-        CmdRangedAttack(projectileSpawn.position, projectileSpawn.rotation, playerMgmt.myCamera.transform.forward);
+        SpawnProjectile(projectileSpawn.position, projectileSpawn.rotation, playerMgmt.myCamera.transform.forward);
     }
-
-    void CmdRangedAttack(Vector3 pos, Quaternion rot, Vector3 dir)
-    {
-        float maxPosOffset = 1;
-        if (Vector3.Distance(pos, projectileSpawn.position) > maxPosOffset)
-        {
-            Vector3 posDir = pos - projectileSpawn.position;
-            pos = projectileSpawn.position + (posDir * maxPosOffset);
-        }
-
-        SpawnProjectile(pos, rot, dir);
-    }  
 
     void SpawnProjectile(Vector3 pos, Quaternion rot, Vector3 dir)
     {
@@ -160,7 +142,7 @@ public class CombatManager : MonoBehaviour
                 {
                     MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
                     // Checks if the entity has enough stamina to do an attack...
-                    if ((stamina.GetCurrentValue() - myWeapon.meleeData.staminaCost) > 0)
+                    if ((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
                     {
                         // If the weapon is a chargeable weapon...
                         if (myWeapon.meleeData.isChargeable)
@@ -237,7 +219,7 @@ public class CombatManager : MonoBehaviour
     public void ActivateImpact(int impactID)
     {
         MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
-        playerMgmt.vitalsMgmt.TakeDamage(stamina, myWeapon.meleeData.staminaCost);
+        playerMgmt.playerStats.DamageStamina(myWeapon.meleeData.staminaCost);
 
         impactActivated = true;
     }
@@ -273,22 +255,6 @@ public class CombatManager : MonoBehaviour
                 //CheckProcessAttack(hit.gameObject.GetComponent<NpcHealthManager>());
                 impactActivated = false;
             }
-
-            RpcCreateImpactCollider(origin, end, colRadius);
-        }
-    }
-
-    void RpcCreateImpactCollider(Vector3 origin, Vector3 end, float colRadius)
-    {
-        Collider[] verifiedImpactCol = Physics.OverlapCapsule(origin, end, colRadius, whatIsDamageable);
-        foreach (Collider hit in verifiedImpactCol)
-        {
-            if (hit.gameObject.GetComponent<NpcVitalsManager>() != null)
-            {
-                // PASS THE OBJECT HIT INTO A SERVER CHECK AND COMMAND
-                //CheckProcessAttack(hit.gameObject.GetComponent<NpcHealthManager>());
-                impactActivated = false;
-            }
         }
     }
 
@@ -298,18 +264,9 @@ public class CombatManager : MonoBehaviour
         //float dmgVal = (playerMgmt.equipmentMgmt.currentlyEquippedWeapon.weaponData.damage 
         //    * playerMgmt.equipmentMgmt.currentlyEquippedWeapon.currentCharge) + playerMgmt.playerStats.baseAttackDamage;
 
-        //NetworkIdentity targetNetId = target.gameObject.GetComponent<NetworkIdentity>();
-
-        //CmdProcessAttack(targetNetId, dmgVal);
+        Debug.Log(target.gameObject.name);
+        //target.TakeDamage(target.health, dmgVal);
     }
-
-    //[Command]
-    //void CmdProcessAttack(NetworkIdentity _targetNetId, float dmgVal)
-    //{
-    //    NpcHealthManager entity = _targetNetId.gameObject.GetComponent<NpcHealthManager>();
-    //    entity.TakeDamage(dmgVal);
-    //    //RpcProcessAttack(_targetNetId, dmgVal);
-    //}
     #endregion
 
     private void OnDisable()

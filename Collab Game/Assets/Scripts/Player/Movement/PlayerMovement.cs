@@ -27,7 +27,6 @@ public class PlayerMovement : MonoBehaviour
     public bool isJumping = false;
     bool jumpInputHeld = false;
 
-    FloatVariable stamina;
     PhysicMaterial physMat;
 
     void Start()
@@ -38,7 +37,6 @@ public class PlayerMovement : MonoBehaviour
         playerMgmt.inputMgmt.sprintEventCancelled += SprintReleased;
         playerMgmt.inputMgmt.moveEvent += OnMove;
 
-        stamina = playerMgmt.vitalsMgmt.stamina;
         physMat = gameObject.GetComponent<CapsuleCollider>().material;
 
         currentSlideVelocity = slideVelocity;
@@ -190,7 +188,7 @@ public class PlayerMovement : MonoBehaviour
     #region Sprinting
     public void SprintPressed()
     {
-        if (movement.z > 0.1 && stamina.GetCurrentValue() 
+        if (movement.z > 0.1 && playerMgmt.playerStats.GetCurrentStamina()
             - playerMgmt.playerStats.staminaDrainAmount > 0)
         {
             isSprinting = true;
@@ -217,10 +215,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isSprinting)
         {
-            if (stamina.GetCurrentValue() 
+            if (playerMgmt.playerStats.GetCurrentStamina()
                 - playerMgmt.playerStats.staminaDrainAmount > 0)
             {
-                playerMgmt.vitalsMgmt.VitalDrainOverTime(stamina, 
+                playerMgmt.playerStats.StaminaDrainOverTime( 
                     playerMgmt.playerStats.staminaDrainAmount,
                     playerMgmt.playerStats.staminaDrainDelay);
             }
@@ -242,11 +240,12 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("JUMP PRESSED");
         if (!isJumping && isGrounded)
         {
-            if (stamina.GetCurrentValue() - 10f > 0)
+            if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
             {
                 isJumping = true;
                 playerMgmt.isInteracting = true;
-                playerMgmt.vitalsMgmt.TakeDamage(stamina, 10f);
+                //playerMgmt.vitalsMgmt.TakeDamage(stamina, 10f);
+                playerMgmt.playerStats.DamageStamina(10f);
                 playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpVelocity;
                 playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpVelocity;
             }

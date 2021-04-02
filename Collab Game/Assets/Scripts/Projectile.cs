@@ -22,10 +22,10 @@ public class Projectile : MonoBehaviour
     void ColHit(Collider col)
     {
         //NpcHealthManager hitTarget = col.GetComponent<NpcHealthManager>();
-        VitalsManager hitTarget = col.GetComponent<VitalsManager>();
+        CharacterStats hitTarget = col.GetComponent<CharacterStats>();
         if (hitTarget != null)
         {
-            hitTarget.TakeDamage(hitTarget.health, projDmg);
+            hitTarget.TakeDamage(projDmg);
         }
 
         Vector3 hitPoint = col.ClosestPointOnBounds(this.transform.position);

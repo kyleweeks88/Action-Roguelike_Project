@@ -8,8 +8,9 @@ public class PlayerStats : CharacterStats
     public float playerGravity;
     [HideInInspector] public float currentPlayerGravity;
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         //playerName = GetComponent<PlayerName>();
         //base.charName = playerName.synchronizedName;
     }
