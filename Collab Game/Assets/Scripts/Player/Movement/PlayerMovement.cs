@@ -1,171 +1,226 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Cinemachine;
 using UnityEngine;
-using Cinemachine;
 
-// This script will handle the locomotion of the player character.
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("References")]
-    PlayerStats playerStats = null;
-    CharacterController charController = null;
-    Animator myAnimator;
-    [SerializeField] GameObject myCamera;
-    [SerializeField] CinemachineFreeLook freeLook;
+    [Header("Component Ref")]
+    [SerializeField] PlayerManager playerMgmt = null;
 
-    [Header("Movement Settings")]
-    [SerializeField] float moveSpeed = 5f;
-    float currentMoveSpeed = 0f;
-    [SerializeField] float sprintMultiplier = 2f;
-    [SerializeField] float turnSpeed = 15f;
-    bool isSprinting = false;
+    [Header("Ground detection")]
+    public LayerMask whatIsWalkable;
+    public Transform groundColPos;
+    public bool isGrounded;
 
-    // Gravity-related variables
-    float yVelocity = 0;
-    float gravity = -9.81f;
+    [Header("Slide settings")]
+    public float slideVelocity;
+    float currentSlideVelocity;
+    public bool isSliding;
 
-    [Header("Jump Settings")]
-    [SerializeField] bool isJumping;
-    [SerializeField] float jumpVelocity = 5f;
+    Vector3 movement;
+    Vector3 rotationMovement;
+    Vector2 _previousMovementInput;
 
-    #region Animator Parameters
-    // My Animator parameters turned from costly Strings to cheap Ints
-    int isSprintingParam = Animator.StringToHash("isSprinting");
-    int isJumpingParam = Animator.StringToHash("isJumping");
-    int isGroundedParam = Animator.StringToHash("isGrounded");
-    int yVelocityParam = Animator.StringToHash("yVelocity");
-    int inputXParam = Animator.StringToHash("InputX");
-    int inputYParam = Animator.StringToHash("InputY");
-    #endregion
-    
-    // Input System references
-    PlayerControls playerControls;
-    PlayerControls PlayerControls
-    {
-        get
-        {
-            if(playerControls != null) { return playerControls; }
-            return playerControls = new PlayerControls();
-        }
-    }
+    //[HideInInspector] public float currentMoveSpeed = 0f;
+    float turnSpeed = 15f;
 
-    void OnEnable() => PlayerControls.Enable();
-    void OnDisable() => PlayerControls.Disable();
+    [HideInInspector] public bool isSprinting = false;
+    public bool isJumping = false;
+    bool jumpInputHeld = false;
+
+    PhysicMaterial physMat;
 
     void Start()
     {
-        myAnimator = GetComponentInChildren<Animator>();
-        charController = GetComponent<CharacterController>();
-        playerStats = GetComponent<PlayerStats>();
+        playerMgmt.inputMgmt.jumpEventStarted += Jump;
+        playerMgmt.inputMgmt.jumpEventCancelled += JumpReleased;
+        playerMgmt.inputMgmt.sprintEventStarted += SprintPressed;
+        playerMgmt.inputMgmt.sprintEventCancelled += SprintReleased;
+        playerMgmt.inputMgmt.moveEvent += OnMove;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        physMat = gameObject.GetComponent<CapsuleCollider>().material;
 
-        PlayerControls.Locomotion.Jump.performed += ctx => Jump();
-        PlayerControls.Locomotion.Sprint.started += ctx => SprintPressed();
-        PlayerControls.Locomotion.Sprint.canceled += ctx => SprintReleased();
-
-        currentMoveSpeed = moveSpeed;
+        currentSlideVelocity = slideVelocity;
     }
 
-    void Update()
+    private void FixedUpdate()
     {
-        // Applies gravity to player if not grounded
-        if(!charController.isGrounded)
+        // Handles the player's PhysicMaterial to prevent slow-sliding down shallow slopes when standing still.
+        // but turns friction to zero when the player is moving.
+        if (_previousMovementInput.sqrMagnitude != 0)
         {
-            yVelocity += gravity * Time.deltaTime;
+            physMat.dynamicFriction = 0f;
         }
-        else if(yVelocity < 0)
+        else if(_previousMovementInput.sqrMagnitude == 0 && !isSliding)
         {
-            yVelocity = 0f;
+            physMat.dynamicFriction = 1f;
         }
 
-        // If player is currently jumping in the air but heading back towards ground
-        // do a raycast to check for ground.
-        if(isJumping && yVelocity < 0)
+        HandleSliding();
+        GroundCheck();
+        UpdateIsSprinting();
+        Move();
+    }
+
+    void HandleSliding()
+    {
+        Vector3 adjustedPos = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
+        if (!CheckSlope(adjustedPos, Vector3.down, 10f))
         {
-            RaycastHit hit;
-            if(Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f, LayerMask.GetMask("Default")))
+            isSliding = false;
+            currentSlideVelocity = 0f;
+        }
+        else
+        {
+            isSliding = true;
+            currentSlideVelocity = slideVelocity;
+            physMat.dynamicFriction = 0f;
+        }
+    }
+
+    void GroundCheck()
+    {
+        Collider[] groundCollisions = Physics.OverlapSphere(groundColPos.position, 0.25f, whatIsWalkable);
+
+        if (groundCollisions.Length <= 0)
+        {
+            isGrounded = false;
+            // Add the aerialMovementModifier if it isn't already affecting _moveSpeed.
+            if (!playerMgmt.playerStats.moveSpeed.StatModifiers.Contains(playerMgmt.playerStats.aerialMovementModifier))
+                playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.aerialMovementModifier);
+
+            // Makes jumping and falling feel better
+            if (playerMgmt.myRb.velocity.y < 0f)
             {
-                isJumping = false;
+                playerMgmt.myRb.velocity += Vector3.up * Physics.gravity.y * (10f - 1f) * Time.deltaTime;
+            }
+            else if(playerMgmt.myRb.velocity.y > 0f && !jumpInputHeld)
+            {
+                playerMgmt.myRb.velocity += Vector3.up * Physics.gravity.y * (8f - 1f) * Time.deltaTime;
+            }
+
+            // If the player has jumped and is now falling downwards, cast a ray 
+            // to check for ground and turn isJumping false if hit.
+            if (isJumping && playerMgmt.myRb.velocity.y < 0f)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f, whatIsWalkable))
+                {
+                    //playerMgmt.playerStats._moveSpeed.RemoveModifier(playerMgmt.playerStats.aerialMovementModifier);
+                    isJumping = false;
+                }
             }
         }
-
-        myAnimator.SetBool(isJumpingParam, isJumping);
-        myAnimator.SetBool(isGroundedParam, charController.isGrounded);
-        myAnimator.SetFloat(yVelocityParam, yVelocity);
-
-        Move();
-
-        UpdateIsSprinting();
-    }
-
-    void Jump()
-    {
-        // Checks current jumping state
-        if(!isJumping)
+        else
         {
-            isJumping = true;
+            isGrounded = true;
 
-            // Adds upward velocity based on jumpVelocity
-            yVelocity += jumpVelocity;
+            // Remove the aerialMovementModifier if it is still affecting _moveSpeed.
+            if (playerMgmt.playerStats.moveSpeed.StatModifiers.Contains(playerMgmt.playerStats.aerialMovementModifier))
+                playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.aerialMovementModifier);
+
+            // This stops the ground collision from pre-emptively turning isJumping to false when the player jumps.
+            if (Mathf.Abs(playerMgmt.myRb.velocity.y) < 0.01f && Mathf.Abs(playerMgmt.myRb.velocity.y) > -0.01f)
+                isJumping = false;
         }
     }
 
-    void Move()
+    bool CheckSlope(Vector3 position, Vector3 desiredDirection, float distance)
     {
-        // READS THE INPUT SYSTEMS ACTION
-        var movementInput = PlayerControls.Locomotion.Movement.ReadValue<Vector2>();
+        Debug.DrawRay(position, desiredDirection, Color.green);
 
-        // CONVERTS THE INPUT INTO A NORMALIZED VECTOR3
-        var movement = new Vector3
+        Ray myRay = new Ray(position, desiredDirection); // cast a Ray from the position of our gameObject into our desired direction. Add the slopeRayHeight to the Y parameter.
+        RaycastHit hit;
+
+        if (Physics.Raycast(myRay, out hit, distance, whatIsWalkable))
         {
-            x = movementInput.x,
-            z = movementInput.y
+            float slopeAngle = Mathf.Deg2Rad * Vector3.Angle(Vector3.up, hit.normal); // Here we get the angle between the Up Vector and the normal of the wall we are checking against: 90 for straight up walls, 0 for flat ground.
+
+            if (slopeAngle >= 45f * Mathf.Deg2Rad) //You can set "steepSlopeAngle" to any angle you wish.
+            {
+                return true; // return false if we are very near / on the slope && the slope is steep
+            }
+
+            return false; // return true if the slope is not steep
+        }
+
+        return false;
+    }
+
+    void OnMove(Vector2 movement)
+    {
+        _previousMovementInput = movement;
+    }
+
+    public void Move()
+    {
+        // CONVERTS THE INPUT INTO A NORMALIZED VECTOR3
+        movement = new Vector3
+        {
+            x = _previousMovementInput.x,
+            y = -currentSlideVelocity,
+            z = _previousMovementInput.y
         }.normalized;
-        
+
         // MAKES THE CHARACTER'S FORWARD AXIS MATCH THE CAMERA'S FORWARD AXIS
-        Vector3 rotationMovement = Quaternion.Euler(0,myCamera.transform.rotation.eulerAngles.y, 0)  * movement;
-        Vector3 verticalMovement = Vector3.up * yVelocity;
+        rotationMovement = Quaternion.Euler(0, playerMgmt.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
 
         // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
-        float cameraYaw = myCamera.transform.rotation.eulerAngles.y;
+        float cameraYaw = playerMgmt.myCamera.transform.rotation.eulerAngles.y;
         // ... ONLY IF THE PLAYER IS MOVING
-        if(movement.sqrMagnitude > 0)
+        if (movement.sqrMagnitude > 0)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0,cameraYaw,0), turnSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
+        }
+
+        // Only allows the player to sprint forwards
+        if(isSprinting && movement.z <= 0)
+        {
+            SprintReleased();
         }
 
         // HANDLES ANIMATIONS
-        myAnimator.SetFloat(inputXParam, movement.x);
-        myAnimator.SetFloat(inputYParam, movement.z);
+        playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
 
         // MOVES THE PLAYER
-        charController.Move((verticalMovement + (rotationMovement * currentMoveSpeed)) * Time.deltaTime);
+        playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
     }
 
-    void SprintPressed()
+    #region Sprinting
+    public void SprintPressed()
     {
-        if(playerStats.currentStamina - playerStats.staminaDrainAmount > 0)
+        if (movement.z > 0.1 && playerMgmt.playerStats.GetCurrentStamina()
+            - playerMgmt.playerStats.staminaDrainAmount > 0)
         {
-            currentMoveSpeed *= sprintMultiplier;
             isSprinting = true;
+            playerMgmt.isInteracting = true;
+
+            // adds moveSpeed StatModifier
+            playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.sprintMovementModifier);
+
+            playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 11;
         }
     }
 
-    void SprintReleased()
+    public void SprintReleased()
     {
         isSprinting = false;
-        currentMoveSpeed = moveSpeed;
+
+        // removes moveSpeed StatModifier
+        playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.sprintMovementModifier);
+
+        playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 9;
     }
 
     void UpdateIsSprinting()
     {
-        if(isSprinting)
+        if (isSprinting)
         {
-            if(playerStats.currentStamina - playerStats.staminaDrainAmount > 0)
+            if (playerMgmt.playerStats.GetCurrentStamina()
+                - playerMgmt.playerStats.staminaDrainAmount > 0)
             {
-                playerStats.StaminaDrain();
+                playerMgmt.playerStats.StaminaDrainOverTime( 
+                    playerMgmt.playerStats.staminaDrainAmount,
+                    playerMgmt.playerStats.staminaDrainDelay);
             }
             else
             {
@@ -173,7 +228,32 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
         }
+    }
+    #endregion
 
-        myAnimator.SetBool(isSprintingParam, isSprinting);
+    public void Jump()
+    {
+        if (playerMgmt.isInteracting) { return; }
+        if (isSliding) { return; }
+
+        jumpInputHeld = true;
+        Debug.Log("JUMP PRESSED");
+        if (!isJumping && isGrounded)
+        {
+            if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
+            {
+                isJumping = true;
+                playerMgmt.isInteracting = true;
+                //playerMgmt.vitalsMgmt.TakeDamage(stamina, 10f);
+                playerMgmt.playerStats.DamageStamina(10f);
+                playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpVelocity;
+                playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpVelocity;
+            }
+        }
+    }
+
+    void JumpReleased()
+    {
+        jumpInputHeld = false;
     }
 }
