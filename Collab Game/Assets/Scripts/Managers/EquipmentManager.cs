@@ -15,7 +15,7 @@ public class EquipmentManager : MonoBehaviour
     {
         if(currentlyEquippedWeapon != null)
         {
-            //playerMgmt.animMgmt.SetAnimation(currentlyEquippedWeapon.weaponData.animationSet);
+            playerMgmt.animMgmt.SetAnimation(currentlyEquippedWeapon.weaponData.animationSet);
         }
     }
 
@@ -24,21 +24,6 @@ public class EquipmentManager : MonoBehaviour
         weaponToEquip = _weaponToEquip;
         EquipWeapon(weaponToEquip, weaponEquipPos);
     }
-
-    //[Command]
-    //void CmdEquipWeapon(NetworkIdentity netId, Transform equipPos)
-    //{        
-    //    EquipWeapon(netId, weaponToEquip, equipPos);
-    //    RpcEquipWeapon(netId, equipPos);
-    //}
-
-    //[ClientRpc]
-    //void RpcEquipWeapon(NetworkIdentity netId, Transform equipPos)
-    //{
-    //    if (base.hasAuthority) { return; }
-
-    //    EquipWeapon(netId, weaponToEquip, equipPos);
-    //}
 
     public void EquipWeapon(Weapon _weaponToEquip, Transform _weaponEquipPos)
     {
@@ -53,8 +38,7 @@ public class EquipmentManager : MonoBehaviour
             newWeapon.transform.localPosition = Vector3.zero;
             newWeapon.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
-            //AnimationManager am = netId.gameObject.GetComponent<AnimationManager>();
-            //am.SetAnimation(newWeapon.weaponData.animationSet);
+            playerMgmt.animMgmt.SetAnimation(newWeapon.weaponData.animationSet);
             weaponToEquip = newWeapon;
             currentlyEquippedWeapon = newWeapon;
         }

@@ -25,7 +25,7 @@ public class Projectile : MonoBehaviour
         CharacterStats hitTarget = col.GetComponent<CharacterStats>();
         if (hitTarget != null)
         {
-            hitTarget.TakeDamage(projDmg);
+            hitTarget.TakeDamage(this.gameObject, projDmg);
         }
 
         Vector3 hitPoint = col.ClosestPointOnBounds(this.transform.position);
