@@ -5,7 +5,7 @@ ModelImporter:
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: mixamo.com
+    second: Attack_HookPunch_Delivery
   - first:
       74: -5045926017434236403
     second: Delivery_R
@@ -39,7 +39,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: Attack_HookPunch_Delivery
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0

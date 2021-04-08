@@ -43,8 +43,6 @@ public class DodgeControl : MonoBehaviour
     // MAKE THIS MORE LIKE A DASH WITHOUT I-FRAMES
     public void Dodge()
     {
-        // If the player isn't pressing any direction
-        //if(prevDir.sqrMagnitude <= 0.1f) { return; }
         // If the player is in the air then exit
         if (!playerMgmt.playerMovement.isGrounded) { return; }
         // If the cooldown isn't ready then exit

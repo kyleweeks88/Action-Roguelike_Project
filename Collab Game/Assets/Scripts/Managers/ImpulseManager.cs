@@ -6,13 +6,23 @@ using Cinemachine;
 
 public class ImpulseManager : MonoBehaviour
 {
-    public UnityEvent damageImpulse;
-
+    [SerializeField] PlayerEventChannel playerEventChannel;
     public CinemachineImpulseSource _damageImpulse;
 
-    public void DamageImpulse()
+    void Start()
     {
+        playerEventChannel.damageRecieved_Event += DamageImpulse;
+    }
+
+    public void DamageImpulse(float dmgVal)
+    {
+        _damageImpulse.GenerateImpulse();
         // TAKE IN AN ImpulseSource AND MANAGE IT'S SETTINGS
         // BASED ON HEALTH VALUE? DAMAGE AMOUNT? CRITICAL HIT?
+    }
+
+    public void HandleDirectionalImpulse(CinemachineImpulseSource _source, Vector3 _dir)
+    {
+        _source.GenerateImpulse(new Vector3(-_dir.x, _dir.y, -_dir.z));
     }
 }

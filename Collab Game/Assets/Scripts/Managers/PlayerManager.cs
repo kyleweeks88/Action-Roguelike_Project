@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [Header("Component Ref")]
+    public PlayerEventChannel playerEventChannel;
     public InputManager inputMgmt;
     public Rigidbody myRb;
     public EquipmentManager equipmentMgmt;

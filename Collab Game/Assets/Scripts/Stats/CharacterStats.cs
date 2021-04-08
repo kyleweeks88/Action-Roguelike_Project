@@ -33,6 +33,8 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     float currentStaminaPoints;
     public float staminaGainAmount;
     public float staminaGainDelay;
+    [Tooltip("Miliseconds between stamina gain. The lower the number the faster the gain rate.")]
+    public float staminaGainTickrate = 100f;
     public float staminaDrainAmount;
     public float staminaDrainDelay;
     bool drainingStamina;
@@ -50,17 +52,15 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public float healthDrainDelay;
     bool drainingHealth;
 
-    public ImpulseManager impulseMgmt;
-
     public virtual void Start()
     {
         InitializeVitals();
     }
 
-    void Update()
-    {
-        Debug.Log("Health: " + currentHealthPoints+" / "+ maxHealthPoints);
-    }
+    //void Update()
+    //{
+    //    Debug.Log("Stamina: " + currentStaminaPoints + " / " + maxStaminaPoints);
+    //}
 
     public void InitializeVitals()
     {
@@ -71,8 +71,6 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #region Death!!!
     public virtual void Death()
     {
-        this.gameObject.transform.position = Vector3.zero;
-        InitializeVitals();
         Debug.Log(charName + " has died!");
     }
     #endregion
@@ -148,12 +146,8 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #endregion
 
     #region Health Drain
-    public void TakeDamage(float dmgVal)
+    public virtual void TakeDamage(GameObject damager, float dmgVal)
     {
-        impulseMgmt.damageImpulse?.Invoke();
-
-        Debug.Log(this.name + " took: " + dmgVal + " damage!");
-
         currentHealthPoints = Mathf.Clamp((currentHealthPoints -= dmgVal), 0f, maxHealthPoints);
         drainingHealth = true;
 
@@ -170,7 +164,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
         if (ShouldAffectVital(drainInterval))
         {
             drainingHealth = true;
-            TakeDamage(drainAmount);
+            TakeDamage(null, drainAmount);
             drainInterval = Time.time + drainDelay / 1000f;
             StartCoroutine(HealthGainDelay(healthGainAmount, currentHealthPoints));
         }
@@ -191,20 +185,58 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     }
 
     #region Stamina Gain
+    public void StaminaGainOverTime(float gainAmount)
+    {
+        if (ShouldAffectVital(gainInterval))
+        {
+            GainStamina(gainAmount);
+            gainInterval = Time.time + staminaGainTickrate / 1000f;
+        }
+    }
+
+    public void GainStamina(float gainAmount)
+    {
+        currentStaminaPoints = Mathf.Clamp((currentStaminaPoints += gainAmount), 0f, maxStaminaPoints);
+    }
+
+    IEnumerator StaminaGainDelay(float gainAmount, float oldValue)
+    {
+        yield return new WaitForSeconds(staminaGainDelay);
+
+        if (oldValue == currentStaminaPoints)
+        {
+            drainingStamina = false;
+
+            WaitForEndOfFrame wait = new WaitForEndOfFrame();
+            while (currentStaminaPoints < maxStaminaPoints && !drainingStamina)
+            {
+                StaminaGainOverTime(gainAmount);
+                yield return wait;
+            }
+        }
+        else
+        {
+            yield return null;
+        }
+    }
     #endregion
 
     #region Stamina Drain
     public void DamageStamina(float dmgVal)
     {
         currentStaminaPoints = Mathf.Clamp((currentStaminaPoints -= dmgVal), 0f, maxStaminaPoints);
+
+        drainingStamina = true;
+
+        StartCoroutine(StaminaGainDelay(staminaGainAmount, currentStaminaPoints));
     }
 
     public void StaminaDrainOverTime(float drainAmount, float drainDelay)
     {
         if (ShouldAffectVital(drainInterval))
         {
-            drainingHealth = true;
-            TakeDamage(drainAmount);
+            drainingStamina = true;
+            DamageStamina(drainAmount);
             drainInterval = Time.time + drainDelay / 1000f;
             StartCoroutine(StaminaGainDelay(staminaGainAmount, currentStaminaPoints));
         }
@@ -212,11 +244,6 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #endregion
 
     #endregion
-
-    IEnumerator StaminaGainDelay(float gainAmount, float oldValue)
-    {
-        yield return null;
-    }
 
     protected bool ShouldAffectVital(float interval)
     {

@@ -9,6 +9,9 @@ public class CombatManager : MonoBehaviour
 
     [Header("Component Ref")]
     [SerializeField] PlayerManager playerMgmt;
+    [SerializeField] GameObject hitFX;
+    [SerializeField] Transform leftHand;
+    [SerializeField] Transform rightHand;
 
     float combatTimer = 10f;
     float currentCombatTimer;
@@ -134,6 +137,15 @@ public class CombatManager : MonoBehaviour
         {
             attackInputHeld = true;
 
+//TEST============>// IF THE PLAYER IS IN THE AIR AND LOOKING DOWNWARDS!!!
+            if (!playerMgmt.playerMovement.isGrounded)
+            {
+                if (Vector3.Dot(playerMgmt.myCamera.transform.forward, Vector3.up) <= -0.65f)
+                {
+                    playerMgmt.myRb.AddForce(playerMgmt.myCamera.transform.forward * 75f, ForceMode.Impulse);
+                }
+            }
+
             // If you have a weapon equipped
             if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon != null)
             {
@@ -162,9 +174,11 @@ public class CombatManager : MonoBehaviour
             // If you have no equipped weapon, you're unarmed
             else
             {
-                attackAnim = "meleeAttackHold";
-                playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
-                // EVENTUALLY THIS WILL TRIGGER DIFFERENT UNARMED COMBOS \\\
+                if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
+                {
+                    attackAnim = "meleeAttackHold";
+                    playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
+                }
             }
 
             inCombat = true;
@@ -172,10 +186,15 @@ public class CombatManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called by the player releasing attack input.
+    /// </summary>
     void AttackReleased()
     {
         attackInputHeld = false;
         playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
+
+        playerMgmt.playerStats.ResetAttackCharge();
 
         playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.combatMovementModifier);
     }
@@ -188,13 +207,23 @@ public class CombatManager : MonoBehaviour
             // If the current weapon is chargeable...
             if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
             {
-                // If that weapon's current charge is less than it's max charge,
-                // increase the currenty charge by time * charge rate until it reaches it's max charge.
-                if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon.currentCharge <=
-                    playerMgmt.equipmentMgmt.currentlyEquippedWeapon.maxCharge)
+                // If the current weapon's charge is high enough, set the bool to true
+                // to perform maxCharge special attack.
+                if (playerMgmt.playerStats.currentAttackCharge >=
+                    playerMgmt.playerStats.maxAttackCharge)
                 {
-                    playerMgmt.equipmentMgmt.currentlyEquippedWeapon.currentCharge +=
-                        Time.deltaTime * playerMgmt.equipmentMgmt.currentlyEquippedWeapon.chargeRate / 100f;
+                    playerMgmt.animMgmt.myAnim.SetBool("maxAttackCharge", true);
+                }
+
+                if (playerMgmt.playerStats.currentAttackCharge <=
+                    playerMgmt.playerStats.maxAttackCharge)
+                {
+                    playerMgmt.playerStats.currentAttackCharge +=
+                        Time.deltaTime * playerMgmt.playerStats.attackChargeRate.value;
+                }
+                else
+                {
+                    return;
                 }
             }
             else
@@ -205,6 +234,22 @@ public class CombatManager : MonoBehaviour
         else
         {
             // UNARMED CHARGING LOGIC
+            if (playerMgmt.playerStats.currentAttackCharge >=
+                    playerMgmt.playerStats.maxAttackCharge)
+            {
+                playerMgmt.animMgmt.myAnim.SetBool("maxAttackCharge", true);
+            }
+
+            if (playerMgmt.playerStats.currentAttackCharge <=
+                playerMgmt.playerStats.maxAttackCharge)
+            {
+                playerMgmt.playerStats.currentAttackCharge +=
+                    Time.deltaTime * playerMgmt.playerStats.attackChargeRate.value;
+            }
+            else
+            {
+                return;
+            }
         }
 
         // Makes the player move slower when charging an attack
@@ -218,10 +263,59 @@ public class CombatManager : MonoBehaviour
     /// <param name="handInt"></param>
     public void ActivateImpact(int impactID)
     {
-        MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
-        playerMgmt.playerStats.DamageStamina(myWeapon.meleeData.staminaCost);
+        if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon != null)
+        {
+            MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+            playerMgmt.playerStats.DamageStamina(myWeapon.meleeData.staminaCost);
+        }
+        else
+        {
+            playerMgmt.playerStats.DamageStamina(10f);
+        }
 
+        switch(impactID)
+        {
+            case 1:
+                CreateImpactCollider(leftHand);
+                break;
+            case 2:
+                CreateImpactCollider(rightHand);
+                break;
+            case 3:
+                Debug.Log("Kick");
+                break;
+        }
         impactActivated = true;
+    }
+
+    public void CreateImpactCollider(Transform impactTrans)
+    {
+        // Generate a collider array that will act as the weapon's collision area
+        Collider[] impactCollisions = null;
+
+        impactCollisions = Physics.OverlapSphere(impactTrans.position, 1f, whatIsDamageable);
+
+        // for each object the collider hits do this stuff...
+        foreach (Collider hit in impactCollisions)
+        {
+            Debug.Log(hit.gameObject.name);
+
+            // Create equippedWeapon's hit visuals
+            GameObject hitVis = Instantiate(hitFX, hit.ClosestPoint(impactTrans.position), Quaternion.identity);
+
+            // If the collider hit has an NpcHealthManager component on it.
+            if (hit.gameObject.GetComponent<CharacterStats>() != null)
+            {
+                ProcessAttack(hit.gameObject.GetComponent<CharacterStats>());
+                impactActivated = false;
+                playerMgmt.playerStats.ResetAttackCharge();
+            }
+        }
+    }
+
+    public void SpecialAttack()
+    {
+        playerMgmt.myRb.AddForce((transform.forward + transform.up) * 50f, ForceMode.Impulse);
     }
 
     /// <summary>
@@ -236,36 +330,16 @@ public class CombatManager : MonoBehaviour
             if (equippedWeapon != null)
             {
                 // Creates the collider on the weapon, the weapon then calls the Cmd
-                equippedWeapon.CheckCreateImpactCollider(this);
+                equippedWeapon.CreateImpactCollider(this);
             }
         }
     }
 
-    // The player's equipped weapon calls this Cmd
-    public void CmdCreateImpactCollider(Vector3 origin, Vector3 end, float colRadius)
-    {
-        // DO SOME SERVER VERIFICATION RIGHT HERE \\
-
-        Collider[] verifiedImpactCol = Physics.OverlapCapsule(origin, end, colRadius, whatIsDamageable);
-        foreach (Collider hit in verifiedImpactCol)
-        {
-            if (hit.gameObject.GetComponent<NpcVitalsManager>() != null)
-            {
-                // Process the attack and damage on the server
-                //CheckProcessAttack(hit.gameObject.GetComponent<NpcHealthManager>());
-                impactActivated = false;
-            }
-        }
-    }
-
-    public void CheckProcessAttack(NpcVitalsManager target)
+    public void ProcessAttack(CharacterStats target)
     {
         float dmgVal = playerMgmt.playerStats.attackDamage.value;
-        //float dmgVal = (playerMgmt.equipmentMgmt.currentlyEquippedWeapon.weaponData.damage 
-        //    * playerMgmt.equipmentMgmt.currentlyEquippedWeapon.currentCharge) + playerMgmt.playerStats.baseAttackDamage;
 
-        Debug.Log(target.gameObject.name);
-        //target.TakeDamage(target.health, dmgVal);
+        target.TakeDamage(this.gameObject, dmgVal);
     }
     #endregion
 

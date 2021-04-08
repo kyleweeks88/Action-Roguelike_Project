@@ -6,6 +6,11 @@ public class AnimationEventListender : MonoBehaviour
 {
     [SerializeField] CombatManager combatManager;
 
+    public void SpecialAttack()
+    {
+        combatManager.SpecialAttack();
+    }
+
     public void ActivateImpact(int handInt)
     {
         combatManager.ActivateImpact(handInt);

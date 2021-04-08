@@ -16,7 +16,7 @@ public class MeleeWeapon : Weapon
     }
 
     /// SHOULD I CREATE THE IMPACT COLLIDER HERE ON THE WEAPON??? ///
-    public void CheckCreateImpactCollider(CombatManager _combatMgmt)
+    public void CreateImpactCollider(CombatManager _combatMgmt)
     {
         // Generate a collider array that will act as the weapon's collision area
         Collider[] impactCollisions = null;
@@ -26,27 +26,19 @@ public class MeleeWeapon : Weapon
             impactEnd.position,
             impactRadius, _combatMgmt.whatIsDamageable);
 
-
         // for each object the collider hits do this stuff...
         foreach (Collider hit in impactCollisions)
         {
             // Create equippedWeapon's hit visuals
-            GameObject hitGfx = Instantiate(meleeData.hitVisuals,
-                hit.ClosestPoint(impactEnd.position), Quaternion.identity);
+            InstantiateHitVisuals(hit.ClosestPoint(impactEnd.position));
 
             // If the collider hit has an NpcHealthManager component on it.
-            if (hit.gameObject.GetComponent<NpcVitalsManager>() != null)
+            if (hit.gameObject.GetComponent<VitalsManager>() != null)
             {
-                //_combatMgmt.CheckProcessAttack(hit.gameObject.GetComponent<NpcHealthManager>());
+                _combatMgmt.ProcessAttack(hit.gameObject.GetComponent<CharacterStats>());
                 _combatMgmt.impactActivated = false;
-                ResetCharge();
+                base.ResetCharge();
             }
-
-            // Create the impact collider on the server
-            _combatMgmt.CmdCreateImpactCollider(
-                impactOrigin.position,
-                impactEnd.position,
-                impactRadius);
         }
     }
 

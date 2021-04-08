@@ -61,6 +61,11 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
+    public Vector3 GetPrevMovement()
+    {
+        return _previousMovementInput;
+    }
+
     void HandleSliding()
     {
         Vector3 adjustedPos = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
@@ -237,14 +242,13 @@ public class PlayerMovement : MonoBehaviour
         if (isSliding) { return; }
 
         jumpInputHeld = true;
-        Debug.Log("JUMP PRESSED");
+        
         if (!isJumping && isGrounded)
         {
             if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
             {
                 isJumping = true;
-                playerMgmt.isInteracting = true;
-                //playerMgmt.vitalsMgmt.TakeDamage(stamina, 10f);
+                //playerMgmt.isInteracting = true;
                 playerMgmt.playerStats.DamageStamina(10f);
                 playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpVelocity;
                 playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpVelocity;
