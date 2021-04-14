@@ -11,6 +11,10 @@ public class NavAgentDebugging : MonoBehaviour
     public bool desiredVelocity;
     public bool path;
 
+    private void Awake()
+    {
+        navAgent = GetComponent<NavMeshAgent>();
+    }
     private void OnDrawGizmosSelected()
     {
         if(velocity)

@@ -8,10 +8,12 @@ public class CombatManager : MonoBehaviour
     public LayerMask whatIsDamageable;
 
     [Header("Component Ref")]
-    [SerializeField] PlayerManager playerMgmt;
     [SerializeField] GameObject hitFX;
     [SerializeField] Transform leftHand;
     [SerializeField] Transform rightHand;
+    CharacterStats charStats;
+    EquipmentManager equipmentMgmt;
+    AnimationManager animMgmt;
 
     float combatTimer = 10f;
     float currentCombatTimer;
@@ -20,30 +22,28 @@ public class CombatManager : MonoBehaviour
     [HideInInspector] public string attackAnim;
 
     [Header("RANGED TESTING")] 
-    [SerializeField] Transform projectileSpawn;
+    [SerializeField] protected Transform projectileSpawn;
     // THIS PROJECTILE NEEDS TO BE DETERMINED BY THE CURRENT WEAPON \\
     // IT SHOULD NOT BE ON THIS SCRIPT!!!
-    [SerializeField] Projectile projectile = null; //<<<========== FIX THIS!!!
+    [SerializeField] protected Projectile projectile = null; //<<<========== FIX THIS!!!
     float nextShotTime = 0f;
     [SerializeField] float msBetweenShots = 0f;
 
     public bool canRecieveAttackInput;
-    public bool attackInputRecieved;
     public bool attackInputHeld;
     public bool rangedAttackHeld;
     #endregion
 
-    void Start()
+    public virtual void Start()
     {
-        canRecieveAttackInput = true;
+        charStats = GetComponent<CharacterStats>();
+        equipmentMgmt = GetComponent<EquipmentManager>();
+        animMgmt = GetComponent<AnimationManager>();
 
-        playerMgmt.inputMgmt.attackEventStarted += AttackPerformed;
-        playerMgmt.inputMgmt.attackEventCancelled += AttackReleased;
-        playerMgmt.inputMgmt.rangedAttackEventStarted += RangedAttackPerformed;
-        playerMgmt.inputMgmt.rangedAttackEventCancelled += RangedAttackReleased;
+        canRecieveAttackInput = true;
     }
 
-    private void Update()
+    public virtual void Update()
     {
         CheckMeleeAttack();
 
@@ -74,25 +74,13 @@ public class CombatManager : MonoBehaviour
     }
 
     #region Ranged
-    public void RangedAttackPerformed()
+    public virtual void RangedAttackPerformed()
     {
-        // if player is locked into an "interacting" state then don't let this happen.
-        if (playerMgmt.isInteracting) { return; }
-
         if (!canRecieveAttackInput) { return; }
 
-        if (canRecieveAttackInput)
-        {
-            rangedAttackHeld = true;
-            attackAnim = "rangedAttackHold";
-            playerMgmt.animMgmt.HandleRangedAttackAnimation(rangedAttackHeld);
-        }
-    }
-
-    public void RangedAttackReleased()
-    {
-        rangedAttackHeld = false;
-        playerMgmt.animMgmt.HandleRangedAttackAnimation(rangedAttackHeld);
+        rangedAttackHeld = true;
+        attackAnim = "rangedAttackHold";
+        animMgmt.HandleRangedAttackAnimation(rangedAttackHeld);
     }
 
     public virtual void ChargeRangedAttack()
@@ -107,10 +95,10 @@ public class CombatManager : MonoBehaviour
     }
 
     // CALLED BY AN ANIMATION EVENT 
-    public void CheckRangedAttack()
+    public virtual void CheckRangedAttack()
     {
         // Ask the server to check your pos, and spawn a projectile for the server
-        SpawnProjectile(projectileSpawn.position, projectileSpawn.rotation, playerMgmt.myCamera.transform.forward);
+        SpawnProjectile(projectileSpawn.position, projectileSpawn.rotation, this.transform.forward);
     }
 
     void SpawnProjectile(Vector3 pos, Quaternion rot, Vector3 dir)
@@ -126,100 +114,36 @@ public class CombatManager : MonoBehaviour
     /// <summary>
     /// Called by the player's attack input.
     /// </summary>
-    public void AttackPerformed()
+    public virtual void AttackPerformed()
     {
-        // If the player is interacting with a contextual object, exit.
-        if (playerMgmt.isInteracting) { return; }
         // If the player is unable to recieve attack input, exit.
         if (!canRecieveAttackInput) { return; }
 
-        if (canRecieveAttackInput)
-        {
-            attackInputHeld = true;
-
-//TEST============>// IF THE PLAYER IS IN THE AIR AND LOOKING DOWNWARDS!!!
-            if (!playerMgmt.playerMovement.isGrounded)
-            {
-                if (Vector3.Dot(playerMgmt.myCamera.transform.forward, Vector3.up) <= -0.65f)
-                {
-                    playerMgmt.myRb.AddForce(playerMgmt.myCamera.transform.forward * 75f, ForceMode.Impulse);
-                }
-            }
-
-            // If you have a weapon equipped
-            if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon != null)
-            {
-                // If current weapon is a melee type...
-                if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon.weaponData.weaponType == WeaponData.WeaponType.Melee)
-                {
-                    MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
-                    // Checks if the entity has enough stamina to do an attack...
-                    if ((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
-                    {
-                        // If the weapon is a chargeable weapon...
-                        if (myWeapon.meleeData.isChargeable)
-                        {
-                            attackAnim = "meleeAttackHold";
-                            playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
-                        }
-                        // If the weapon is a rapid attack weapon...
-                        else
-                        {
-                            attackAnim = "meleeAttackTrigger";
-                        }
-                    }
-
-                }
-            }
-            // If you have no equipped weapon, you're unarmed
-            else
-            {
-                if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
-                {
-                    attackAnim = "meleeAttackHold";
-                    playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
-                }
-            }
-
-            inCombat = true;
-            currentCombatTimer = combatTimer;
-        }
-    }
-
-    /// <summary>
-    /// Called by the player releasing attack input.
-    /// </summary>
-    void AttackReleased()
-    {
-        attackInputHeld = false;
-        playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
-
-        playerMgmt.playerStats.ResetAttackCharge();
-
-        playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.combatMovementModifier);
+        inCombat = true;
+        currentCombatTimer = combatTimer;
     }
 
     public virtual void ChargeMeleeAttack()
     {
         // If you have a weapon equipped...
-        if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon != null)
+        if (equipmentMgmt.currentlyEquippedWeapon != null)
         {
             // If the current weapon is chargeable...
-            if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
+            if (equipmentMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
             {
                 // If the current weapon's charge is high enough, set the bool to true
                 // to perform maxCharge special attack.
-                if (playerMgmt.playerStats.currentAttackCharge >=
-                    playerMgmt.playerStats.maxAttackCharge)
+                if (charStats.currentAttackCharge >=
+                    charStats.maxAttackCharge)
                 {
-                    playerMgmt.animMgmt.myAnim.SetBool("maxAttackCharge", true);
+                    animMgmt.myAnim.SetBool("maxAttackCharge", true);
                 }
 
-                if (playerMgmt.playerStats.currentAttackCharge <=
-                    playerMgmt.playerStats.maxAttackCharge)
+                if (charStats.currentAttackCharge <=
+                    charStats.maxAttackCharge)
                 {
-                    playerMgmt.playerStats.currentAttackCharge +=
-                        Time.deltaTime * playerMgmt.playerStats.attackChargeRate.value;
+                    charStats.currentAttackCharge +=
+                        Time.deltaTime * charStats.attackChargeRate.value;
                 }
                 else
                 {
@@ -234,17 +158,17 @@ public class CombatManager : MonoBehaviour
         else
         {
             // UNARMED CHARGING LOGIC
-            if (playerMgmt.playerStats.currentAttackCharge >=
-                    playerMgmt.playerStats.maxAttackCharge)
+            if (charStats.currentAttackCharge >=
+                    charStats.maxAttackCharge)
             {
-                playerMgmt.animMgmt.myAnim.SetBool("maxAttackCharge", true);
+                animMgmt.myAnim.SetBool("maxAttackCharge", true);
             }
 
-            if (playerMgmt.playerStats.currentAttackCharge <=
-                playerMgmt.playerStats.maxAttackCharge)
+            if (charStats.currentAttackCharge <=
+                charStats.maxAttackCharge)
             {
-                playerMgmt.playerStats.currentAttackCharge +=
-                    Time.deltaTime * playerMgmt.playerStats.attackChargeRate.value;
+                charStats.currentAttackCharge +=
+                    Time.deltaTime * charStats.attackChargeRate.value;
             }
             else
             {
@@ -253,7 +177,7 @@ public class CombatManager : MonoBehaviour
         }
 
         // Makes the player move slower when charging an attack
-        playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.combatMovementModifier);
+        charStats.moveSpeed.AddModifer(charStats.combatMovementModifier);
     }
 
     /// <summary>
@@ -263,14 +187,14 @@ public class CombatManager : MonoBehaviour
     /// <param name="handInt"></param>
     public void ActivateImpact(int impactID)
     {
-        if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon != null)
+        if (equipmentMgmt.currentlyEquippedWeapon != null)
         {
-            MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
-            playerMgmt.playerStats.DamageStamina(myWeapon.meleeData.staminaCost);
+            MeleeWeapon myWeapon = equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+            charStats.DamageStamina(myWeapon.meleeData.staminaCost);
         }
         else
         {
-            playerMgmt.playerStats.DamageStamina(10f);
+            charStats.DamageStamina(10f);
         }
 
         switch(impactID)
@@ -294,39 +218,34 @@ public class CombatManager : MonoBehaviour
         Collider[] impactCollisions = null;
 
         impactCollisions = Physics.OverlapSphere(impactTrans.position, 1f, whatIsDamageable);
-
+        
         // for each object the collider hits do this stuff...
         foreach (Collider hit in impactCollisions)
         {
-            Debug.Log(hit.gameObject.name);
-
             // Create equippedWeapon's hit visuals
             GameObject hitVis = Instantiate(hitFX, hit.ClosestPoint(impactTrans.position), Quaternion.identity);
-
+            CharacterStats hitStats = hit.gameObject.GetComponent<CharacterStats>();
             // If the collider hit has an NpcHealthManager component on it.
-            if (hit.gameObject.GetComponent<CharacterStats>() != null)
+            if (hitStats != null)
             {
-                ProcessAttack(hit.gameObject.GetComponent<CharacterStats>());
+                //ProcessAttack(hit.gameObject.GetComponent<CharacterStats>());
+                hitStats.TakeDamage(this.gameObject, charStats.attackDamage.value);
+
                 impactActivated = false;
-                playerMgmt.playerStats.ResetAttackCharge();
+                charStats.ResetAttackCharge();
             }
         }
-    }
-
-    public void SpecialAttack()
-    {
-        playerMgmt.myRb.AddForce((transform.forward + transform.up) * 50f, ForceMode.Impulse);
     }
 
     /// <summary>
     /// Waits for the impactActivated bool to be triggered by an Animation Event. Grabs the entity's
     /// currently equipped weapon and creates an impact collider based on the weapons specs.
     /// </summary>
-    void CheckMeleeAttack()
+    protected void CheckMeleeAttack()
     {
         if (impactActivated)
         {
-            MeleeWeapon equippedWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+            MeleeWeapon equippedWeapon = equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
             if (equippedWeapon != null)
             {
                 // Creates the collider on the weapon, the weapon then calls the Cmd
@@ -337,17 +256,9 @@ public class CombatManager : MonoBehaviour
 
     public void ProcessAttack(CharacterStats target)
     {
-        float dmgVal = playerMgmt.playerStats.attackDamage.value;
+        float dmgVal = charStats.attackDamage.value;
 
         target.TakeDamage(this.gameObject, dmgVal);
     }
     #endregion
-
-    private void OnDisable()
-    {
-        playerMgmt.inputMgmt.attackEventStarted -= AttackPerformed;
-        playerMgmt.inputMgmt.attackEventCancelled -= AttackReleased;
-        playerMgmt.inputMgmt.rangedAttackEventStarted -= RangedAttackPerformed;
-        playerMgmt.inputMgmt.rangedAttackEventCancelled -= RangedAttackReleased;
-    }
 }

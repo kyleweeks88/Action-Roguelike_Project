@@ -7,9 +7,6 @@ public class PlayerStats : CharacterStats
     //PlayerName playerName;
     public float playerGravity;
     [HideInInspector] public float currentPlayerGravity;
-    [HideInInspector] public float maxAttackCharge = 100f;
-    [HideInInspector] public float currentAttackCharge = 0f;
-    public Stat attackChargeRate;
 
     [SerializeField] PlayerEventChannel playerEventChannel;
 
@@ -25,12 +22,6 @@ public class PlayerStats : CharacterStats
         playerEventChannel.DamageRecieved(dmgVal);
 
         base.TakeDamage(damager, dmgVal);
-    }
-
-    public void ResetAttackCharge()
-    {
-        if (currentAttackCharge != 0)
-            currentAttackCharge = 0f;
     }
 
     public override void Death()

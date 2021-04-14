@@ -136,4 +136,15 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
             context.phase == InputActionPhase.Started)
             userInterfaceEvent.Invoke();
     }
+
+    public void OnThrow(InputAction.CallbackContext context)
+    {
+        if (rangedAttackEventStarted != null &&
+            context.phase == InputActionPhase.Started)
+            rangedAttackEventStarted.Invoke();
+
+        if (rangedAttackEventCancelled != null &&
+            context.phase == InputActionPhase.Canceled)
+            rangedAttackEventCancelled.Invoke();
+    }
 }

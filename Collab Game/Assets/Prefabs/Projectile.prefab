@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 882887917216370156}
   - component: {fileID: 8838004633880352292}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2268206139859499627}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -89,7 +89,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2268206139859499627}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -106,10 +106,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41866e32474b89c46862b249a8dbdfd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitFx_Pf: {fileID: 0}
+  hitFx_Pf: {fileID: 1223552886627172470, guid: 17135e4a93a8d21488cef1ab439c9802,
+    type: 3}
   collisionsMask:
     serializedVersion: 2
-    m_Bits: 0
-  projDmg: 10
+    m_Bits: 513
+  projDmg: 50
   projSpeed: 10
   raycastLength: 1
