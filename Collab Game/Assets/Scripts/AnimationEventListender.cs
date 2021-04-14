@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class AnimationEventListender : MonoBehaviour
 {
-    [SerializeField] CombatManager combatManager;
+    CombatManager combatManager;
+    PlayerCombatManager pcm;
+
+    private void Start()
+    {
+        combatManager = GetComponentInParent<CombatManager>();
+        pcm = GetComponentInParent<PlayerCombatManager>();
+    }
 
     public void SpecialAttack()
     {
-        combatManager.SpecialAttack();
+        if(pcm != null)
+            pcm.SpecialAttack();
     }
 
     public void ActivateImpact(int handInt)

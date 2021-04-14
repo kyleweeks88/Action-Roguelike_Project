@@ -11,7 +11,8 @@ using UnityEngine.Events;
 public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 {
     [Header("General settings")]
-    public string charName;
+    [SerializeField] Rigidbody chestRb;
+    public string charName; 
 
     float gainInterval = 0f;
     float drainInterval = 0f;
@@ -27,6 +28,9 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     [Header("Combat settings")]
     public Stat attackDamage;
+    [HideInInspector] public float maxAttackCharge = 100f;
+    [HideInInspector] public float currentAttackCharge = 0f;
+    public Stat attackChargeRate;
 
     [Header("Stamina vital")]
     public float maxStaminaPoints;
@@ -150,13 +154,17 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     {
         currentHealthPoints = Mathf.Clamp((currentHealthPoints -= dmgVal), 0f, maxHealthPoints);
         drainingHealth = true;
+        StartCoroutine(HealthGainDelay(healthGainAmount, currentHealthPoints));
 
-        if(currentHealthPoints <= 0f)
+        if (currentHealthPoints <= 0f)
         {
             Death();
-        }
 
-        StartCoroutine(HealthGainDelay(healthGainAmount, currentHealthPoints));
+            // This adds force to the character ragdoll in the...
+            // forward direction of the damaging object.
+            chestRb.AddForceAtPosition((damager.transform.forward + damager.transform.up) * 250f,
+            chestRb.gameObject.transform.position, ForceMode.Impulse);
+        }
     }
 
     public void HealthDrainOverTime(float drainAmount, float drainDelay)
@@ -250,5 +258,11 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
         bool result = (Time.time >= interval);
 
         return result;
+    }
+
+    public void ResetAttackCharge()
+    {
+        if (currentAttackCharge != 0)
+            currentAttackCharge = 0f;
     }
 }

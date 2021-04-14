@@ -21,27 +21,18 @@ public class Projectile : MonoBehaviour
 
     void ColHit(Collider col)
     {
-        //NpcHealthManager hitTarget = col.GetComponent<NpcHealthManager>();
+        Vector3 hitPoint = col.ClosestPointOnBounds(this.transform.position);
+
         CharacterStats hitTarget = col.GetComponent<CharacterStats>();
         if (hitTarget != null)
         {
             hitTarget.TakeDamage(this.gameObject, projDmg);
         }
-
-        Vector3 hitPoint = col.ClosestPointOnBounds(this.transform.position);
-
+        
         GameObject hitFx = Instantiate(hitFx_Pf, hitPoint, Quaternion.identity);
         
-        //RpcColHit(hitId, hitPoint);
         GameObject.Destroy(this.gameObject);
     }
-
-    //[ClientRpc]
-    //void RpcColHit(NetworkIdentity hitId, Vector3 hitPoint)
-    //{
-    //    GameObject hitFx = Instantiate(hitFx_Pf, hitPoint, Quaternion.identity);
-    //    GameObject.Destroy(this.gameObject);
-    //}
 
     public void SetSpeed(float newSpeed, Vector3 dir)
     {
