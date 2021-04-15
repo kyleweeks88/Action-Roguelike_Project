@@ -17,21 +17,6 @@ public class PlayerCombatManager : CombatManager
         playerMgmt.inputMgmt.rangedAttackEventCancelled += RangedAttackReleased;
     }
 
-    private void Update()
-    {
-        CheckMeleeAttack();
-
-        if(attackInputHeld)
-        {
-            ChargeMeleeAttack();
-        }
-
-        if(rangedAttackHeld)
-        {
-            ChargeRangedAttack();
-        }
-    }
-
     #region Ranged
     public override void RangedAttackPerformed()
     {

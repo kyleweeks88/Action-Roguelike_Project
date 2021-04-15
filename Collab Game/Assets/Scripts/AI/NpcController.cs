@@ -16,14 +16,15 @@ public class NpcController : MonoBehaviour
     public float sprintSpeed;
     public float sightRange;
     float distanceToTarget;
-    float setDestinationMaxTime = .25f;
+    float setDestinationMaxTime = .1f;
     float setDestinationTimer;
-    float distanceToTargetMaxTime = .25f;
+    float distanceToTargetMaxTime = .1f;
     float distanceToTargetTimer;
 
     public bool targetInSight;
     public bool debug;
 
+    float orbitTimer = 4f;
 
     private void Awake()
     {
@@ -38,12 +39,13 @@ public class NpcController : MonoBehaviour
     private void Update()
     {
         GetDistanceToTargetWithDelay();
-        DetermineSpeed();
+        //DetermineSpeed();
 
-        if (CanSeeTarget() && distanceToTarget > combatMgmt.meleeAttackDistance)
+        if (CanSeeTarget() && DistanceToTarget() > 3f)
         {
             combatMgmt.inCombat = true;
-            navAgent.stoppingDistance = 3f;
+            navAgent.speed = runSpeed;
+            navAgent.stoppingDistance = combatMgmt.meleeAttackDistance;
 
             RotateTowardsTransform(target.transform);
             SetDestinationWithDelay();
@@ -51,10 +53,12 @@ public class NpcController : MonoBehaviour
             animator.SetBool("meleeAttackHold", false);
         }
 
-        if(CanSeeTarget() && distanceToTarget <= combatMgmt.meleeAttackDistance)
+        if(CanSeeTarget() && DistanceToTarget() <= 3f)
         {
+            //OrbitTarget();
+            StrafeTarget();
+            navAgent.speed = walkSpeed;
             combatMgmt.inCombat = true;
-            RotateTowardsTransform(target.transform);
         }
 
         if(!CanSeeTarget())
@@ -71,7 +75,7 @@ public class NpcController : MonoBehaviour
     void RotateTowardsTransform(Transform _target)
     {
         var dirVector = _target.transform.position - transform.position;
-        float singleStep = navAgent.angularSpeed * Time.deltaTime;
+        float singleStep = 120f * Time.deltaTime;
         Vector3 newDir = Vector3.RotateTowards(transform.forward, dirVector, singleStep, 0f);
         transform.rotation = Quaternion.LookRotation(newDir);
     }
@@ -95,9 +99,6 @@ public class NpcController : MonoBehaviour
 
     public bool CanSeeTarget()
     {
-        bool boolVal = false;
-        targetInSight = boolVal;
-
         if (distanceToTarget <= sightRange)
         {
             Ray sightRay = new Ray(raycastPos.position, -(raycastPos.position - target.GetComponent<CapsuleCollider>().bounds.center));
@@ -106,13 +107,12 @@ public class NpcController : MonoBehaviour
             var dirVector = target.transform.position - transform.position;
             var lookPercentage = Vector3.Dot(transform.forward.normalized, dirVector.normalized);
             
-            if (lookPercentage >= 0.5f)
+            if (lookPercentage >= 0.4f)
             {
                 if (Physics.Raycast(sightRay, out hit, sightRange))
                 {
                     if (hit.transform.gameObject.tag == "Player")
                     {
-                        
                         targetInSight = true;
                         return targetInSight;
                     }
@@ -144,6 +144,11 @@ public class NpcController : MonoBehaviour
             {
                 navAgent.destination = target.transform.position;
             }
+            else
+            {
+                navAgent.velocity = Vector3.zero;
+            }
+
             setDestinationTimer = setDestinationMaxTime;
         }
     }
@@ -158,18 +163,18 @@ public class NpcController : MonoBehaviour
                 {
                     navAgent.speed = sprintSpeed;
                 }
-                else if (distanceToTarget >= runSpeed)
+                else if (distanceToTarget > combatMgmt.meleeAttackDistance + 2f && distanceToTarget < sprintSpeed)
                 {
                     navAgent.speed = runSpeed;
                 }
-                else
+                else if(distanceToTarget <= combatMgmt.meleeAttackDistance + 1)
                 {
-                    navAgent.speed = runSpeed;
+                    navAgent.speed = walkSpeed;
                 }
             }
             else
             {
-                navAgent.speed = runSpeed;
+                navAgent.speed = walkSpeed;
             }
         }
         else
@@ -199,26 +204,45 @@ public class NpcController : MonoBehaviour
     // TESTING THIS
     void StrafeTarget()
     {
-        if(distanceToTarget <= 4f)
-        {
-            // THIS GETS THE POSITION OF THIS NPC IN RELATION TO IT'S TARGET
-            Vector3 dir = (transform.position - target.transform.position).normalized;
-            float angle = Vector3.Angle(dir, target.transform.forward);
+        // THIS GETS THE POSITION OF THIS NPC IN RELATION TO IT'S TARGET
+        Vector3 dir = (transform.position - target.transform.position).normalized;
+        float angle = Vector3.Angle(dir, target.transform.forward);
             
-            // IF THE ANGLE IS LESS THAN 60deg THAN THIS NPC IS IN FRONT OF THE TARGET
-            if(angle < 60f)
-            {
-                navAgent.isStopped = true;
-            }
-            // ... OTHERWISE THIS NPC IS BEHIND IT'S TARGET
-            else
-            {
-                navAgent.isStopped = false;
-            }
+        // IF THE ANGLE IS LESS THAN 60deg THAN THIS NPC IS IN FRONT OF THE TARGET
+        if(angle < 160f)
+        {
+            OrbitTarget();
         }
+        // ... OTHERWISE THIS NPC IS BEHIND IT'S TARGET
         else
         {
-            navAgent.isStopped = false;
+            navAgent.velocity = Vector3.zero;
+        }
+    }
+
+    void OrbitTarget()
+    {
+        var targetOffset = target.transform.position - this.transform.position;
+        var dir = Vector3.Cross(targetOffset, Vector3.up);
+        RotateTowardsTransform(target.transform);
+        navAgent.angularSpeed = 0f;
+
+        int randInt = 1;
+        orbitTimer -= Time.deltaTime;
+        if(orbitTimer <= 0)
+        {
+            randInt = Random.Range(0, 2);
+
+            if (randInt == 1)
+            {
+                navAgent.destination = (this.transform.position + dir);
+            }
+            else
+            {
+                navAgent.destination = (this.transform.position - dir);
+            }
+
+            orbitTimer = 4;
         }
     }
 
