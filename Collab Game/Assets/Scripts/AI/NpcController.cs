@@ -5,17 +5,21 @@ using UnityEngine.AI;
 
 public class NpcController : MonoBehaviour
 {
+    NpcCombatManager combatMgmt;
     [SerializeField] Transform raycastPos;
     NavMeshAgent navAgent;
     Animator animator;
-    GameObject player;
+    GameObject target;
 
     public float walkSpeed;
     public float runSpeed;
     public float sprintSpeed;
     public float sightRange;
-    public float maxTime = .5f;
-    float timer;
+    float distanceToTarget;
+    float setDestinationMaxTime = .25f;
+    float setDestinationTimer;
+    float distanceToTargetMaxTime = .25f;
+    float distanceToTargetTimer;
 
     public bool targetInSight;
     public bool debug;
@@ -23,40 +27,83 @@ public class NpcController : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+/*==TESTING==>*/target = GameObject.FindGameObjectWithTag("Player");
         navAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        combatMgmt = GetComponent<NpcCombatManager>();
 
         navAgent.speed = walkSpeed;
     }
 
     private void Update()
     {
-        CanSeeTarget();
+        GetDistanceToTargetWithDelay();
         DetermineSpeed();
-        //StrafePlayer();
-        
+
+        if (CanSeeTarget() && distanceToTarget > combatMgmt.meleeAttackDistance)
+        {
+            combatMgmt.inCombat = true;
+            navAgent.stoppingDistance = 3f;
+
+            RotateTowardsTransform(target.transform);
+            SetDestinationWithDelay();
+
+            animator.SetBool("meleeAttackHold", false);
+        }
+
+        if(CanSeeTarget() && distanceToTarget <= combatMgmt.meleeAttackDistance)
+        {
+            combatMgmt.inCombat = true;
+            RotateTowardsTransform(target.transform);
+        }
+
+        if(!CanSeeTarget())
+        {
+            combatMgmt.inCombat = false;
+            animator.SetBool("meleeAttackHold", false);
+            navAgent.stoppingDistance = 1f;
+        }
+
         animator.SetFloat("moveSpeed", navAgent.velocity.magnitude);
+        animator.SetBool("inCombat", combatMgmt.inCombat);
+    }
+
+    void RotateTowardsTransform(Transform _target)
+    {
+        var dirVector = _target.transform.position - transform.position;
+        float singleStep = navAgent.angularSpeed * Time.deltaTime;
+        Vector3 newDir = Vector3.RotateTowards(transform.forward, dirVector, singleStep, 0f);
+        transform.rotation = Quaternion.LookRotation(newDir);
+    }
+
+    void GetDistanceToTargetWithDelay()
+    {
+        distanceToTargetTimer -= Time.deltaTime;
+        if(distanceToTargetTimer <= 0f)
+        {
+            DistanceToTarget();
+            distanceToTargetTimer = distanceToTargetMaxTime;
+        }
     }
 
     public float DistanceToTarget()
     {
-        float distance = Vector3.Distance(transform.position, player.transform.position);
+        distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
 
-        return distance;
+        return distanceToTarget;
     }
 
-    bool CanSeeTarget()
+    public bool CanSeeTarget()
     {
         bool boolVal = false;
         targetInSight = boolVal;
 
-        if (DistanceToTarget() <= sightRange)
+        if (distanceToTarget <= sightRange)
         {
-            Ray sightRay = new Ray(raycastPos.position, -(raycastPos.position - player.GetComponent<CapsuleCollider>().bounds.center));
+            Ray sightRay = new Ray(raycastPos.position, -(raycastPos.position - target.GetComponent<CapsuleCollider>().bounds.center));
             RaycastHit hit;
 
-            var dirVector = player.transform.position - transform.position;
+            var dirVector = target.transform.position - transform.position;
             var lookPercentage = Vector3.Dot(transform.forward.normalized, dirVector.normalized);
             
             if (lookPercentage >= 0.5f)
@@ -65,10 +112,7 @@ public class NpcController : MonoBehaviour
                 {
                     if (hit.transform.gameObject.tag == "Player")
                     {
-                        float singleStep = navAgent.angularSpeed * Time.deltaTime;
-                        Vector3 newDir = Vector3.RotateTowards(transform.forward, dirVector, singleStep, 0f);
-                        transform.rotation = Quaternion.LookRotation(newDir);
-                        SetDestinationWithDelay();
+                        
                         targetInSight = true;
                         return targetInSight;
                     }
@@ -93,28 +137,80 @@ public class NpcController : MonoBehaviour
 
     void SetDestinationWithDelay()
     {
-        timer -= Time.deltaTime;
-        if(timer < 0f)
+        setDestinationTimer -= Time.deltaTime;
+        if(setDestinationTimer < 0f)
         {
-            if(DistanceToTarget() > navAgent.stoppingDistance)
+            if(distanceToTarget > navAgent.stoppingDistance)
             {
-                navAgent.destination = player.transform.position;
+                navAgent.destination = target.transform.position;
             }
-            timer = maxTime;
+            setDestinationTimer = setDestinationMaxTime;
         }
     }
 
-    void StrafePlayer()
+    void DetermineSpeed()
     {
-        if(DistanceToTarget() <= 4f)
+        if (combatMgmt.inCombat)
         {
-            Vector3 dir = (transform.position - player.transform.position).normalized;
-            float angle = Vector3.Angle(dir, player.transform.forward);
+            if (CanSeeTarget())
+            {
+                if (distanceToTarget >= sprintSpeed)
+                {
+                    navAgent.speed = sprintSpeed;
+                }
+                else if (distanceToTarget >= runSpeed)
+                {
+                    navAgent.speed = runSpeed;
+                }
+                else
+                {
+                    navAgent.speed = runSpeed;
+                }
+            }
+            else
+            {
+                navAgent.speed = runSpeed;
+            }
+        }
+        else
+        {
+            if (CanSeeTarget())
+            {
+                if (distanceToTarget >= sprintSpeed)
+                {
+                    navAgent.speed = sprintSpeed;
+                }
+                else if (distanceToTarget >= runSpeed)
+                {
+                    navAgent.speed = runSpeed;
+                }
+                else
+                {
+                    navAgent.speed = walkSpeed;
+                }
+            }
+            else
+            {
+                navAgent.speed = walkSpeed;
+            }
+        }
+    }
+
+    // TESTING THIS
+    void StrafeTarget()
+    {
+        if(distanceToTarget <= 4f)
+        {
+            // THIS GETS THE POSITION OF THIS NPC IN RELATION TO IT'S TARGET
+            Vector3 dir = (transform.position - target.transform.position).normalized;
+            float angle = Vector3.Angle(dir, target.transform.forward);
             
+            // IF THE ANGLE IS LESS THAN 60deg THAN THIS NPC IS IN FRONT OF THE TARGET
             if(angle < 60f)
             {
                 navAgent.isStopped = true;
             }
+            // ... OTHERWISE THIS NPC IS BEHIND IT'S TARGET
             else
             {
                 navAgent.isStopped = false;
@@ -123,29 +219,6 @@ public class NpcController : MonoBehaviour
         else
         {
             navAgent.isStopped = false;
-        }
-    }
-
-    void DetermineSpeed()
-    {
-        if (targetInSight)
-        {
-            if (DistanceToTarget() >= sprintSpeed)
-            {
-                navAgent.speed = sprintSpeed;
-            }
-            else if (DistanceToTarget() >= runSpeed)
-            {
-                navAgent.speed = runSpeed;
-            }
-            else
-            {
-                navAgent.speed = walkSpeed;
-            }
-        }
-        else
-        {
-            navAgent.speed = walkSpeed;
         }
     }
 

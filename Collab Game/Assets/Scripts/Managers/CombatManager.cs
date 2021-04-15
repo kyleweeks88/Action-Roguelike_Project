@@ -8,10 +8,10 @@ public class CombatManager : MonoBehaviour
     public LayerMask whatIsDamageable;
 
     [Header("Component Ref")]
-    [SerializeField] GameObject hitFX;
-    [SerializeField] Transform leftHand;
-    [SerializeField] Transform rightHand;
-    CharacterStats charStats;
+    [SerializeField] protected GameObject hitFX;
+    [SerializeField] protected Transform leftHand;
+    [SerializeField] protected Transform rightHand;
+    protected CharacterStats charStats;
     EquipmentManager equipmentMgmt;
     AnimationManager animMgmt;
 
@@ -185,7 +185,7 @@ public class CombatManager : MonoBehaviour
     /// to determine the means of the attack
     /// </summary>
     /// <param name="handInt"></param>
-    public void ActivateImpact(int impactID)
+    public virtual void ActivateImpact(int impactID)
     {
         if (equipmentMgmt.currentlyEquippedWeapon != null)
         {
@@ -212,7 +212,7 @@ public class CombatManager : MonoBehaviour
         impactActivated = true;
     }
 
-    public void CreateImpactCollider(Transform impactTrans)
+    public virtual void CreateImpactCollider(Transform impactTrans)
     {
         // Generate a collider array that will act as the weapon's collision area
         Collider[] impactCollisions = null;
@@ -228,9 +228,8 @@ public class CombatManager : MonoBehaviour
             // If the collider hit has an NpcHealthManager component on it.
             if (hitStats != null)
             {
-                //ProcessAttack(hit.gameObject.GetComponent<CharacterStats>());
                 hitStats.TakeDamage(this.gameObject, charStats.attackDamage.value);
-
+                
                 impactActivated = false;
                 charStats.ResetAttackCharge();
             }
@@ -241,7 +240,7 @@ public class CombatManager : MonoBehaviour
     /// Waits for the impactActivated bool to be triggered by an Animation Event. Grabs the entity's
     /// currently equipped weapon and creates an impact collider based on the weapons specs.
     /// </summary>
-    protected void CheckMeleeAttack()
+    public virtual void CheckMeleeAttack()
     {
         if (impactActivated)
         {

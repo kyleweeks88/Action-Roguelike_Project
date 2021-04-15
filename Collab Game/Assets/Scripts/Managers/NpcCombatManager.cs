@@ -5,16 +5,23 @@ using UnityEngine;
 public class NpcCombatManager : CombatManager
 {
     [Header("NPC Settings")]
-    [SerializeField] NpcController npcCtrl;
-    public float combatRadius;
+    public float timeBetweenAttacks = 0.5f;
+    float currentTimeBetweenAttacks;
+    public float meleeAttackDistance = 1f;
 
-    public override void Update()
+    public override void Start()
     {
-        base.Update();
+        base.Start();
+        currentTimeBetweenAttacks = timeBetweenAttacks;
+    }
 
-        if(npcCtrl.DistanceToTarget() <= combatRadius)
+    public void HandleAttackTimer()
+    {
+        currentTimeBetweenAttacks -= Time.deltaTime;
+        if (currentTimeBetweenAttacks <= 0)
         {
-
+            canRecieveAttackInput = true;
+            currentTimeBetweenAttacks = timeBetweenAttacks;
         }
     }
 
@@ -125,79 +132,57 @@ public class NpcCombatManager : CombatManager
     //    charStats.moveSpeed.AddModifer(charStats.combatMovementModifier);
     //}
 
-    ///// <summary>
-    ///// Called by an Animation Event from the player checks an int
-    ///// to determine the means of the attack
-    ///// </summary>
-    ///// <param name="handInt"></param>
-    //public void ActivateImpact(int impactID)
-    //{
-    //    if (equipmentMgmt.currentlyEquippedWeapon != null)
-    //    {
-    //        MeleeWeapon myWeapon = equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
-    //        charStats.DamageStamina(myWeapon.meleeData.staminaCost);
-    //    }
-    //    else
-    //    {
-    //        charStats.DamageStamina(10f);
-    //    }
+    public override void ActivateImpact(int impactID)
+    {
+        //charStats.DamageStamina(10f);
 
-    //    switch(impactID)
-    //    {
-    //        case 1:
-    //            CreateImpactCollider(leftHand);
-    //            break;
-    //        case 2:
-    //            CreateImpactCollider(rightHand);
-    //            break;
-    //        case 3:
-    //            Debug.Log("Kick");
-    //            break;
-    //    }
-    //    impactActivated = true;
-    //}
+        switch (impactID)
+        {
+            case 1:
+                CreateImpactCollider(leftHand);
+                break;
+            case 2:
+                CreateImpactCollider(rightHand);
+                break;
+            case 3:
+                Debug.Log("Kick");
+                break;
+        }
+        impactActivated = true;
+    }
 
-    //public void CreateImpactCollider(Transform impactTrans)
-    //{
-    //    // Generate a collider array that will act as the weapon's collision area
-    //    Collider[] impactCollisions = null;
+    public override void CreateImpactCollider(Transform impactTrans)
+    {
+        // Generate a collider array that will act as the weapon's collision area
+        Collider[] impactCollisions = null;
 
-    //    impactCollisions = Physics.OverlapSphere(impactTrans.position, 1f, whatIsDamageable);
+        impactCollisions = Physics.OverlapSphere(impactTrans.position, 1f, whatIsDamageable);
 
-    //    // for each object the collider hits do this stuff...
-    //    foreach (Collider hit in impactCollisions)
-    //    {
-    //        // Create equippedWeapon's hit visuals
-    //        GameObject hitVis = Instantiate(hitFX, hit.ClosestPoint(impactTrans.position), Quaternion.identity);
-    //        CharacterStats hitStats = hit.gameObject.GetComponent<CharacterStats>();
-    //        // If the collider hit has an NpcHealthManager component on it.
-    //        if (hitStats != null)
-    //        {
-    //            //ProcessAttack(hit.gameObject.GetComponent<CharacterStats>());
-    //            hitStats.TakeDamage(this.gameObject, charStats.attackDamage.value);
+        // for each object the collider hits do this stuff...
+        foreach (Collider hit in impactCollisions)
+        {
+            // Create equippedWeapon's hit visuals
+            GameObject hitVis = Instantiate(hitFX, hit.ClosestPoint(impactTrans.position), Quaternion.identity);
+            CharacterStats hitStats = hit.gameObject.GetComponent<CharacterStats>();
+            // If the collider hit has an NpcHealthManager component on it.
+            if (hitStats != null)
+            {
+                hitStats.TakeDamage(this.gameObject, charStats.attackDamage.value);
 
-    //            impactActivated = false;
-    //            charStats.ResetAttackCharge();
-    //        }
-    //    }
-    //}
+                impactActivated = false;
+                charStats.ResetAttackCharge();
+            }
+        }
+    }
 
-    ///// <summary>
-    ///// Waits for the impactActivated bool to be triggered by an Animation Event. Grabs the entity's
-    ///// currently equipped weapon and creates an impact collider based on the weapons specs.
-    ///// </summary>
-    //protected void CheckMeleeAttack()
-    //{
-    //    if (impactActivated)
-    //    {
-    //        MeleeWeapon equippedWeapon = equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
-    //        if (equippedWeapon != null)
-    //        {
-    //            // Creates the collider on the weapon, the weapon then calls the Cmd
-    //            equippedWeapon.CreateImpactCollider(this);
-    //        }
-    //    }
-    //}
+    /// <summary>
+    /// Waits for the impactActivated bool to be triggered by an Animation Event. Grabs the entity's
+    /// currently equipped weapon and creates an impact collider based on the weapons specs.
+    /// </summary>
+    public override void CheckMeleeAttack()
+    {
+        // NULL
+    }
 
     //public void ProcessAttack(CharacterStats target)
     //{

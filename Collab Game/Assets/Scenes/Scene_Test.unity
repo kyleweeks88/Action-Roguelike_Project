@@ -128,6 +128,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 753508824, guid: 93ae65b84b3eaba49938279ac8eb2e82, type: 3}
+      propertyPath: attackInputHeld
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 753508824, guid: 93ae65b84b3eaba49938279ac8eb2e82, type: 3}
+      propertyPath: meleeAttackDistance
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2215909438807583360, guid: 93ae65b84b3eaba49938279ac8eb2e82,
         type: 3}
       propertyPath: m_RootOrder
@@ -183,20 +191,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2215909438807583485, guid: 93ae65b84b3eaba49938279ac8eb2e82,
-        type: 3}
-      propertyPath: chestRb
-      value: 
-      objectReference: {fileID: 576672815}
     - target: {fileID: 2215909438807583486, guid: 93ae65b84b3eaba49938279ac8eb2e82,
         type: 3}
       propertyPath: m_Name
       value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 2215909438807583486, guid: 93ae65b84b3eaba49938279ac8eb2e82,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93ae65b84b3eaba49938279ac8eb2e82, type: 3}
@@ -422,12 +420,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &576672815 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 7050879799341589920, guid: 93ae65b84b3eaba49938279ac8eb2e82,
-    type: 3}
-  m_PrefabInstance: {fileID: 23928277}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &681606213
 GameObject:
   m_ObjectHideFlags: 0
