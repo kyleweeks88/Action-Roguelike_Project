@@ -12,6 +12,8 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction jumpEventStarted;
     public event UnityAction jumpEventCancelled;
     public event UnityAction dodgeEvent;
+    public event UnityAction blockEventStarted;
+    public event UnityAction blockEventCancelled;
     public event UnityAction attackEventStarted;
     public event UnityAction attackEventCancelled;
     public event UnityAction rangedAttackEventStarted;
@@ -146,5 +148,16 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         if (rangedAttackEventCancelled != null &&
             context.phase == InputActionPhase.Canceled)
             rangedAttackEventCancelled.Invoke();
+    }
+
+    public void OnBlock(InputAction.CallbackContext context)
+    {
+        if (blockEventStarted != null &&
+            context.phase == InputActionPhase.Started)
+            blockEventStarted.Invoke();
+
+        if (blockEventCancelled != null &&
+            context.phase == InputActionPhase.Canceled)
+            blockEventCancelled.Invoke();
     }
 }

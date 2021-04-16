@@ -1,10 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using UnityEngine.Events;
 
 // I think this script will handle character leveling, dying, all the attributes/stats
 // and the way they modify or mitigate incoming/outgoing damage.
@@ -22,12 +17,15 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     [Tooltip("The force behind the character's jump!")]
     public float jumpVelocity = 5f;
 
+    //public StatModifier backStabDamageModifier = new StatModifier(1f, StatModType.PercentAdd);
+    public StatModifier blockModifier = new StatModifier(2f, StatModType.PercentMulti);
     public StatModifier sprintMovementModifier = new StatModifier(1f, StatModType.PercentAdd);
     public StatModifier aerialMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
     public StatModifier combatMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
 
     [Header("Combat settings")]
     public Stat attackDamage;
+    public Stat blockReduction;
     [HideInInspector] public float maxAttackCharge = 100f;
     [HideInInspector] public float currentAttackCharge = 0f;
     public Stat attackChargeRate;
@@ -150,8 +148,18 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #endregion
 
     #region Health Drain
-    public virtual void TakeDamage(GameObject damager, float dmgVal)
+    public virtual void TakeDamage(GameObject attacker, float dmgVal)
     {
+        // Determines if the damager is from in front or behind the reciever.
+        Vector3 angleToAttacker = attacker.transform.position - this.transform.position;
+        if(Vector3.Dot(this.transform.forward, angleToAttacker) > 0.5f)
+        {
+            if(GetComponent<CombatManager>().isBlocking)
+            {
+                Debug.Log(blockReduction.value);
+            }
+        }
+
         currentHealthPoints = Mathf.Clamp((currentHealthPoints -= dmgVal), 0f, maxHealthPoints);
         drainingHealth = true;
         StartCoroutine(HealthGainDelay(healthGainAmount, currentHealthPoints));
@@ -162,7 +170,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
             // This adds force to the character ragdoll in the...
             // forward direction of the damaging object.
-            chestRb.AddForceAtPosition((damager.transform.forward + damager.transform.up) * 250f,
+            chestRb.AddForceAtPosition((attacker.transform.forward + attacker.transform.up) * 250f,
             chestRb.gameObject.transform.position, ForceMode.Impulse);
         }
     }

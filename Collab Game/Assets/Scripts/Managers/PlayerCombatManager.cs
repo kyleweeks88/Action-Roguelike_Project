@@ -1,4 +1,5 @@
-﻿ using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +16,19 @@ public class PlayerCombatManager : CombatManager
         playerMgmt.inputMgmt.attackEventCancelled += AttackReleased;
         playerMgmt.inputMgmt.rangedAttackEventStarted += RangedAttackPerformed;
         playerMgmt.inputMgmt.rangedAttackEventCancelled += RangedAttackReleased;
+        playerMgmt.inputMgmt.blockEventStarted += BlockPerformed;
+        playerMgmt.inputMgmt.blockEventCancelled += BlockReleased;
+    }
+
+    void BlockPerformed()
+    {
+        base.Blocking();
+    }
+
+    void BlockReleased()
+    {
+        isBlocking = false;
+        GetComponent<CharacterStats>().blockReduction.RemoveModifier(GetComponent<CharacterStats>().blockModifier);
     }
 
     #region Ranged

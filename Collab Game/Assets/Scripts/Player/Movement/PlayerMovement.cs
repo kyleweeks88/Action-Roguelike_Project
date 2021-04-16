@@ -59,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
         GroundCheck();
         UpdateIsSprinting();
         Move();
+        CameraControl();
     }
 
     public Vector3 GetPrevMovement()
@@ -166,17 +167,6 @@ public class PlayerMovement : MonoBehaviour
             z = _previousMovementInput.y
         }.normalized;
 
-        // MAKES THE CHARACTER'S FORWARD AXIS MATCH THE CAMERA'S FORWARD AXIS
-        rotationMovement = Quaternion.Euler(0, playerMgmt.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
-
-        // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
-        float cameraYaw = playerMgmt.myCamera.transform.rotation.eulerAngles.y;
-        // ... ONLY IF THE PLAYER IS MOVING
-        if (movement.sqrMagnitude > 0)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
-        }
-
         // Only allows the player to sprint forwards
         if(isSprinting && movement.z <= 0)
         {
@@ -188,6 +178,20 @@ public class PlayerMovement : MonoBehaviour
 
         // MOVES THE PLAYER
         playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
+    }
+
+    void CameraControl()
+    {
+        // MAKES THE CHARACTER'S FORWARD AXIS MATCH THE CAMERA'S FORWARD AXIS
+        rotationMovement = Quaternion.Euler(0, playerMgmt.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
+
+        // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
+        // ... ONLY IF THE PLAYER IS MOVING, BLOCKING OR ATTACKING
+        if (movement.sqrMagnitude > 0 || playerMgmt.combatMgmt.isBlocking || playerMgmt.combatMgmt.attackInputHeld)
+        {
+            float cameraYaw = playerMgmt.myCamera.transform.rotation.eulerAngles.y;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
+        }
     }
 
     #region Sprinting

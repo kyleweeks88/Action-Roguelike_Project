@@ -153,59 +153,6 @@ public class NpcController : MonoBehaviour
         }
     }
 
-    void DetermineSpeed()
-    {
-        if (combatMgmt.inCombat)
-        {
-            if (CanSeeTarget())
-            {
-                if(distanceToTarget <= combatRadius + 0.5f)
-                {
-                    navAgent.speed = walkSpeed;
-                }
-                //if (distanceToTarget >= sprintSpeed)
-                //{
-                //    navAgent.speed = sprintSpeed;
-                //}
-                //else if (distanceToTarget > combatMgmt.meleeAttackDistance + 2f && distanceToTarget < sprintSpeed)
-                //{
-                //    navAgent.speed = runSpeed;
-                //}
-                //else if(distanceToTarget <= combatMgmt.meleeAttackDistance + 1)
-                //{
-                //    navAgent.speed = walkSpeed;
-                //}
-            }
-            else
-            {
-                navAgent.speed = walkSpeed;
-            }
-        }
-        else
-        {
-            if (CanSeeTarget())
-            {
-                if (distanceToTarget >= sprintSpeed)
-                {
-                    navAgent.speed = sprintSpeed;
-                }
-                else if (distanceToTarget >= runSpeed)
-                {
-                    navAgent.speed = runSpeed;
-                }
-                else
-                {
-                    navAgent.speed = walkSpeed;
-                }
-            }
-            else
-            {
-                navAgent.speed = walkSpeed;
-            }
-        }
-    }
-
-    // TESTING THIS
     public void StrafeTarget(int dirInt)
     {
         var targetOffset = target.transform.position - this.transform.position;

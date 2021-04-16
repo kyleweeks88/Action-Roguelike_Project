@@ -19,7 +19,7 @@
                     "id": "3a92c61b-6933-455c-91c5-ffa7c63cda5a",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press(behavior=2)"
                 },
                 {
                     "name": "Look",
@@ -73,6 +73,14 @@
                     "name": "Throw",
                     "type": "Button",
                     "id": "f1863cee-3c5d-4f0b-903e-6c9960c52733",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "Block",
+                    "type": "Button",
+                    "id": "a4bd6522-a03e-43e6-89ce-d06ae9b226e7",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
@@ -219,6 +227,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Throw",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1cde5d9-da22-4050-96bc-44aa6d3a2b6d",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "Block",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

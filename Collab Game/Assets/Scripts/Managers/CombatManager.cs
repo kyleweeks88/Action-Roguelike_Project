@@ -19,6 +19,7 @@ public class CombatManager : MonoBehaviour
     float currentCombatTimer;
     [HideInInspector] public bool inCombat;
     [HideInInspector] public bool impactActivated;
+    [HideInInspector] public bool isBlocking;
     [HideInInspector] public string attackAnim;
 
     [Header("RANGED TESTING")] 
@@ -71,6 +72,12 @@ public class CombatManager : MonoBehaviour
             currentCombatTimer = combatTimer;
             inCombat = false;
         }
+    }
+
+    protected void Blocking()
+    {
+        isBlocking = true;
+        GetComponent<CharacterStats>().blockReduction.AddModifer(GetComponent<CharacterStats>().blockModifier);
     }
 
     #region Ranged
