@@ -59,12 +59,14 @@ public class NpcController : MonoBehaviour
             animator.SetBool("chasingTarget", false);
         }
 
-        //if(!CanSeeTarget())
-        //{
-        //    combatMgmt.inCombat = false;
-        //    animator.SetBool("meleeAttackHold", false);
-        //    navAgent.stoppingDistance = 1f;
-        //}
+        if (!CanSeeTarget())
+        {
+            //animator.SetBool("inCombat", false);
+            animator.SetBool("chasingTarget", false);
+            animator.SetBool("strafeTarget", false);
+            animator.SetBool("meleeAttackHold", false);
+            navAgent.stoppingDistance = 1f;
+        }
 
         animator.SetFloat("moveSpeed", navAgent.velocity.magnitude);
     }
