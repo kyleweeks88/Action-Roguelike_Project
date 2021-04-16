@@ -177,7 +177,14 @@ public class PlayerMovement : MonoBehaviour
         playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
 
         // MOVES THE PLAYER
-        playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
+        if (movement.z < 0)
+        {
+            playerMgmt.myRb.velocity += rotationMovement * (playerMgmt.playerStats.moveSpeed.value * .5f);
+        }
+        else
+        {
+            playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
+        }
     }
 
     void CameraControl()
@@ -254,8 +261,8 @@ public class PlayerMovement : MonoBehaviour
                 isJumping = true;
                 //playerMgmt.isInteracting = true;
                 playerMgmt.playerStats.DamageStamina(10f);
-                playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpVelocity;
-                playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpVelocity;
+                playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpForce.value;
+                playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpForce.value;
             }
         }
     }

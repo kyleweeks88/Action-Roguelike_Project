@@ -5,6 +5,12 @@ using UnityEngine;
 // and the way they modify or mitigate incoming/outgoing damage.
 public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 {
+    public delegate void OnHealthChanged(float currentHealth);
+    public event OnHealthChanged healthChange_Event;
+
+    public delegate void OnStaminaChanged(float currentHealth);
+    public event OnStaminaChanged staminaChange_Event;
+
     [Header("General settings")]
     [SerializeField] Rigidbody chestRb;
     public string charName; 
@@ -15,20 +21,21 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     [Header("Locomotion stats")]
     public Stat moveSpeed;
     [Tooltip("The force behind the character's jump!")]
-    public float jumpVelocity = 5f;
+    public Stat jumpForce;
 
-    //public StatModifier backStabDamageModifier = new StatModifier(1f, StatModType.PercentAdd);
-    public StatModifier blockModifier = new StatModifier(2f, StatModType.PercentMulti);
     public StatModifier sprintMovementModifier = new StatModifier(1f, StatModType.PercentAdd);
     public StatModifier aerialMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
     public StatModifier combatMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
-
-    [Header("Combat settings")]
+    
+    [Header("Combat Stats")]
     public Stat attackDamage;
+    public Stat attackChargeRate;
     public Stat blockReduction;
     [HideInInspector] public float maxAttackCharge = 100f;
     [HideInInspector] public float currentAttackCharge = 0f;
-    public Stat attackChargeRate;
+
+    [Header("General Stats")]
+    public Stat stealth;
 
     [Header("Stamina vital")]
     public float maxStaminaPoints;
@@ -43,7 +50,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     [Header("Health vital")]
     public float maxHealthPoints;
-    float currentHealthPoints;
+    protected float currentHealthPoints;
     [Tooltip("How much health is gained for each healthGainTickrate when regenerating.")]
     public float healthGainAmount;
     [Tooltip("Delay before health recovery begins.")]
@@ -61,13 +68,13 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     //void Update()
     //{
-    //    Debug.Log("Stamina: " + currentStaminaPoints + " / " + maxStaminaPoints);
+    //    Debug.Log(charName+" Health: " + currentHealthPoints + " / " + maxHealthPoints);
     //}
 
     public void InitializeVitals()
     {
-        currentHealthPoints = maxHealthPoints;
-        currentStaminaPoints = maxStaminaPoints;
+        SetHealth(maxHealthPoints);
+        SetStamina(maxStaminaPoints);
     }
 
     #region Death!!!
@@ -108,6 +115,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public virtual void SetHealth(float setVal)
     {
         currentHealthPoints = Mathf.Clamp(setVal, 0f, maxHealthPoints);
+        healthChange_Event?.Invoke(currentHealthPoints);
     }
 
     #region Health Gain
@@ -156,13 +164,31 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
         {
             if(GetComponent<CombatManager>().isBlocking)
             {
-                Debug.Log(blockReduction.value);
+                if(blockReduction.value >= 1)
+                {
+                    dmgVal /= blockReduction.value;
+                    Debug.Log(dmgVal);
+                    Debug.Log(blockReduction.value);
+                }
+                else
+                {
+                    dmgVal *= blockReduction.value;
+                    Debug.Log(dmgVal);
+                    Debug.Log(blockReduction.value);
+                }
             }
         }
 
+        // Affect the currentHealthPoints of this Character!
+        // Clamps between 0 and the maxHealthPoints
         currentHealthPoints = Mathf.Clamp((currentHealthPoints -= dmgVal), 0f, maxHealthPoints);
+        healthChange_Event?.Invoke(currentHealthPoints);
         drainingHealth = true;
-        StartCoroutine(HealthGainDelay(healthGainAmount, currentHealthPoints));
+
+        // WE ONLY WANNA START THIS HEALTH REGEN IF THE PLAYER HAS HEALTH REGEN AVAILABLE???
+        //StartCoroutine(HealthGainDelay(healthGainAmount, currentHealthPoints));
+
+        Debug.Log(charName + " took " + dmgVal + " damage, from " + attacker.name + "!!!");
 
         if (currentHealthPoints <= 0f)
         {
@@ -198,6 +224,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public virtual void SetStamina(float setVal)
     {
         currentStaminaPoints = Mathf.Clamp(setVal, 0f, maxStaminaPoints);
+        staminaChange_Event?.Invoke(currentStaminaPoints);
     }
 
     #region Stamina Gain
@@ -213,6 +240,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public void GainStamina(float gainAmount)
     {
         currentStaminaPoints = Mathf.Clamp((currentStaminaPoints += gainAmount), 0f, maxStaminaPoints);
+        staminaChange_Event?.Invoke(currentStaminaPoints);
     }
 
     IEnumerator StaminaGainDelay(float gainAmount, float oldValue)
@@ -241,7 +269,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public void DamageStamina(float dmgVal)
     {
         currentStaminaPoints = Mathf.Clamp((currentStaminaPoints -= dmgVal), 0f, maxStaminaPoints);
-
+        staminaChange_Event?.Invoke(currentStaminaPoints);
         drainingStamina = true;
 
         StartCoroutine(StaminaGainDelay(staminaGainAmount, currentStaminaPoints));

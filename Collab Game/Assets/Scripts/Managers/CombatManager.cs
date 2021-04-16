@@ -77,7 +77,6 @@ public class CombatManager : MonoBehaviour
     protected void Blocking()
     {
         isBlocking = true;
-        GetComponent<CharacterStats>().blockReduction.AddModifer(GetComponent<CharacterStats>().blockModifier);
     }
 
     #region Ranged
@@ -235,8 +234,7 @@ public class CombatManager : MonoBehaviour
             // If the collider hit has an NpcHealthManager component on it.
             if (hitStats != null)
             {
-                hitStats.TakeDamage(this.gameObject, charStats.attackDamage.value);
-                
+                ProcessAttack(hitStats);
                 impactActivated = false;
                 charStats.ResetAttackCharge();
             }
@@ -263,6 +261,13 @@ public class CombatManager : MonoBehaviour
     public void ProcessAttack(CharacterStats target)
     {
         float dmgVal = charStats.attackDamage.value;
+
+        Vector3 angleToTarget = target.transform.position - this.transform.position;
+        if (Vector3.Dot(target.transform.forward, angleToTarget) >= 0f)
+        {
+            Debug.Log("BACKSTAB!");
+            dmgVal += GetComponent<CharacterStats>().stealth.value;
+        }
 
         target.TakeDamage(this.gameObject, dmgVal);
     }

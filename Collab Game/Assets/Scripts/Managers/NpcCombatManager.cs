@@ -5,7 +5,7 @@ using UnityEngine;
 public class NpcCombatManager : CombatManager
 {
     [Header("NPC Settings")]
-    public float timeBetweenAttacks = 0.5f;
+    public float timeBetweenAttacks = 0.25f;
     float currentTimeBetweenAttacks;
     public float meleeAttackDistance = 1f;
 
@@ -139,10 +139,10 @@ public class NpcCombatManager : CombatManager
         switch (impactID)
         {
             case 1:
-                CreateImpactCollider(leftHand);
+                base.CreateImpactCollider(leftHand);
                 break;
             case 2:
-                CreateImpactCollider(rightHand);
+                base.CreateImpactCollider(rightHand);
                 break;
             case 3:
                 Debug.Log("Kick");
@@ -151,29 +151,29 @@ public class NpcCombatManager : CombatManager
         impactActivated = true;
     }
 
-    public override void CreateImpactCollider(Transform impactTrans)
-    {
-        // Generate a collider array that will act as the weapon's collision area
-        Collider[] impactCollisions = null;
+    //public override void CreateImpactCollider(Transform impactTrans)
+    //{
+    //    // Generate a collider array that will act as the weapon's collision area
+    //    Collider[] impactCollisions = null;
 
-        impactCollisions = Physics.OverlapSphere(impactTrans.position, 1f, whatIsDamageable);
+    //    impactCollisions = Physics.OverlapSphere(impactTrans.position, 1f, whatIsDamageable);
 
-        // for each object the collider hits do this stuff...
-        foreach (Collider hit in impactCollisions)
-        {
-            // Create equippedWeapon's hit visuals
-            GameObject hitVis = Instantiate(hitFX, hit.ClosestPoint(impactTrans.position), Quaternion.identity);
-            CharacterStats hitStats = hit.gameObject.GetComponent<CharacterStats>();
-            // If the collider hit has an NpcHealthManager component on it.
-            if (hitStats != null)
-            {
-                hitStats.TakeDamage(this.gameObject, charStats.attackDamage.value);
+    //    // for each object the collider hits do this stuff...
+    //    foreach (Collider hit in impactCollisions)
+    //    {
+    //        // Create equippedWeapon's hit visuals
+    //        GameObject hitVis = Instantiate(hitFX, hit.ClosestPoint(impactTrans.position), Quaternion.identity);
+    //        CharacterStats hitStats = hit.gameObject.GetComponent<CharacterStats>();
+    //        // If the collider hit has an NpcHealthManager component on it.
+    //        if (hitStats != null)
+    //        {
+    //            ProcessAttack(hitStats);
 
-                impactActivated = false;
-                charStats.ResetAttackCharge();
-            }
-        }
-    }
+    //            impactActivated = false;
+    //            charStats.ResetAttackCharge();
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// Waits for the impactActivated bool to be triggered by an Animation Event. Grabs the entity's

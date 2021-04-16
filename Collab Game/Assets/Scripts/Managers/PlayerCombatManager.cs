@@ -25,11 +25,7 @@ public class PlayerCombatManager : CombatManager
         base.Blocking();
     }
 
-    void BlockReleased()
-    {
-        isBlocking = false;
-        GetComponent<CharacterStats>().blockReduction.RemoveModifier(GetComponent<CharacterStats>().blockModifier);
-    }
+    void BlockReleased() => isBlocking = false;
 
     #region Ranged
     public override void RangedAttackPerformed()
