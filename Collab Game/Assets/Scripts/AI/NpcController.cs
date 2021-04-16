@@ -7,16 +7,16 @@ public class NpcController : MonoBehaviour
 {
     NpcCombatManager combatMgmt;
     [SerializeField] Transform raycastPos;
-    NavMeshAgent navAgent;
+    [HideInInspector] public NavMeshAgent navAgent;
     Animator animator;
-    GameObject target;
+    [HideInInspector] public GameObject target;
 
     public float walkSpeed;
     public float runSpeed;
     public float sprintSpeed;
     public float sightRange;
     float distanceToTarget;
-    float setDestinationMaxTime = .1f;
+    float setDestinationMaxTime = .01f;
     float setDestinationTimer;
     float distanceToTargetMaxTime = .1f;
     float distanceToTargetTimer;
@@ -24,7 +24,10 @@ public class NpcController : MonoBehaviour
     public bool targetInSight;
     public bool debug;
 
+    /*==TESTING==>*/
+    public float combatRadius;
     float orbitTimer = 4f;
+    /*==TESTING==>*/
 
     private void Awake()
     {
@@ -41,38 +44,32 @@ public class NpcController : MonoBehaviour
         GetDistanceToTargetWithDelay();
         //DetermineSpeed();
 
-        if (CanSeeTarget() && DistanceToTarget() > 3f)
+        if (CanSeeTarget() && distanceToTarget > combatRadius)
         {
-            combatMgmt.inCombat = true;
-            navAgent.speed = runSpeed;
-            navAgent.stoppingDistance = combatMgmt.meleeAttackDistance;
+            animator.SetBool("meleeAttackHold", false);
+            animator.SetBool("chasingTarget", true);
+            animator.SetBool("strafeTarget", false);
+            animator.SetBool("inCombat", false);
+        }
 
+        if(CanSeeTarget() && distanceToTarget <= combatRadius)
+        {
             RotateTowardsTransform(target.transform);
-            SetDestinationWithDelay();
-
-            animator.SetBool("meleeAttackHold", false);
+            animator.SetBool("inCombat", true);
+            animator.SetBool("chasingTarget", false);
         }
 
-        if(CanSeeTarget() && DistanceToTarget() <= 3f)
-        {
-            //OrbitTarget();
-            StrafeTarget();
-            navAgent.speed = walkSpeed;
-            combatMgmt.inCombat = true;
-        }
-
-        if(!CanSeeTarget())
-        {
-            combatMgmt.inCombat = false;
-            animator.SetBool("meleeAttackHold", false);
-            navAgent.stoppingDistance = 1f;
-        }
+        //if(!CanSeeTarget())
+        //{
+        //    combatMgmt.inCombat = false;
+        //    animator.SetBool("meleeAttackHold", false);
+        //    navAgent.stoppingDistance = 1f;
+        //}
 
         animator.SetFloat("moveSpeed", navAgent.velocity.magnitude);
-        animator.SetBool("inCombat", combatMgmt.inCombat);
     }
 
-    void RotateTowardsTransform(Transform _target)
+    public void RotateTowardsTransform(Transform _target)
     {
         var dirVector = _target.transform.position - transform.position;
         float singleStep = 120f * Time.deltaTime;
@@ -135,7 +132,7 @@ public class NpcController : MonoBehaviour
         return targetInSight;
     }
 
-    void SetDestinationWithDelay()
+    public void SetDestinationWithDelay()
     {
         setDestinationTimer -= Time.deltaTime;
         if(setDestinationTimer < 0f)
@@ -144,7 +141,8 @@ public class NpcController : MonoBehaviour
             {
                 navAgent.destination = target.transform.position;
             }
-            else
+
+            if(distanceToTarget <= navAgent.stoppingDistance)
             {
                 navAgent.velocity = Vector3.zero;
             }
@@ -159,18 +157,22 @@ public class NpcController : MonoBehaviour
         {
             if (CanSeeTarget())
             {
-                if (distanceToTarget >= sprintSpeed)
-                {
-                    navAgent.speed = sprintSpeed;
-                }
-                else if (distanceToTarget > combatMgmt.meleeAttackDistance + 2f && distanceToTarget < sprintSpeed)
-                {
-                    navAgent.speed = runSpeed;
-                }
-                else if(distanceToTarget <= combatMgmt.meleeAttackDistance + 1)
+                if(distanceToTarget <= combatRadius + 0.5f)
                 {
                     navAgent.speed = walkSpeed;
                 }
+                //if (distanceToTarget >= sprintSpeed)
+                //{
+                //    navAgent.speed = sprintSpeed;
+                //}
+                //else if (distanceToTarget > combatMgmt.meleeAttackDistance + 2f && distanceToTarget < sprintSpeed)
+                //{
+                //    navAgent.speed = runSpeed;
+                //}
+                //else if(distanceToTarget <= combatMgmt.meleeAttackDistance + 1)
+                //{
+                //    navAgent.speed = walkSpeed;
+                //}
             }
             else
             {
@@ -202,47 +204,22 @@ public class NpcController : MonoBehaviour
     }
 
     // TESTING THIS
-    void StrafeTarget()
-    {
-        // THIS GETS THE POSITION OF THIS NPC IN RELATION TO IT'S TARGET
-        Vector3 dir = (transform.position - target.transform.position).normalized;
-        float angle = Vector3.Angle(dir, target.transform.forward);
-            
-        // IF THE ANGLE IS LESS THAN 60deg THAN THIS NPC IS IN FRONT OF THE TARGET
-        if(angle < 160f)
-        {
-            OrbitTarget();
-        }
-        // ... OTHERWISE THIS NPC IS BEHIND IT'S TARGET
-        else
-        {
-            navAgent.velocity = Vector3.zero;
-        }
-    }
-
-    void OrbitTarget()
+    public void StrafeTarget(int dirInt)
     {
         var targetOffset = target.transform.position - this.transform.position;
         var dir = Vector3.Cross(targetOffset, Vector3.up);
+
         RotateTowardsTransform(target.transform);
         navAgent.angularSpeed = 0f;
 
-        int randInt = 1;
-        orbitTimer -= Time.deltaTime;
-        if(orbitTimer <= 0)
+        if (dirInt == 1)
         {
-            randInt = Random.Range(0, 2);
-
-            if (randInt == 1)
-            {
-                navAgent.destination = (this.transform.position + dir);
-            }
-            else
-            {
-                navAgent.destination = (this.transform.position - dir);
-            }
-
-            orbitTimer = 4;
+            navAgent.destination = (this.transform.position + dir);
+        }
+        
+        if(dirInt == 0)
+        {
+            navAgent.destination = (this.transform.position - dir);
         }
     }
 
