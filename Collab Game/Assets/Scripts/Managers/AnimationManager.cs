@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimationManager : MonoBehaviour
 {
-    public Animator myAnim;
+    public Animator animator;
     [SerializeField] PlayerManager playerMgmt;
 
     #region Animator Parameters
@@ -19,19 +19,20 @@ public class AnimationManager : MonoBehaviour
     int isInteractingParam = Animator.StringToHash("isInteracting");
     int isSlidingParam = Animator.StringToHash("isSliding");
     int isBlockingParam = Animator.StringToHash("isBlocking");
+    int moveAnimSpeedParam = Animator.StringToHash("moveAnimSpeed");
     #endregion
 
 
     void Update()
     {
-        myAnim.SetFloat("moveAnimSpeed", 1f);
-        myAnim.SetBool(isBlockingParam, playerMgmt.combatMgmt.isBlocking);
-        myAnim.SetBool(isSlidingParam, playerMgmt.playerMovement.isSliding);
-        myAnim.SetBool(isSprintingParam, playerMgmt.playerMovement.isSprinting);
-        myAnim.SetBool(isJumpingParam, playerMgmt.playerMovement.isJumping);
-        myAnim.SetBool(isGroundedParam, playerMgmt.playerMovement.isGrounded);
-        myAnim.SetFloat(yVelocityParam, playerMgmt.myRb.velocity.y);
-        myAnim.SetBool(inCombatParam, playerMgmt.combatMgmt.inCombat);
+        animator.SetFloat(moveAnimSpeedParam, 1f);
+        animator.SetBool(isBlockingParam, playerMgmt.combatMgmt.isBlocking);
+        animator.SetBool(isSlidingParam, playerMgmt.playerMovement.isSliding);
+        animator.SetBool(isSprintingParam, playerMgmt.playerMovement.isSprinting);
+        animator.SetBool(isJumpingParam, playerMgmt.playerMovement.isJumping);
+        animator.SetBool(isGroundedParam, playerMgmt.playerMovement.isGrounded);
+        animator.SetFloat(yVelocityParam, playerMgmt.myRb.velocity.y);
+        animator.SetBool(inCombatParam, playerMgmt.combatMgmt.inCombat);
 
         if (playerMgmt.combatMgmt.attackInputHeld)
         {
@@ -40,17 +41,17 @@ public class AnimationManager : MonoBehaviour
             {
                 MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
                 if((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
-                    myAnim.SetTrigger(playerMgmt.combatMgmt.attackAnim);
+                    animator.SetTrigger(playerMgmt.combatMgmt.attackAnim);
             }
         }
 
         if (playerMgmt.combatMgmt.attackInputHeld)
         {
-            myAnim.SetFloat("moveAnimSpeed", 0.5f);
+            animator.SetFloat("moveAnimSpeed", 0.5f);
         }
         else
         {
-            myAnim.SetFloat("moveAnimSpeed", 1f);
+            animator.SetFloat("moveAnimSpeed", 1f);
         }
     }
 
@@ -60,22 +61,22 @@ public class AnimationManager : MonoBehaviour
     /// <param name="overrideCtrl"></param>
     public void SetAnimation(AnimatorOverrideController overrideCtrl)
     {
-        myAnim.runtimeAnimatorController = overrideCtrl;
+        animator.runtimeAnimatorController = overrideCtrl;
     }
 
     public void MovementAnimation(float xMove, float zMove)
     {
-        myAnim.SetFloat(inputXParam, xMove);
-        myAnim.SetFloat(inputYParam, zMove);
+        animator.SetFloat(inputXParam, xMove);
+        animator.SetFloat(inputYParam, zMove);
     }
 
     public void HandleMeleeAttackAnimation(bool boolVal)
     {
-        myAnim.SetBool(playerMgmt.combatMgmt.attackAnim, boolVal);
+        animator.SetBool(playerMgmt.combatMgmt.attackAnim, boolVal);
     }
 
     public void HandleRangedAttackAnimation(bool boolVal)
     {
-        myAnim.SetBool(playerMgmt.combatMgmt.attackAnim, boolVal);
+        animator.SetBool(playerMgmt.combatMgmt.attackAnim, boolVal);
     }
 }

@@ -82,7 +82,7 @@ public class DodgeControl : MonoBehaviour
             }
 
             // PLAY DODGE ANIMATION FROM AnimationManager
-            playerMgmt.animMgmt.myAnim.SetTrigger("dodge");
+            playerMgmt.animMgmt.animator.SetTrigger("dodge");
 
             // Resets the cooldown timer
             cooldown = dodgeCooldown;

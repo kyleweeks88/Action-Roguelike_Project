@@ -142,7 +142,7 @@ public class CombatManager : MonoBehaviour
                 if (charStats.currentAttackCharge >=
                     charStats.maxAttackCharge)
                 {
-                    animMgmt.myAnim.SetBool("maxAttackCharge", true);
+                    animMgmt.animator.SetBool("maxAttackCharge", true);
                 }
 
                 if (charStats.currentAttackCharge <=
@@ -167,7 +167,7 @@ public class CombatManager : MonoBehaviour
             if (charStats.currentAttackCharge >=
                     charStats.maxAttackCharge)
             {
-                animMgmt.myAnim.SetBool("maxAttackCharge", true);
+                animMgmt.animator.SetBool("maxAttackCharge", true);
             }
 
             if (charStats.currentAttackCharge <=

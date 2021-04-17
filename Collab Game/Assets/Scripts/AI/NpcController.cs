@@ -26,6 +26,7 @@ public class NpcController : MonoBehaviour
     public bool debug;
 
     /*==TESTING==>*/
+    Vector3 prevDestination;
     public float combatRadius;
     float orbitTimer = 4f;
     /*==TESTING==>*/
@@ -42,9 +43,9 @@ public class NpcController : MonoBehaviour
     private void Update()
     {
         GetDistanceToTargetWithDelay();
-        //DetermineSpeed();
+        CanSeeTarget();
 
-        if (CanSeeTarget() && distanceToTarget > combatRadius)
+        if (targetInSight && distanceToTarget > combatRadius)
         {
             animator.SetBool("meleeAttackHold", false);
             animator.SetBool("chasingTarget", true);
@@ -52,17 +53,17 @@ public class NpcController : MonoBehaviour
             animator.SetBool("inCombat", false);
         }
 
-        if(CanSeeTarget() && distanceToTarget <= combatRadius)
+        if(targetInSight && distanceToTarget <= combatRadius)
         {
             RotateTowardsTransform(target.transform);
             animator.SetBool("inCombat", true);
             animator.SetBool("chasingTarget", false);
         }
 
-        if (!CanSeeTarget())
+        if (!targetInSight)
         {
             //animator.SetBool("inCombat", false);
-            animator.SetBool("chasingTarget", false);
+            //animator.SetBool("chasingTarget", false);
             animator.SetBool("strafeTarget", false);
             animator.SetBool("meleeAttackHold", false);
             navAgent.stoppingDistance = 1f;
@@ -98,6 +99,7 @@ public class NpcController : MonoBehaviour
 
     public bool CanSeeTarget()
     {
+        Debug.Log(targetInSight);
         if (distanceToTarget <= sightRange)
         {
             Ray sightRay = new Ray(raycastPos.position, -(raycastPos.position - target.GetComponent<CapsuleCollider>().bounds.center));
@@ -108,16 +110,19 @@ public class NpcController : MonoBehaviour
             
             if (lookPercentage >= 0.4f)
             {
-                if (Physics.Raycast(sightRay, out hit, sightRange, whatIsTarget))
+                if (Physics.Raycast(sightRay, out hit, sightRange))
                 {
-                    targetInSight = true;
-                    return targetInSight;
-                }
-                else
-                {
-                    navAgent.destination = transform.position;
-                    targetInSight = false;
-                    return targetInSight;
+                    if (hit.transform.tag == "Player" || hit.transform.tag == "Invulnerable")
+                    {
+                        targetInSight = true;
+                        return targetInSight;
+                    }
+                    else
+                    {
+                        navAgent.destination = transform.position;
+                        targetInSight = false;
+                        return targetInSight;
+                    }
                 }
             }
         }
@@ -136,14 +141,22 @@ public class NpcController : MonoBehaviour
         setDestinationTimer -= Time.deltaTime;
         if(setDestinationTimer < 0f)
         {
-            if(distanceToTarget > navAgent.stoppingDistance)
+            if (targetInSight)
             {
+                prevDestination = target.transform.position;
                 navAgent.destination = target.transform.position;
-            }
 
-            if(distanceToTarget <= navAgent.stoppingDistance)
+                if (distanceToTarget <= navAgent.stoppingDistance)
+                {
+                    navAgent.velocity = Vector3.zero;
+                }
+            }
+            else
             {
-                navAgent.velocity = Vector3.zero;
+                navAgent.destination = prevDestination;
+
+                if(Vector3.Distance(this.transform.position, prevDestination) <= navAgent.stoppingDistance)
+                    animator.SetBool("chasingTarget", false);
             }
 
             setDestinationTimer = setDestinationMaxTime;
