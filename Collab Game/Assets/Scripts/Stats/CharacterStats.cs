@@ -167,14 +167,12 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
                 if(blockReduction.value >= 1)
                 {
                     dmgVal /= blockReduction.value;
-                    Debug.Log(dmgVal);
-                    Debug.Log(blockReduction.value);
+                    DamageStamina(dmgVal / 2);
                 }
                 else
                 {
                     dmgVal *= blockReduction.value;
-                    Debug.Log(dmgVal);
-                    Debug.Log(blockReduction.value);
+                    DamageStamina(dmgVal / 2);
                 }
             }
         }
@@ -230,6 +228,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #region Stamina Gain
     public void StaminaGainOverTime(float gainAmount)
     {
+        if(GetComponent<CombatManager>().isBlocking) { return; }
         if (ShouldAffectVital(gainInterval))
         {
             GainStamina(gainAmount);

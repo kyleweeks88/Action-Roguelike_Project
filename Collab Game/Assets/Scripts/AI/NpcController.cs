@@ -5,11 +5,12 @@ using UnityEngine.AI;
 
 public class NpcController : MonoBehaviour
 {
+    public LayerMask whatIsTarget;
     NpcCombatManager combatMgmt;
     [SerializeField] Transform raycastPos;
     [HideInInspector] public NavMeshAgent navAgent;
     Animator animator;
-    [HideInInspector] public GameObject target;
+    public GameObject target;
 
     public float walkSpeed;
     public float runSpeed;
@@ -31,7 +32,6 @@ public class NpcController : MonoBehaviour
 
     private void Awake()
     {
-/*==TESTING==>*/target = GameObject.FindGameObjectWithTag("Player");
         navAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
         combatMgmt = GetComponent<NpcCombatManager>();
@@ -108,19 +108,16 @@ public class NpcController : MonoBehaviour
             
             if (lookPercentage >= 0.4f)
             {
-                if (Physics.Raycast(sightRay, out hit, sightRange))
+                if (Physics.Raycast(sightRay, out hit, sightRange, whatIsTarget))
                 {
-                    if (hit.transform.gameObject.tag == "Player")
-                    {
-                        targetInSight = true;
-                        return targetInSight;
-                    }
-                    else
-                    {
-                        navAgent.destination = transform.position;
-                        targetInSight = false;
-                        return targetInSight;
-                    }
+                    targetInSight = true;
+                    return targetInSight;
+                }
+                else
+                {
+                    navAgent.destination = transform.position;
+                    targetInSight = false;
+                    return targetInSight;
                 }
             }
         }
