@@ -8,7 +8,8 @@ public class NpcStrafeTargetBehavior : StateMachineBehaviour
     float currentTimer;
     float startTimer;
 
-    public int randInt;
+    [Tooltip("0 = counterclockwise, 1 = clockwise")]
+    public int directionInt;
 
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -16,7 +17,7 @@ public class NpcStrafeTargetBehavior : StateMachineBehaviour
         controller = animator.transform.GetComponentInParent<NpcController>();
         controller.navAgent.stoppingDistance = 0.5f;
         controller.navAgent.velocity = Vector3.zero;
-        controller.navAgent.speed = controller.walkSpeed;
+        controller.navAgent.speed = controller.walkSpeed+1f;
 
         //randInt = Random.Range(0, 2);
         startTimer = Random.Range(1f, 3f);
@@ -28,7 +29,7 @@ public class NpcStrafeTargetBehavior : StateMachineBehaviour
         currentTimer -= Time.deltaTime;
         if (currentTimer > 0)
         {
-            controller.StrafeTarget(randInt);
+            controller.StrafeTarget(directionInt);
         }
         else
         {

@@ -18,7 +18,7 @@ public class NpcCombatIdleBehavior : StateMachineBehaviour
         npcCtrl.navAgent.stoppingDistance = combatManager.meleeAttackDistance;
         animator.SetBool("meleeAttackHold", false);
 
-        randInt = Random.Range(0, 3);
+        randInt = Random.Range(0, 2);
     }
 
 

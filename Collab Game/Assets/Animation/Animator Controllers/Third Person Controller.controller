@@ -2993,6 +2993,32 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1102 &-1570432751234668239
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Aerial Dive Attack
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 0}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-1566749005622391476
 AnimatorState:
   serializedVersion: 5
@@ -3760,9 +3786,9 @@ AnimatorController:
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
   - serializedVersion: 5
-    m_Name: Combat
-    m_StateMachine: {fileID: 4314022807737779632}
-    m_Mask: {fileID: 31900000, guid: cf105deafff94d54498809dfad7be05e, type: 2}
+    m_Name: Override
+    m_StateMachine: {fileID: -8300025692079419863}
+    m_Mask: {fileID: 0}
     m_Motions: []
     m_Behaviours: []
     m_BlendingMode: 0
@@ -3772,9 +3798,9 @@ AnimatorController:
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
   - serializedVersion: 5
-    m_Name: Override
-    m_StateMachine: {fileID: -8300025692079419863}
-    m_Mask: {fileID: 0}
+    m_Name: Combat
+    m_StateMachine: {fileID: 4314022807737779632}
+    m_Mask: {fileID: 31900000, guid: cf105deafff94d54498809dfad7be05e, type: 2}
     m_Motions: []
     m_Behaviours: []
     m_BlendingMode: 0
@@ -5187,6 +5213,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -1881226700937044382}
     m_Position: {x: 90, y: -50, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -1570432751234668239}
+    m_Position: {x: 140, y: -130, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -2236313258185236322}

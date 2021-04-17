@@ -50,7 +50,7 @@ public class NpcController : MonoBehaviour
             animator.SetBool("meleeAttackHold", false);
             animator.SetBool("chasingTarget", true);
             animator.SetBool("strafeTarget", false);
-            animator.SetBool("inCombat", false);
+            //animator.SetBool("inCombat", false);
         }
 
         if(targetInSight && distanceToTarget <= combatRadius)
@@ -99,7 +99,6 @@ public class NpcController : MonoBehaviour
 
     public bool CanSeeTarget()
     {
-        Debug.Log(targetInSight);
         if (distanceToTarget <= sightRange)
         {
             Ray sightRay = new Ray(raycastPos.position, -(raycastPos.position - target.GetComponent<CapsuleCollider>().bounds.center));
@@ -119,7 +118,6 @@ public class NpcController : MonoBehaviour
                     }
                     else
                     {
-                        navAgent.destination = transform.position;
                         targetInSight = false;
                         return targetInSight;
                     }
