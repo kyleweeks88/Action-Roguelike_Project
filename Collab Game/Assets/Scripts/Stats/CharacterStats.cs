@@ -194,8 +194,12 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
             // This adds force to the character ragdoll in the...
             // forward direction of the damaging object.
-            chestRb.AddForceAtPosition((attacker.transform.forward + attacker.transform.up) * 250f,
-            chestRb.gameObject.transform.position, ForceMode.Impulse);
+            var rb = GetComponentInChildren<Animator>().GetBoneTransform(HumanBodyBones.Chest).GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddForceAtPosition((attacker.transform.forward + attacker.transform.up) * 15f,
+                rb.gameObject.transform.position, ForceMode.VelocityChange);
+            }
         }
     }
 
