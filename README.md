@@ -1,2 +1,2 @@
-# unity_collab_game_project
-A collaboration project on a video game.
+# Action-Roguelike_Project
+A collaboration project on an action rpg roguelite video game.
