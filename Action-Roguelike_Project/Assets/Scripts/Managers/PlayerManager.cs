@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -17,9 +18,10 @@ public class PlayerManager : MonoBehaviour
     public VitalsManager vitalsMgmt;
 
     [Header("Camera Ref")]
-    public GameObject myCamera = null;
+    public Camera myCamera = null;
     public GameObject freeLook;
     public GameObject sprintCamera;
+    public CinemachineVirtualCameraBase uiCamera;
 
     public bool isInteracting = false;
 

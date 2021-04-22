@@ -21,6 +21,7 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     // Used when the player interacts with contextual objects in the environment
     public event UnityAction interactEvent;
     public event UnityAction userInterfaceEvent;
+    public event UnityAction pauseEvent;
 
     PlayerControls controls;
     public PlayerControls Controls
@@ -42,6 +43,8 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
 
     public void EnableGameplayInput()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         Controls.UserInterface.Disable();
         Controls.Player.Enable();
         Controls.Player.SetCallbacks(this);
@@ -49,6 +52,8 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
 
     public void EnableUserInterfaceInput()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         Controls.Player.Disable();
         Controls.UserInterface.Enable();
         Controls.UserInterface.SetCallbacks(this);
@@ -137,6 +142,13 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         if (userInterfaceEvent != null &&
             context.phase == InputActionPhase.Started)
             userInterfaceEvent.Invoke();
+    }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if (pauseEvent != null &&
+            context.phase == InputActionPhase.Started)
+            pauseEvent.Invoke();
     }
 
     public void OnThrow(InputAction.CallbackContext context)
