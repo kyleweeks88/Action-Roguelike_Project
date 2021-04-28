@@ -42,8 +42,9 @@ GameObject:
   - component: {fileID: 5686730407409566682}
   - component: {fileID: 36758919997338256}
   - component: {fileID: 3628821030151577665}
+  - component: {fileID: 3575608920789037414}
   m_Layer: 5
-  m_Name: Image (11)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120,6 +121,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &3575608920789037414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110541456319785106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 36758919997338256}
+  equipmentType: 2
 --- !u!1 &118340748725819138
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,8 +221,9 @@ GameObject:
   - component: {fileID: 7949203529561274605}
   - component: {fileID: 9021408318237563047}
   - component: {fileID: 468300114469111550}
+  - component: {fileID: 1513631461538555274}
   m_Layer: 5
-  m_Name: Image (10)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -284,6 +300,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &1513631461538555274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142031972198756776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 9021408318237563047}
+  equipmentType: 2
 --- !u!1 &213535130460840138
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,8 +325,9 @@ GameObject:
   - component: {fileID: 9111184621694550966}
   - component: {fileID: 6688630418379295629}
   - component: {fileID: 876991310259422835}
+  - component: {fileID: 6326336019919322187}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: Gear Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -348,7 +379,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ba49405c024364d4a8d7116d732f9328, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -358,6 +389,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6326336019919322187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213535130460840138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 876991310259422835}
+  equipmentType: 3
 --- !u!1 &216702138793554021
 GameObject:
   m_ObjectHideFlags: 0
@@ -545,7 +590,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 241709722107764055}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -594,8 +639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 708977952715482222}
 --- !u!1 &245084523428792180
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,7 +768,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 279438964419396843}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -736,7 +780,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: fd6e4fc32c78509458fc45ea4a478ba8, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -773,8 +817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 4109163883905842583}
 --- !u!1 &283600616457318973
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,7 +947,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 341649201096607676}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -953,8 +996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 222737154445791626}
 --- !u!1 &344660181560144651
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,8 +1156,9 @@ GameObject:
   - component: {fileID: 4626437819036678908}
   - component: {fileID: 4208780253988320449}
   - component: {fileID: 7760973649635215674}
+  - component: {fileID: 880091011068505397}
   m_Layer: 5
-  m_Name: Image (3)
+  m_Name: Gear Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1167,7 +1210,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ba49405c024364d4a8d7116d732f9328, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1177,6 +1220,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &880091011068505397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 468636692522078291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 7760973649635215674}
+  equipmentType: 3
 --- !u!1 &469106416212321049
 GameObject:
   m_ObjectHideFlags: 0
@@ -1305,7 +1362,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 540563499743101911}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -1354,8 +1411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 4628571303967000382}
 --- !u!1 &738905235728557519
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,8 +1748,9 @@ GameObject:
   - component: {fileID: 2890274289091390683}
   - component: {fileID: 6643038754912604030}
   - component: {fileID: 1651281710439202069}
+  - component: {fileID: 5677040762208593993}
   m_Layer: 5
-  m_Name: Image (4)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1770,6 +1827,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &5677040762208593993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962788700588906655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 6643038754912604030}
+  equipmentType: 2
 --- !u!1 &1021001367526815208
 GameObject:
   m_ObjectHideFlags: 0
@@ -1824,7 +1895,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021001367526815208}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -1873,8 +1944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 7877751387694968601}
 --- !u!1 &1071505724233393859
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,8 +2032,9 @@ GameObject:
   - component: {fileID: 252222349215818017}
   - component: {fileID: 194479123330504780}
   - component: {fileID: 7380764626488236310}
+  - component: {fileID: 7333994410675874898}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2040,6 +2111,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &7333994410675874898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124546548293193159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 194479123330504780}
+  equipmentType: 2
 --- !u!1 &1289743881844902641
 GameObject:
   m_ObjectHideFlags: 0
@@ -2094,7 +2179,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1289743881844902641}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -2143,8 +2228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 4886206559542190448}
 --- !u!1 &1354696965731350546
 GameObject:
   m_ObjectHideFlags: 0
@@ -2532,8 +2616,9 @@ GameObject:
   - component: {fileID: 8138048428315953236}
   - component: {fileID: 7318054604492888402}
   - component: {fileID: 3802828958414323092}
+  - component: {fileID: 2709292299080200026}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2610,6 +2695,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &2709292299080200026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685357901557458386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 7318054604492888402}
+  equipmentType: 2
 --- !u!1 &1736823828040938977
 GameObject:
   m_ObjectHideFlags: 0
@@ -2772,7 +2871,7 @@ GameObject:
   - component: {fileID: 8145157980487408849}
   - component: {fileID: 208383050270489942}
   m_Layer: 5
-  m_Name: Equipment Display
+  m_Name: Gear Display
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3021,7 +3120,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8882017652562870698}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: Weapons Display
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3135,8 +3234,9 @@ GameObject:
   - component: {fileID: 3338958202693763571}
   - component: {fileID: 6637451445522739298}
   - component: {fileID: 8248864495086673732}
+  - component: {fileID: 4946249329807690513}
   m_Layer: 5
-  m_Name: Image (7)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3213,6 +3313,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &4946249329807690513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2257775162357436309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 6637451445522739298}
+  equipmentType: 2
 --- !u!1 &2349274576322886989
 GameObject:
   m_ObjectHideFlags: 0
@@ -3523,8 +3637,9 @@ GameObject:
   - component: {fileID: 2010135224178081699}
   - component: {fileID: 6291064284778057712}
   - component: {fileID: 4858333673451843754}
+  - component: {fileID: 1849612866185715261}
   m_Layer: 5
-  m_Name: Image (9)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3601,6 +3716,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &1849612866185715261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2601565282709927125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 6291064284778057712}
+  equipmentType: 2
 --- !u!1 &2722101126998954233
 GameObject:
   m_ObjectHideFlags: 0
@@ -3967,8 +4096,9 @@ GameObject:
   - component: {fileID: 3040912114490988241}
   - component: {fileID: 2604850202698472966}
   - component: {fileID: 6997276270433722141}
+  - component: {fileID: 2749830730284618294}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: MeleeWeapon Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4030,6 +4160,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2749830730284618294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2818500796662584132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 6997276270433722141}
+  equipmentType: 0
 --- !u!1 &2854831859605974775
 GameObject:
   m_ObjectHideFlags: 0
@@ -4116,7 +4260,7 @@ GameObject:
   - component: {fileID: 3603860658322513836}
   - component: {fileID: 4603109473754283512}
   m_Layer: 5
-  m_Name: Gear Title
+  m_Name: Weapons Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4191,8 +4335,9 @@ GameObject:
   - component: {fileID: 985712055272980797}
   - component: {fileID: 29770146747506094}
   - component: {fileID: 3532683449515875997}
+  - component: {fileID: 689821191569277964}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4269,6 +4414,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &689821191569277964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3065617115089985515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 29770146747506094}
+  equipmentType: 2
 --- !u!1 &3074955625309294729
 GameObject:
   m_ObjectHideFlags: 0
@@ -4392,7 +4551,7 @@ GameObject:
   - component: {fileID: 1927841325954379880}
   - component: {fileID: 3460781309459711597}
   m_Layer: 5
-  m_Name: Relics/Gear Panel
+  m_Name: Relics/Weapons Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4552,7 +4711,7 @@ GameObject:
   - component: {fileID: 1544891005791268732}
   - component: {fileID: 1739815144949188345}
   m_Layer: 5
-  m_Name: Inventory/Equipment Panel
+  m_Name: Inventory/Gear Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4744,7 +4903,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3350759087837818972}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -4793,8 +4952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 4100761919576821187}
 --- !u!1 &3407515847554094552
 GameObject:
   m_ObjectHideFlags: 0
@@ -4807,7 +4965,7 @@ GameObject:
   - component: {fileID: 7001386022738834838}
   - component: {fileID: 3495408194859505706}
   m_Layer: 5
-  m_Name: Equipment Title
+  m_Name: Gear Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4955,8 +5113,9 @@ GameObject:
   - component: {fileID: 6245001145690312978}
   - component: {fileID: 8751671521838620772}
   - component: {fileID: 8729609132271619254}
+  - component: {fileID: 5346141339407923448}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: RangedWeapon Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5018,6 +5177,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5346141339407923448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3626163833160659210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 8729609132271619254}
+  equipmentType: 1
 --- !u!1 &3724881297439993391
 GameObject:
   m_ObjectHideFlags: 0
@@ -5701,8 +5874,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881298246990970}
-  m_LocalRotation: {x: 0.1873536, y: 0.010867246, z: -0.002072852, w: 0.98223025}
-  m_LocalPosition: {x: -0.12637904, y: 3.8076477, z: -5.7106476}
+  m_LocalRotation: {x: 0.18735358, y: 0.0108672585, z: -0.0020728542, w: 0.98223025}
+  m_LocalPosition: {x: -8.706379, y: 3.8076477, z: -14.300648}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 214003658499284119}
@@ -6555,7 +6728,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4078843971298040761}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -6604,8 +6777,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 8716354916203600798}
 --- !u!1 &4114000987463361024
 GameObject:
   m_ObjectHideFlags: 0
@@ -6850,7 +7022,7 @@ GameObject:
   - component: {fileID: 4805874001113383745}
   - component: {fileID: 579190578782946867}
   m_Layer: 5
-  m_Name: Gear Text
+  m_Name: Weapons Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6902,7 +7074,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: GEAR
+  m_text: WEAPONS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7705,8 +7877,9 @@ GameObject:
   - component: {fileID: 5856561368861517628}
   - component: {fileID: 1750721278192131555}
   - component: {fileID: 7746966956464563949}
+  - component: {fileID: 8047725130682370924}
   m_Layer: 5
-  m_Name: Image
+  m_Name: MeleeWeapon Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7768,6 +7941,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8047725130682370924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4902186262544828689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 7746966956464563949}
+  equipmentType: 0
 --- !u!1 &4915079154336435578
 GameObject:
   m_ObjectHideFlags: 0
@@ -8073,8 +8260,9 @@ GameObject:
   - component: {fileID: 4028429199422218652}
   - component: {fileID: 3350885291224624198}
   - component: {fileID: 2571720136577926077}
+  - component: {fileID: 7072777817263559718}
   m_Layer: 5
-  m_Name: Image (4)
+  m_Name: Gear Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8126,7 +8314,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ba49405c024364d4a8d7116d732f9328, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8136,6 +8324,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7072777817263559718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5152244930667583418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 2571720136577926077}
+  equipmentType: 3
 --- !u!1 &5192771104901329119
 GameObject:
   m_ObjectHideFlags: 0
@@ -8770,7 +8972,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3703225088798356617}
   m_Layer: 5
-  m_Name: Equipment Section
+  m_Name: Gear Section
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8809,8 +9011,9 @@ GameObject:
   - component: {fileID: 3693837858622054411}
   - component: {fileID: 4137046361643402573}
   - component: {fileID: 2200999327043807400}
+  - component: {fileID: 7445447220044066575}
   m_Layer: 5
-  m_Name: Image (6)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8887,6 +9090,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &7445447220044066575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5973211900904863813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 4137046361643402573}
+  equipmentType: 2
 --- !u!1 &6046620579557729762
 GameObject:
   m_ObjectHideFlags: 0
@@ -8941,7 +9158,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6046620579557729762}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -8990,8 +9207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 6198472562047594853}
 --- !u!1 &6081422607917199618
 GameObject:
   m_ObjectHideFlags: 0
@@ -9004,8 +9220,9 @@ GameObject:
   - component: {fileID: 7152920412865371516}
   - component: {fileID: 6459313564982576043}
   - component: {fileID: 1088157589662680172}
+  - component: {fileID: 6542991395239731520}
   m_Layer: 5
-  m_Name: Image (8)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9082,6 +9299,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &6542991395239731520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6081422607917199618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 6459313564982576043}
+  equipmentType: 2
 --- !u!1 &6107748547186980027
 GameObject:
   m_ObjectHideFlags: 0
@@ -9334,8 +9565,9 @@ GameObject:
   - component: {fileID: 5706556150975942979}
   - component: {fileID: 7328633678962180380}
   - component: {fileID: 3469935858446787698}
+  - component: {fileID: 759077248839019104}
   m_Layer: 5
-  m_Name: Image (5)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9412,6 +9644,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &759077248839019104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6190180950883189972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 7328633678962180380}
+  equipmentType: 2
 --- !u!1 &6305901883875180803
 GameObject:
   m_ObjectHideFlags: 0
@@ -9614,7 +9860,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6358894513944901131}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -9626,7 +9872,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 5fd50594014b70e48bd6993443d46b32, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9663,8 +9909,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 8715808884435235110}
 --- !u!1 &6521312236306072377
 GameObject:
   m_ObjectHideFlags: 0
@@ -9719,7 +9964,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6521312236306072377}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -9768,8 +10013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 3448516642682101957}
 --- !u!1 &6525119624640771161
 GameObject:
   m_ObjectHideFlags: 0
@@ -10933,6 +11177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 886367291122525266}
+  - component: {fileID: 4651240066357084794}
   m_Layer: 5
   m_Name: Inventory/Equipment
   m_TagString: Untagged
@@ -10962,6 +11207,33 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4651240066357084794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7617020777229079273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58892422c205065419279036e4441341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items: []
+  itemsParent: {fileID: 6830731682006077080}
+  itemSlots:
+  - {fileID: 7071526284863314071}
+  - {fileID: 2443905981374135636}
+  - {fileID: 6216530953724329608}
+  - {fileID: 5589319891528826728}
+  - {fileID: 1497936678472159318}
+  - {fileID: 5119712440703867424}
+  - {fileID: 4446761086092109925}
+  - {fileID: 8708671324975375116}
+  - {fileID: 8899041712266985347}
+  - {fileID: 7360338978455630662}
+  - {fileID: 6578732463563867164}
+  - {fileID: 2598035428279833009}
 --- !u!1 &7648781199443916578
 GameObject:
   m_ObjectHideFlags: 0
@@ -11048,7 +11320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6733132180975012570}
   m_Layer: 5
-  m_Name: Gear Section
+  m_Name: Weapons Section
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11435,8 +11707,9 @@ GameObject:
   - component: {fileID: 5280299115216892871}
   - component: {fileID: 820847756540708652}
   - component: {fileID: 2449387482530067748}
+  - component: {fileID: 3270213349681292915}
   m_Layer: 5
-  m_Name: Image (3)
+  m_Name: Relic Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11513,6 +11786,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &3270213349681292915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8452143172030761359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 820847756540708652}
+  equipmentType: 2
 --- !u!1 &8487382992057307723
 GameObject:
   m_ObjectHideFlags: 0
@@ -11524,8 +11811,9 @@ GameObject:
   - component: {fileID: 3146076439494507842}
   - component: {fileID: 6363669606683925569}
   - component: {fileID: 7335502443139363021}
+  - component: {fileID: 346297773613593805}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: Gear Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11577,7 +11865,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ba49405c024364d4a8d7116d732f9328, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11587,6 +11875,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &346297773613593805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8487382992057307723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c5994dbf0276f4b9765068cc9dae2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 7335502443139363021}
+  equipmentType: 3
 --- !u!1 &8562945948248621976
 GameObject:
   m_ObjectHideFlags: 0
@@ -12007,7 +12309,7 @@ GameObject:
   - component: {fileID: 7814568218886711971}
   - component: {fileID: 2143459537984727234}
   m_Layer: 5
-  m_Name: Equipment Text
+  m_Name: Gear Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12059,7 +12361,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: EQUIPMENT
+  m_text: GEAR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -12323,7 +12625,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8832000758008334630}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -12372,8 +12674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6c0221e9fe8d44f881a0c4acc67ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 1196933434577914925}
 --- !u!1 &8948690245292671767
 GameObject:
   m_ObjectHideFlags: 0
@@ -12944,9 +13245,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f11fc98cf1e8d5547a9b2ec85cc9c664, type: 3}
---- !u!95 &3666928712302175822 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 95389170962898660, guid: f11fc98cf1e8d5547a9b2ec85cc9c664,
+--- !u!4 &3728915350638876982 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4128732659769756, guid: f11fc98cf1e8d5547a9b2ec85cc9c664,
     type: 3}
   m_PrefabInstance: {fileID: 3724881298504431786}
   m_PrefabAsset: {fileID: 0}
@@ -12956,9 +13257,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3724881298504431786}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3725278466857801860 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1045401375514670, guid: f11fc98cf1e8d5547a9b2ec85cc9c664,
+--- !u!95 &3666928712302175822 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95389170962898660, guid: f11fc98cf1e8d5547a9b2ec85cc9c664,
     type: 3}
   m_PrefabInstance: {fileID: 3724881298504431786}
   m_PrefabAsset: {fileID: 0}
@@ -12968,9 +13269,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3724881298504431786}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &3728915350638876982 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4128732659769756, guid: f11fc98cf1e8d5547a9b2ec85cc9c664,
+--- !u!1 &3725278466857801860 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1045401375514670, guid: f11fc98cf1e8d5547a9b2ec85cc9c664,
     type: 3}
   m_PrefabInstance: {fileID: 3724881298504431786}
   m_PrefabAsset: {fileID: 0}

@@ -5,6 +5,8 @@ public class ItemSlot : MonoBehaviour
 {
     [SerializeField] Image image;
 
+    // THIS IS SOME UNITY MAGIC THAT MAKES THE CLASS REALLY EASY TO USE.
+    // JUST CHANGE THE ItemData item AND IT AUTOMAITCALLY UPDATES THE IMAGE.
     ItemData _item;
     public ItemData item 
     {
@@ -13,7 +15,7 @@ public class ItemSlot : MonoBehaviour
         {
             _item = value;
 
-            if(_item = value)
+            if(_item == null)
             {
                 image.enabled = false;
             }
@@ -26,7 +28,7 @@ public class ItemSlot : MonoBehaviour
     }
 
 
-    void OnValidate()
+    protected virtual void OnValidate()
     {
         if (image == null)
             image = GetComponent<Image>();
