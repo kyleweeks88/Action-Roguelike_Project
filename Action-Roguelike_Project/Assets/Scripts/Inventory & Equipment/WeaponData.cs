@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 
-public abstract class WeaponData : ItemData
+public abstract class WeaponData : EquippableItem
 {
-    public enum WeaponType { Ranged, Melee }
-    public WeaponType weaponType;
-
     public enum WieldStyle { OneHanded, TwoHanded, DualWield }
     public WieldStyle wieldStyle;
 

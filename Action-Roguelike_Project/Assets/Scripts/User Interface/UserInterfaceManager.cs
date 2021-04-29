@@ -5,6 +5,7 @@ using UnityEngine;
 public class UserInterfaceManager : MonoBehaviour
 {
     [SerializeField] GameObject menuInterface;
+    [SerializeField] Canvas menuInt;
     [SerializeField] PlayerManager playerMgmt;
     public LayerMask uiMask;
     int oldMask = 0;
@@ -18,13 +19,13 @@ public class UserInterfaceManager : MonoBehaviour
 
     void OnUserInterface()
     {
-        if (!menuInterface.activeInHierarchy)
+        if(!menuInt.enabled)
         {
             playerMgmt.inputMgmt.EnableUserInterfaceInput();
             playerMgmt.myCamera.cullingMask = uiMask;
             playerMgmt.uiCamera.m_Priority = 11;
 
-            menuInterface.SetActive(true);
+            menuInt.enabled = true;
         }
         else
         {
@@ -32,8 +33,24 @@ public class UserInterfaceManager : MonoBehaviour
             playerMgmt.myCamera.cullingMask = oldMask;
             playerMgmt.uiCamera.m_Priority = 8;
 
-            menuInterface.SetActive(false);
+            menuInt.enabled = false;
         }
+        //if (!menuInterface.activeInHierarchy)
+        //{
+        //    playerMgmt.inputMgmt.EnableUserInterfaceInput();
+        //    playerMgmt.myCamera.cullingMask = uiMask;
+        //    playerMgmt.uiCamera.m_Priority = 11;
+
+        //    menuInterface.SetActive(true);
+        //}
+        //else
+        //{
+        //    playerMgmt.inputMgmt.EnableGameplayInput();
+        //    playerMgmt.myCamera.cullingMask = oldMask;
+        //    playerMgmt.uiCamera.m_Priority = 8;
+
+        //    menuInterface.SetActive(false);
+        //}
     }
 
     void PauseGame()

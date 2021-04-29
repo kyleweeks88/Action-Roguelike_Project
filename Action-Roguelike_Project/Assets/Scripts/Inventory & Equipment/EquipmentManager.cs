@@ -11,6 +11,7 @@ public class EquipmentManager : MonoBehaviour
 
     [SerializeField] Transform weaponEquipPos;
 
+
     void Start()
     {
         if(currentlyEquippedWeapon != null)
@@ -33,6 +34,8 @@ public class EquipmentManager : MonoBehaviour
         }
         else
         {
+            EquippableItem prevItem;
+            GetComponentInChildren<EquipmentPanel>().AddItem(_weaponToEquip.weaponData, out prevItem);
             Weapon newWeapon = Instantiate(_weaponToEquip, _weaponEquipPos);
             newWeapon.transform.SetParent(_weaponEquipPos);
             newWeapon.transform.localPosition = Vector3.zero;
