@@ -11,6 +11,9 @@ public class EquipmentManager : MonoBehaviour
 
     [SerializeField] Transform weaponEquipPos;
 
+    ///////////////////////////////////////////
+    [SerializeField] Inventory inventory;
+    [SerializeField] EquipmentPanel equipmentPanel;
 
     void Start()
     {
@@ -44,6 +47,19 @@ public class EquipmentManager : MonoBehaviour
             playerMgmt.animMgmt.SetAnimation(newWeapon.weaponData.animationSet);
             weaponToEquip = newWeapon;
             currentlyEquippedWeapon = newWeapon;
+        }
+    }
+
+    /////////////////////////////
+    public void Equip(EquippableItem _item)
+    {
+        if(inventory.RemoveItem(_item))
+        {
+            EquippableItem prevItem;
+            if(equipmentPanel.AddItem(_item, out prevItem))
+            {
+
+            }
         }
     }
 }

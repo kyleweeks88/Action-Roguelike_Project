@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class UserInterfaceManager : MonoBehaviour
 {
-    [SerializeField] GameObject menuInterface;
-    [SerializeField] Canvas menuInt;
+    [SerializeField] Canvas menuCanvas;
     [SerializeField] PlayerManager playerMgmt;
     public LayerMask uiMask;
     int oldMask = 0;
@@ -19,13 +18,13 @@ public class UserInterfaceManager : MonoBehaviour
 
     void OnUserInterface()
     {
-        if(!menuInt.enabled)
+        if(!menuCanvas.enabled)
         {
             playerMgmt.inputMgmt.EnableUserInterfaceInput();
             playerMgmt.myCamera.cullingMask = uiMask;
             playerMgmt.uiCamera.m_Priority = 11;
 
-            menuInt.enabled = true;
+            menuCanvas.enabled = true;
         }
         else
         {
@@ -33,24 +32,8 @@ public class UserInterfaceManager : MonoBehaviour
             playerMgmt.myCamera.cullingMask = oldMask;
             playerMgmt.uiCamera.m_Priority = 8;
 
-            menuInt.enabled = false;
+            menuCanvas.enabled = false;
         }
-        //if (!menuInterface.activeInHierarchy)
-        //{
-        //    playerMgmt.inputMgmt.EnableUserInterfaceInput();
-        //    playerMgmt.myCamera.cullingMask = uiMask;
-        //    playerMgmt.uiCamera.m_Priority = 11;
-
-        //    menuInterface.SetActive(true);
-        //}
-        //else
-        //{
-        //    playerMgmt.inputMgmt.EnableGameplayInput();
-        //    playerMgmt.myCamera.cullingMask = oldMask;
-        //    playerMgmt.uiCamera.m_Priority = 8;
-
-        //    menuInterface.SetActive(false);
-        //}
     }
 
     void PauseGame()
