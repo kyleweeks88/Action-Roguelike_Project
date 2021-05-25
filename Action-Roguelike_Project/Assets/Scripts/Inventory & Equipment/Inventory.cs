@@ -9,6 +9,16 @@ public class Inventory : MonoBehaviour
     [SerializeField] Transform itemsParent;
     [SerializeField] ItemSlot[] itemSlots;
 
+    public event Action<ItemData> OnItemRightClickedEvent;
+
+    private void Awake()
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            itemSlots[i].OnRightClickEvent += OnItemRightClickedEvent;
+        }
+    }
+
     private void OnValidate()
     {
         if (itemsParent != null)

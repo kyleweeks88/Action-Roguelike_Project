@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System;
 
-public class ItemSlot : MonoBehaviour
+public class ItemSlot : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] Image image;
+
+    public event Action<ItemData> OnRightClickEvent; 
 
     // THIS IS SOME UNITY MAGIC THAT MAKES THE CLASS REALLY EASY TO USE.
     // JUST CHANGE THE ItemData item AND IT AUTOMAITCALLY UPDATES THE IMAGE.
@@ -27,6 +31,14 @@ public class ItemSlot : MonoBehaviour
         }
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if(eventData != null && eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (item != null && OnRightClickEvent != null)
+                OnRightClickEvent(item);
+        }
+    }
 
     protected virtual void OnValidate()
     {
