@@ -52,7 +52,7 @@ public class WeaponPickup : MonoBehaviour
         EquipmentManager entityEquipment = interactingEntity.GetComponent<EquipmentManager>();
         if (entityEquipment != null)
         {
-            entityEquipment.CheckEquipWeapon(weaponToPickup_Pf);
+            entityEquipment.EquipWeapon(weaponToPickup_Pf);
         }
 
         interactingEntity.GetComponent<PlayerManager>().inputMgmt.interactEvent -= PickupWeapon;

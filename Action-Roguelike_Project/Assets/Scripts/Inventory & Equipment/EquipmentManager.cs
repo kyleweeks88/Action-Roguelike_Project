@@ -19,25 +19,23 @@ public class EquipmentManager : MonoBehaviour
         }
     }
 
-    public void CheckEquipWeapon(Weapon _weaponToEquip)
+    public void EquipWeapon(Weapon _weaponToEquip)
     {
-        weaponToEquip = _weaponToEquip;
-        EquipWeapon(weaponToEquip, weaponEquipPos);
-    }
-
-    public void EquipWeapon(Weapon _weaponToEquip, Transform _weaponEquipPos)
-    {
-
         if (currentlyEquippedWeapon != null)
         {
             // UNEQUIP WEAPON LOGIC
+            EquippableItem prevItem;
+            GetComponentInChildren<EquipmentPanel>().AddItem(_weaponToEquip.weaponData, out prevItem);
+            GetComponentInChildren<Inventory>().AddItem(prevItem);
         }
         else
         {
             EquippableItem prevItem;
             GetComponentInChildren<EquipmentPanel>().AddItem(_weaponToEquip.weaponData, out prevItem);
-            Weapon newWeapon = Instantiate(_weaponToEquip, _weaponEquipPos);
-            newWeapon.transform.SetParent(_weaponEquipPos);
+            // HERE IS WHERE I SHOULD DO SOMETHING WITH THE prevItem...
+            // DROP ON THE GROUND MAYBE?
+            Weapon newWeapon = Instantiate(_weaponToEquip, weaponEquipPos);
+            newWeapon.transform.SetParent(weaponEquipPos);
             newWeapon.transform.localPosition = Vector3.zero;
             newWeapon.transform.localRotation = Quaternion.Euler(Vector3.zero);
 

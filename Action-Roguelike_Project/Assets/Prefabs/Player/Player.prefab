@@ -5713,8 +5713,6 @@ MonoBehaviour:
   playerMgmt: {fileID: 4845021161842536216}
   currentlyEquippedWeapon: {fileID: 0}
   weaponEquipPos: {fileID: 8260514817541097335}
-  inventory: {fileID: 0}
-  equipmentPanel: {fileID: 0}
 --- !u!114 &14693031
 MonoBehaviour:
   m_ObjectHideFlags: 0
