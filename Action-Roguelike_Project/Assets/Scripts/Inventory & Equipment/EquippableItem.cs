@@ -7,7 +7,7 @@ public enum EquipmentType
     MeleeWeapon,
     RangedWeapon,
     Relic,
-    Gear
+    Consumable
 }
 
 [CreateAssetMenu]
