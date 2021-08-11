@@ -12,7 +12,7 @@ public class CombatManager : MonoBehaviour
     [SerializeField] protected Transform leftHand;
     [SerializeField] protected Transform rightHand;
     protected CharacterStats charStats;
-    EquipmentManager equipmentMgmt;
+    WeaponManager weaponMgmt;
     AnimationManager animMgmt;
 
     float combatTimer = 10f;
@@ -38,7 +38,7 @@ public class CombatManager : MonoBehaviour
     public virtual void Start()
     {
         charStats = GetComponent<CharacterStats>();
-        equipmentMgmt = GetComponent<EquipmentManager>();
+        weaponMgmt = GetComponent<WeaponManager>();
         animMgmt = GetComponent<AnimationManager>();
 
         canRecieveAttackInput = true;
@@ -132,10 +132,10 @@ public class CombatManager : MonoBehaviour
     public virtual void ChargeMeleeAttack()
     {
         // If you have a weapon equipped...
-        if (equipmentMgmt.currentlyEquippedWeapon != null)
+        if (weaponMgmt.currentlyEquippedWeapon != null)
         {
             // If the current weapon is chargeable...
-            if (equipmentMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
+            if (weaponMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
             {
                 // If the current weapon's charge is high enough, set the bool to true
                 // to perform maxCharge special attack.
@@ -193,9 +193,9 @@ public class CombatManager : MonoBehaviour
     /// <param name="handInt"></param>
     public virtual void ActivateImpact(int impactID)
     {
-        if (equipmentMgmt.currentlyEquippedWeapon != null)
+        if (weaponMgmt.currentlyEquippedWeapon != null)
         {
-            MeleeWeapon myWeapon = equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+            MeleeWeapon myWeapon = weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
             charStats.DamageStamina(myWeapon.meleeData.staminaCost);
         }
         else
@@ -249,7 +249,7 @@ public class CombatManager : MonoBehaviour
     {
         if (impactActivated)
         {
-            MeleeWeapon equippedWeapon = equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+            MeleeWeapon equippedWeapon = weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
             if (equippedWeapon != null)
             {
                 // Creates the collider on the weapon, the weapon then calls the Cmd

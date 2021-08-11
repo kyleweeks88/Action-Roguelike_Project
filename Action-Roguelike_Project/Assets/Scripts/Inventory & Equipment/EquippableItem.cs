@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public enum EquipmentType
+public enum ItemType
 {
-    MeleeWeapon,
-    RangedWeapon,
+    MainWeapon,
+    SecondaryWeapon,
     Relic,
     Consumable
 }
@@ -13,5 +11,5 @@ public enum EquipmentType
 [CreateAssetMenu]
 public class EquippableItem : ItemData
 {
-    public EquipmentType equipmentType;
+    public ItemType itemType;
 }

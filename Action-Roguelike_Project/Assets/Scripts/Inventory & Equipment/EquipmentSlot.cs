@@ -2,11 +2,11 @@
 
 public class EquipmentSlot : ItemSlot
 {
-    public EquipmentType equipmentType;
+    public ItemType itemType;
 
     protected override void OnValidate()
     {
         base.OnValidate();
-        gameObject.name = equipmentType.ToString() + " Slot";
+        gameObject.name = itemType.ToString() + " Slot";
     }
 }

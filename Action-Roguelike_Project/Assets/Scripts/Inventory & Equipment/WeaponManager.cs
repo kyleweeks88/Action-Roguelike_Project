@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentManager : MonoBehaviour
+public class WeaponManager : MonoBehaviour
 {
     public Weapon[] equippedWeapons;
     [SerializeField] PlayerManager playerMgmt;
@@ -13,6 +13,7 @@ public class EquipmentManager : MonoBehaviour
 
     void Start()
     {
+        // IF THE PLAYER HAS A WEAPON EQUIPPED PLAY THE WEAPONS ANIMATION SET
         if(currentlyEquippedWeapon != null)
         {
             playerMgmt.animMgmt.SetAnimation(currentlyEquippedWeapon.weaponData.animationSet);
@@ -21,19 +22,16 @@ public class EquipmentManager : MonoBehaviour
 
     public void EquipWeapon(Weapon _weaponToEquip)
     {
+        // IF THERE IS A WEAPON...
         if (currentlyEquippedWeapon != null)
         {
-            // UNEQUIP WEAPON LOGIC
-            EquippableItem prevItem;
-            GetComponentInChildren<EquipmentPanel>().AddItem(_weaponToEquip.weaponData, out prevItem);
-            GetComponentInChildren<Inventory>().AddItem(prevItem);
+            Debug.Log("Weapon Already Equipped");
+            // HERE IS WHERE I SHOULD DO SOMETHING WITH THE EQUIPPED WEAPON...
+            // DROP ON THE GROUND MAYBE?
         }
+        // IF THERE IS NO WEAPON...
         else
         {
-            EquippableItem prevItem;
-            GetComponentInChildren<EquipmentPanel>().AddItem(_weaponToEquip.weaponData, out prevItem);
-            // HERE IS WHERE I SHOULD DO SOMETHING WITH THE prevItem...
-            // DROP ON THE GROUND MAYBE?
             Weapon newWeapon = Instantiate(_weaponToEquip, weaponEquipPos);
             newWeapon.transform.SetParent(weaponEquipPos);
             newWeapon.transform.localPosition = Vector3.zero;

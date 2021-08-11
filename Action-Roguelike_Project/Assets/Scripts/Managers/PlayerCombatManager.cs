@@ -83,12 +83,12 @@ public class PlayerCombatManager : CombatManager
             }
 
             // If you have a weapon equipped
-            if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon != null)
+            if (playerMgmt.weaponMgmt.currentlyEquippedWeapon != null)
             {
                 // If current weapon is a melee type...
-                if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon.weaponData.equipmentType == EquipmentType.MeleeWeapon)
+                if (playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.weaponType == WeaponType.Melee)
                 {
-                    MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+                    MeleeWeapon myWeapon = playerMgmt.weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
                     // Checks if the entity has enough stamina to do an attack...
                     if ((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
                     {

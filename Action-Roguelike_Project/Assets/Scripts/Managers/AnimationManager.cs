@@ -36,10 +36,10 @@ public class AnimationManager : MonoBehaviour
 
         if (playerMgmt.combatMgmt.attackInputHeld)
         {
-            if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon != null &&
-                !playerMgmt.equipmentMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
+            if (playerMgmt.weaponMgmt.currentlyEquippedWeapon != null &&
+                !playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
             {
-                MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+                MeleeWeapon myWeapon = playerMgmt.weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
                 if((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
                     animator.SetTrigger(playerMgmt.combatMgmt.attackAnim);
             }

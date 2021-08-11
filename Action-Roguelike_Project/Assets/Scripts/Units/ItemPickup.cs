@@ -48,8 +48,21 @@ public class ItemPickup : MonoBehaviour
 
     public virtual void PickupItem()
     {
-        interactingEntity.GetComponent<InventoryManager>()
-            .Equip(item_Pf.GetComponent<EquippableItem>());
+        // CHECK WHAT KIND OF ITEM IS BEING PICKED UP
+
+        // IF THE ITEM IS A WEAPON...
+        if (item_Pf.GetComponent<Weapon>() != null)
+        {
+            // ADDS THE PICKED UP WEAPON TO THE EquipmentPanel UI SLOT
+            EquippableItem prevItem;
+            interactingEntity.GetComponentInChildren<EquipmentPanel>()
+                .AddItem(item_Pf.GetComponent<Weapon>().weaponData, out prevItem);
+            // TELLS INTERACTING ENTITY'S WeaponManger TO EQUIP THE WEAPON
+            interactingEntity.GetComponent<WeaponManager>()
+                .EquipWeapon(item_Pf.GetComponent<Weapon>());
+        }
+        // ELSE IF ITEM IS CONSUMABLE
+        // ELSE IF ITEM IS RELIC
 
         interactingEntity.GetComponent<PlayerManager>().inputMgmt.interactEvent -= PickupItem;
         Object.Destroy(this.gameObject);
