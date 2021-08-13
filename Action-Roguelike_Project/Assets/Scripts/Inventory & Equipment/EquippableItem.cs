@@ -4,8 +4,7 @@ public enum ItemType
 {
     MainWeapon,
     SecondaryWeapon,
-    Relic,
-    Consumable
+    Relic
 }
 
 [CreateAssetMenu]
