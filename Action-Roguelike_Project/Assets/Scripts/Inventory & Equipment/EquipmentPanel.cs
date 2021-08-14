@@ -28,7 +28,8 @@ public class EquipmentPanel : MonoBehaviour
         // Go through each equipment slot
         for (int i = 0; i < equipmentSlots.Length; i++)
         {
-            if(equipmentSlots[i].itemType == _itemToAdd.itemType)
+            // IF THE itemType MATCHES THE SLOTS itemType
+            if(equipmentSlots[i].itemType == _itemToAdd.equipmentType)
             {
                 // IF THE SLOT IS EMPTY
                 if (equipmentSlots[i].item == null)

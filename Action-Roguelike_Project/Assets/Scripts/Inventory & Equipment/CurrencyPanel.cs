@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour
+public class CurrencyPanel : MonoBehaviour
 {
-    //[SerializeField] List<ItemData> items;
     [SerializeField] Transform currencyParent;
     [SerializeField] CurrencySlot[] currencySlots;
 
@@ -23,30 +22,17 @@ public class Inventory : MonoBehaviour
     {
         if (currencyParent != null)
             currencySlots = currencyParent.GetComponentsInChildren<CurrencySlot>();
-
-        //RefreshUI();
     }
 
-    //private void RefreshUI()
-    //{
-    //    int i = 0;
-    //    for(; i < items.Count && i < itemSlots.Length; i++)
-    //    {
-    //        itemSlots[i].item = items[i];
-    //    }
-
-    //    for(; i < itemSlots.Length; i++)
-    //    {
-    //        itemSlots[i].item = null;
-    //    }
-    //}
-
-    public bool AddItem(CurrencyItem _itemToAdd)
+    public bool AddItem(CurrencyItem _itemToAdd, int _amountToAdd)
     {
         for (int i = 0; i < currencySlots.Length; i++)
         {
             if(currencySlots[i].currencyType == _itemToAdd.currencyType)
             {
+                currencySlots[i].currencyAmount += _amountToAdd;
+                currencySlots[i].currencyAmountText.SetText(
+                    currencySlots[i].currencyAmount.ToString());
                 return true;
             }
         }

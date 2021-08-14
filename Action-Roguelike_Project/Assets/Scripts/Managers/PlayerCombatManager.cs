@@ -8,6 +8,9 @@ public class PlayerCombatManager : CombatManager
     [Header("Player Component Ref")]
     [SerializeField] PlayerManager playerMgmt;
 
+    // SHOULD THIS SCRIPT CONTAIN THE PLAYER'S CURRENT
+    // UNARMED COMBAT ANIMATION SET?
+
     public override void Start()
     {
         base.Start();

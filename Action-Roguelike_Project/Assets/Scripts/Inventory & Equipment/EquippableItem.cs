@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public enum ItemType
+public enum EquipmentType
 {
     MainWeapon,
     SecondaryWeapon,
@@ -10,5 +10,5 @@ public enum ItemType
 [CreateAssetMenu]
 public class EquippableItem : ItemData
 {
-    public ItemType itemType;
+    public EquipmentType equipmentType;
 }

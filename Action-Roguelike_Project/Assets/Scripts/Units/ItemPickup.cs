@@ -59,7 +59,7 @@ public class ItemPickup : MonoBehaviour
                 .AddItem(item_Pf.GetComponent<Weapon>().weaponData, out prevItem);
             // TELLS INTERACTING ENTITY'S WeaponManger TO EQUIP THE WEAPON
             interactingEntity.GetComponent<WeaponManager>()
-                .EquipWeapon(item_Pf.GetComponent<Weapon>());
+                .AddWeapon(item_Pf.GetComponent<Weapon>());
         }
         // ELSE IF ITEM IS CONSUMABLE
         // ELSE IF ITEM IS RELIC

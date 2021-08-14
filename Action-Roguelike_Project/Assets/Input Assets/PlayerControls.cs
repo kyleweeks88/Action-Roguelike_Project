@@ -105,6 +105,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""SwapMainWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""3cf9b331-b226-4ef5-9859-582e8062c5d0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -272,6 +280,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bb5ce388-4fac-4163-8c8b-fdacdb73313e"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""M&K"",
+                    ""action"": ""SwapMainWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -335,6 +354,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
         m_Player_Block = m_Player.FindAction("Block", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_SwapMainWeapon = m_Player.FindAction("SwapMainWeapon", throwIfNotFound: true);
         // UserInterface
         m_UserInterface = asset.FindActionMap("UserInterface", throwIfNotFound: true);
         m_UserInterface_UserInterface = m_UserInterface.FindAction("UserInterface", throwIfNotFound: true);
@@ -398,6 +418,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Throw;
     private readonly InputAction m_Player_Block;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_SwapMainWeapon;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -413,6 +434,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Throw => m_Wrapper.m_Player_Throw;
         public InputAction @Block => m_Wrapper.m_Player_Block;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @SwapMainWeapon => m_Wrapper.m_Player_SwapMainWeapon;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -455,6 +477,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @SwapMainWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapMainWeapon;
+                @SwapMainWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapMainWeapon;
+                @SwapMainWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapMainWeapon;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -492,6 +517,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @SwapMainWeapon.started += instance.OnSwapMainWeapon;
+                @SwapMainWeapon.performed += instance.OnSwapMainWeapon;
+                @SwapMainWeapon.canceled += instance.OnSwapMainWeapon;
             }
         }
     }
@@ -551,6 +579,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnThrow(InputAction.CallbackContext context);
         void OnBlock(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnSwapMainWeapon(InputAction.CallbackContext context);
     }
     public interface IUserInterfaceActions
     {

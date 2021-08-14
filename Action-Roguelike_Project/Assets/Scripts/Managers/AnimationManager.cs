@@ -6,6 +6,7 @@ public class AnimationManager : MonoBehaviour
 {
     public Animator animator;
     [SerializeField] PlayerManager playerMgmt;
+    public AnimatorOverrideController defaultController;
 
     #region Animator Parameters
     // My Animator parameters turned from costly Strings to cheap Ints
@@ -62,6 +63,11 @@ public class AnimationManager : MonoBehaviour
     public void SetAnimation(AnimatorOverrideController overrideCtrl)
     {
         animator.runtimeAnimatorController = overrideCtrl;
+    }
+
+    public void ResetAnimation()
+    {
+        animator.runtimeAnimatorController = defaultController;
     }
 
     public void MovementAnimation(float xMove, float zMove)

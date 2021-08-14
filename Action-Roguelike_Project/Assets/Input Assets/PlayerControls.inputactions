@@ -92,6 +92,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "SwapMainWeapon",
+                    "type": "Button",
+                    "id": "3cf9b331-b226-4ef5-9859-582e8062c5d0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -257,6 +265,17 @@
                     "processors": "",
                     "groups": "M&K",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bb5ce388-4fac-4163-8c8b-fdacdb73313e",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "SwapMainWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

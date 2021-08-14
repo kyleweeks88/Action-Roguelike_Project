@@ -23,6 +23,8 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction userInterfaceEvent;
     public event UnityAction pauseEvent;
 
+    public event UnityAction swapMainWeaponEvent;
+
     PlayerControls controls;
     public PlayerControls Controls
     {
@@ -171,5 +173,12 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         if (blockEventCancelled != null &&
             context.phase == InputActionPhase.Canceled)
             blockEventCancelled.Invoke();
+    }
+
+    public void OnSwapMainWeapon(InputAction.CallbackContext context)
+    {
+        if (swapMainWeaponEvent != null &&
+            context.phase == InputActionPhase.Started)
+            swapMainWeaponEvent.Invoke();
     }
 }

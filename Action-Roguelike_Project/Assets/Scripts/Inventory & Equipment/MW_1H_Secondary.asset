@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Sword
   icon: {fileID: 21300000, guid: 172774604c1bee84185a69041576525b, type: 3}
-  itemType: 1
+  equipmentType: 1
   weaponType: 0
   wieldStyle: 2
   animationSet: {fileID: 22100000, guid: 5d9b3e5329003024d87b04fc42e0f360, type: 2}

@@ -2,7 +2,7 @@
 
 public class EquipmentSlot : ItemSlot
 {
-    public ItemType itemType;
+    public EquipmentType itemType;
 
     protected override void OnValidate()
     {
