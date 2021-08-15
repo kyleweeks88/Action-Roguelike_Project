@@ -25,6 +25,7 @@ public class PlayerCombatManager : CombatManager
 
     void BlockPerformed()
     {
+        if (playerMgmt.playerMovement.isSprinting) { return; }
         base.Blocking();
     }
 
@@ -69,6 +70,7 @@ public class PlayerCombatManager : CombatManager
     {
         // If the player is interacting with a contextual object, exit.
         if (playerMgmt.isInteracting) { return; }
+        if (playerMgmt.playerMovement.isSprinting) { return; }
 
         base.AttackPerformed();
 

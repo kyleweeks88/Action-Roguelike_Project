@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     float turnSpeed = 15f;
 
     [HideInInspector] public bool isSprinting = false;
-    public bool isJumping = false;
+    [HideInInspector] public bool isJumping = false;
     bool jumpInputHeld = false;
 
     PhysicMaterial physMat;
@@ -208,7 +208,7 @@ public class PlayerMovement : MonoBehaviour
             - playerMgmt.playerStats.staminaDrainAmount > 0)
         {
             isSprinting = true;
-            playerMgmt.isInteracting = true;
+            //playerMgmt.isInteracting = true;
 
             // adds moveSpeed StatModifier
             playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.sprintMovementModifier);

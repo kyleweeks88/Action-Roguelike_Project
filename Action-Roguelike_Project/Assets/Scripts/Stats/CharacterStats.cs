@@ -66,11 +66,6 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
         InitializeVitals();
     }
 
-    //void Update()
-    //{
-    //    Debug.Log(charName+" Health: " + currentHealthPoints + " / " + maxHealthPoints);
-    //}
-
     public void InitializeVitals()
     {
         SetHealth(maxHealthPoints);

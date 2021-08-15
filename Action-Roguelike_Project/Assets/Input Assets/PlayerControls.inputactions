@@ -100,6 +100,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "SwapSecondaryWeapon",
+                    "type": "Button",
+                    "id": "9d9787a8-5623-4d24-942f-8da62a14ab1c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "DropWeapon",
+                    "type": "Button",
+                    "id": "75f9a138-39b7-4915-8d28-34a350f83b21",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -276,6 +292,28 @@
                     "processors": "",
                     "groups": "M&K",
                     "action": "SwapMainWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cb6263f7-eefb-4366-ab17-13e01fc51df7",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "SwapSecondaryWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c1bcd134-865e-44dd-99ff-2c7a0a0cf764",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "DropWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

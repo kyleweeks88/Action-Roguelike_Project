@@ -9,12 +9,15 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] Weapon mainWeapon;
     [SerializeField] Weapon secondaryWeapon;
     Weapon weaponToEquip;
+    Weapon weaponToDrop;
 
     [SerializeField] Transform weaponEquipPos;
 
     void Start()
     {
         playerMgmt.inputMgmt.swapMainWeaponEvent += SwapMainWeapon;
+        playerMgmt.inputMgmt.swapSecondaryWeaponEvent += SwapSecondaryWeapon;
+        playerMgmt.inputMgmt.dropWeaponEvent += DropWeapon;
 
         // IF THE PLAYER HAS A WEAPON EQUIPPED PLAY THE WEAPONS ANIMATION SET
         if (currentlyEquippedWeapon != null)
@@ -25,35 +28,41 @@ public class WeaponManager : MonoBehaviour
 
     public void AddWeapon(Weapon _weaponToAdd)
     {
-        Weapon newWeapon = Instantiate(_weaponToAdd, weaponEquipPos);
+        //Weapon newWeapon = Instantiate(_weaponToAdd, weaponEquipPos);
         // PLACE NEWLY PICKED UP WEAPON IN SHEATHED LOCATION
-        newWeapon.gameObject.SetActive(false);
+        _weaponToAdd.transform.SetParent(weaponEquipPos);
+        _weaponToAdd.transform.localPosition = Vector3.zero;
+        _weaponToAdd.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        _weaponToAdd.gameObject.SetActive(false);
 
         // If the new weapon is a Main Weapon
-        if (newWeapon.weaponData.equipmentType == EquipmentType.MainWeapon)
+        if (_weaponToAdd.weaponData.equipmentType == EquipmentType.MainWeapon)
         {
             // If player has no main weapon
             if (mainWeapon == null)
             {
-                mainWeapon = newWeapon;
+                mainWeapon = _weaponToAdd;
             }
             // If player already has a main weapon
             else
             {
-                // Drop old main weapon
+                weaponToDrop = mainWeapon;
 
-                mainWeapon = newWeapon;
+                // Drop old main weapon
+                DropWeapon();
+
+                mainWeapon = _weaponToAdd;
             }
         }
-        if (newWeapon.weaponData.equipmentType == EquipmentType.SecondaryWeapon)
+        if (_weaponToAdd.weaponData.equipmentType == EquipmentType.SecondaryWeapon)
         {
-            secondaryWeapon = newWeapon;
+            secondaryWeapon = _weaponToAdd;
         }
 
-        //if(currentlyEquippedWeapon == null)
-        //{
-        //    EquipWeapon(newWeapon);
-        //}
+        if (currentlyEquippedWeapon == null)
+        {
+            EquipWeapon(_weaponToAdd);
+        }
     }
 
     public void EquipWeapon(Weapon _weaponToEquip)
@@ -71,18 +80,30 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
-    public void UnequipWeapon(Weapon _weaponToUnequip)
+    void UnequipWeapon(Weapon _weaponToUnequip)
     {
         // Deactivate currently equipped weapon
         _weaponToUnequip.gameObject.SetActive(false);
         // Reset animation set
         playerMgmt.animMgmt.ResetAnimation();
         // Clear any added bonuses from weapon
+        currentlyEquippedWeapon = null;
     }
 
-    // DROP WEAPON
+    void DropWeapon()
+    {
+        if(currentlyEquippedWeapon != null) { weaponToDrop = currentlyEquippedWeapon; }
 
-    // EQUIP MAIN WEAPON
+        if(weaponToDrop.weaponData.equipmentType == EquipmentType.MainWeapon) { mainWeapon = null; }
+        if(weaponToDrop.weaponData.equipmentType == EquipmentType.SecondaryWeapon) { secondaryWeapon = null; }
+        playerMgmt.animMgmt.ResetAnimation();
+        currentlyEquippedWeapon = null;
+        weaponToDrop.GetComponent<CapsuleCollider>().enabled = true;
+        weaponToDrop.transform.SetParent(null);
+        weaponToDrop.transform.position = this.transform.position;
+        weaponToDrop.transform.rotation = Quaternion.identity;
+    }
+
     void SwapMainWeapon()
     {
         if (currentlyEquippedWeapon != null)
@@ -114,8 +135,30 @@ public class WeaponManager : MonoBehaviour
 
     void SwapSecondaryWeapon()
     {
-
+        if (currentlyEquippedWeapon != null)
+        {
+            if (currentlyEquippedWeapon == secondaryWeapon)
+            {
+                UnequipWeapon(currentlyEquippedWeapon);
+                currentlyEquippedWeapon = null;
+                return;
+            }
+            else if (currentlyEquippedWeapon == mainWeapon)
+            {
+                UnequipWeapon(currentlyEquippedWeapon);
+                EquipWeapon(secondaryWeapon);
+            }
+        }
+        else
+        {
+            if (secondaryWeapon != null)
+            {
+                EquipWeapon(secondaryWeapon);
+            }
+            else
+            {
+                Debug.Log("NO MAIN WEAPON");
+            }
+        }
     }
-
-    // EQUIP SECONDARY WEAPON
 }

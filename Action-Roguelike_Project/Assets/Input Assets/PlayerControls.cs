@@ -113,6 +113,22 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""SwapSecondaryWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""9d9787a8-5623-4d24-942f-8da62a14ab1c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""DropWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""75f9a138-39b7-4915-8d28-34a350f83b21"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -291,6 +307,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""SwapMainWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb6263f7-eefb-4366-ab17-13e01fc51df7"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""M&K"",
+                    ""action"": ""SwapSecondaryWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c1bcd134-865e-44dd-99ff-2c7a0a0cf764"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""M&K"",
+                    ""action"": ""DropWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -355,6 +393,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Player_Block = m_Player.FindAction("Block", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_SwapMainWeapon = m_Player.FindAction("SwapMainWeapon", throwIfNotFound: true);
+        m_Player_SwapSecondaryWeapon = m_Player.FindAction("SwapSecondaryWeapon", throwIfNotFound: true);
+        m_Player_DropWeapon = m_Player.FindAction("DropWeapon", throwIfNotFound: true);
         // UserInterface
         m_UserInterface = asset.FindActionMap("UserInterface", throwIfNotFound: true);
         m_UserInterface_UserInterface = m_UserInterface.FindAction("UserInterface", throwIfNotFound: true);
@@ -419,6 +459,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Block;
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_SwapMainWeapon;
+    private readonly InputAction m_Player_SwapSecondaryWeapon;
+    private readonly InputAction m_Player_DropWeapon;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -435,6 +477,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Block => m_Wrapper.m_Player_Block;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputAction @SwapMainWeapon => m_Wrapper.m_Player_SwapMainWeapon;
+        public InputAction @SwapSecondaryWeapon => m_Wrapper.m_Player_SwapSecondaryWeapon;
+        public InputAction @DropWeapon => m_Wrapper.m_Player_DropWeapon;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -480,6 +524,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @SwapMainWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapMainWeapon;
                 @SwapMainWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapMainWeapon;
                 @SwapMainWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapMainWeapon;
+                @SwapSecondaryWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapSecondaryWeapon;
+                @SwapSecondaryWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapSecondaryWeapon;
+                @SwapSecondaryWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapSecondaryWeapon;
+                @DropWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDropWeapon;
+                @DropWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDropWeapon;
+                @DropWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDropWeapon;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -520,6 +570,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @SwapMainWeapon.started += instance.OnSwapMainWeapon;
                 @SwapMainWeapon.performed += instance.OnSwapMainWeapon;
                 @SwapMainWeapon.canceled += instance.OnSwapMainWeapon;
+                @SwapSecondaryWeapon.started += instance.OnSwapSecondaryWeapon;
+                @SwapSecondaryWeapon.performed += instance.OnSwapSecondaryWeapon;
+                @SwapSecondaryWeapon.canceled += instance.OnSwapSecondaryWeapon;
+                @DropWeapon.started += instance.OnDropWeapon;
+                @DropWeapon.performed += instance.OnDropWeapon;
+                @DropWeapon.canceled += instance.OnDropWeapon;
             }
         }
     }
@@ -580,6 +636,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnBlock(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnSwapMainWeapon(InputAction.CallbackContext context);
+        void OnSwapSecondaryWeapon(InputAction.CallbackContext context);
+        void OnDropWeapon(InputAction.CallbackContext context);
     }
     public interface IUserInterfaceActions
     {

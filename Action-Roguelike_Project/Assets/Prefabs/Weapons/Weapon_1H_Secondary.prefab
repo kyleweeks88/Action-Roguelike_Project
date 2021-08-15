@@ -78,6 +78,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 95290b8935918fd4d82d663076bbe4a3, type: 2}
+  durability: 0
   maxCharge: 2
   chargeRate: 1
   currentCharge: 1
@@ -96,7 +97,6 @@ GameObject:
   - component: {fileID: 2004728513063378713}
   - component: {fileID: 7979186655067874185}
   - component: {fileID: 3588278794545226810}
-  - component: {fileID: 7456809897361590677}
   m_Layer: 0
   m_Name: blade
   m_TagString: Untagged
@@ -165,20 +165,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!136 &7456809897361590677
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2551326141830011114}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &5047085638925525346
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +206,6 @@ GameObject:
   - component: {fileID: 5020154899848680201}
   - component: {fileID: 5881799170355035142}
   - component: {fileID: 3595926959266313002}
-  - component: {fileID: 2768585152690120576}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -289,19 +274,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &2768585152690120576
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5891351990711101917}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6548860951011606264
 GameObject:
   m_ObjectHideFlags: 0

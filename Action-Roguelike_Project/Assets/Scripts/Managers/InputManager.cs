@@ -24,6 +24,8 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction pauseEvent;
 
     public event UnityAction swapMainWeaponEvent;
+    public event UnityAction swapSecondaryWeaponEvent;
+    public event UnityAction dropWeaponEvent;
 
     PlayerControls controls;
     public PlayerControls Controls
@@ -180,5 +182,19 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         if (swapMainWeaponEvent != null &&
             context.phase == InputActionPhase.Started)
             swapMainWeaponEvent.Invoke();
+    }
+
+    public void OnSwapSecondaryWeapon(InputAction.CallbackContext context)
+    {
+        if (swapSecondaryWeaponEvent != null &&
+                    context.phase == InputActionPhase.Started)
+            swapSecondaryWeaponEvent.Invoke();
+    }
+
+    public void OnDropWeapon(InputAction.CallbackContext context)
+    {
+        if (dropWeaponEvent != null &&
+                    context.phase == InputActionPhase.Started)
+            dropWeaponEvent.Invoke();
     }
 }

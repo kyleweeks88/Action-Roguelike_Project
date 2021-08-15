@@ -33,12 +33,14 @@ public class MeleeWeapon : Weapon
             InstantiateHitVisuals(hit.ClosestPoint(impactEnd.position));
 
             // If the collider hit has an NpcHealthManager component on it.
-            if (hit.gameObject.GetComponent<VitalsManager>() != null)
+            if (hit.gameObject.GetComponent<CharacterStats>() != null)
             {
                 _combatMgmt.ProcessAttack(hit.gameObject.GetComponent<CharacterStats>());
                 _combatMgmt.impactActivated = false;
                 base.ResetCharge();
             }
+
+            durability -= 1;
         }
     }
 
