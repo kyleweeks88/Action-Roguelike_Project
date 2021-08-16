@@ -10,6 +10,7 @@ public class MeleeWeapon : Weapon
     public Transform impactEnd;
     public float impactRadius;
 
+
     public void InstantiateHitVisuals(Vector3 hitPoint)
     {
         GameObject hitVis = Instantiate(weaponData.hitVisuals, hitPoint, Quaternion.identity);
@@ -40,7 +41,7 @@ public class MeleeWeapon : Weapon
                 base.ResetCharge();
             }
 
-            durability -= 1;
+            AffectDurability();
         }
     }
 

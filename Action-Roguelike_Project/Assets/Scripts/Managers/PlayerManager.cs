@@ -15,7 +15,6 @@ public class PlayerManager : MonoBehaviour
     public CombatManager combatMgmt;
     public PlayerMovement playerMovement;
     public DodgeControl dodgeCtrl;
-    public VitalsManager vitalsMgmt;
 
     [Header("Camera Ref")]
     public Camera myCamera = null;
@@ -34,9 +33,6 @@ public class PlayerManager : MonoBehaviour
 
         playerMovement = gameObject.GetComponent<PlayerMovement>();
         playerMovement.enabled = true;
-
-        vitalsMgmt = gameObject.GetComponent<VitalsManager>();
-        vitalsMgmt.enabled = true;
 
         weaponMgmt = gameObject.GetComponent<WeaponManager>();
         weaponMgmt.enabled = true;

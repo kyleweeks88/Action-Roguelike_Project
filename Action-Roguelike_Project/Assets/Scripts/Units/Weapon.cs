@@ -5,6 +5,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public WeaponData weaponData;
+    public StatModifier damageMod;
     public int durability = 0;
     public float maxCharge = 2f;
     public float chargeRate = 5f;
@@ -12,9 +13,23 @@ public class Weapon : MonoBehaviour
 
     protected GameObject interactingEntity;
 
+    private void Awake()
+    {
+        damageMod = new StatModifier(weaponData.damageMod, StatModType.PercentAdd);
+    }
+
     public void ResetCharge()
     {
         currentCharge = 1f;
+    }
+
+    protected virtual void AffectDurability()
+    {
+        // MAKE IT MORE FLESHED OUT i.e...
+        // DURABILITY DEGRADES FASTER OR SLOWER BASED ON CHARACTER STATS etc.
+        durability -= 1;
+        if (durability < 1)
+            interactingEntity.GetComponent<WeaponManager>().DropWeapon();
     }
 
     void OnTriggerEnter(Collider col)
@@ -34,7 +49,7 @@ public class Weapon : MonoBehaviour
         PlayerManager playerMgmt = col.gameObject.GetComponent<PlayerManager>();
         if (playerMgmt != null)
         {
-            //interactingEntity = null; SHOULD THIS BE HERE???
+            interactingEntity = null; //SHOULD THIS BE HERE???
             HandleEntityInput(playerMgmt, false);
         }
     }
@@ -59,6 +74,8 @@ public class Weapon : MonoBehaviour
 
     public virtual void PickupWeapon()
     {
+        if(durability < 1) { return; }
+
         // ADDS THE PICKED UP WEAPON TO THE EquipmentPanel UI SLOT
         EquippableItem prevItem;
         interactingEntity.GetComponentInChildren<EquipmentPanel>()
@@ -69,6 +86,8 @@ public class Weapon : MonoBehaviour
 
         interactingEntity.GetComponent<PlayerManager>().inputMgmt.interactEvent -= PickupWeapon;
         gameObject.GetComponent<CapsuleCollider>().enabled = false;
+        gameObject.GetComponent<BoxCollider>().enabled = false;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true;
     }
 }
 

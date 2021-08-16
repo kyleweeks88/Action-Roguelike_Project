@@ -11,6 +11,6 @@ public abstract class WeaponData : EquippableItem
     public AnimatorOverrideController animationSet;
 
     public GameObject hitVisuals;
-    public float damage;
+    public float damageMod;
     public bool isChargeable;
 }

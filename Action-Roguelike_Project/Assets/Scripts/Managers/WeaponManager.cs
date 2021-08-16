@@ -10,6 +10,7 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] Weapon secondaryWeapon;
     Weapon weaponToEquip;
     Weapon weaponToDrop;
+    [SerializeField] Transform dropPos;
 
     [SerializeField] Transform weaponEquipPos;
 
@@ -70,6 +71,7 @@ public class WeaponManager : MonoBehaviour
         if(currentlyEquippedWeapon == null)
         {
             currentlyEquippedWeapon = _weaponToEquip;
+            playerMgmt.playerStats.attackDamage.AddModifer(_weaponToEquip.damageMod);
             _weaponToEquip.gameObject.SetActive(true);
 
             _weaponToEquip.transform.SetParent(weaponEquipPos);
@@ -84,24 +86,34 @@ public class WeaponManager : MonoBehaviour
     {
         // Deactivate currently equipped weapon
         _weaponToUnequip.gameObject.SetActive(false);
+        // Clear modifiers
+        playerMgmt.playerStats.attackDamage.RemoveAllModifiersFromSource(_weaponToUnequip.GetComponent<WeaponData>());
         // Reset animation set
         playerMgmt.animMgmt.ResetAnimation();
         // Clear any added bonuses from weapon
         currentlyEquippedWeapon = null;
     }
 
-    void DropWeapon()
+    public void DropWeapon()
     {
         if(currentlyEquippedWeapon != null) { weaponToDrop = currentlyEquippedWeapon; }
 
         if(weaponToDrop.weaponData.equipmentType == EquipmentType.MainWeapon) { mainWeapon = null; }
         if(weaponToDrop.weaponData.equipmentType == EquipmentType.SecondaryWeapon) { secondaryWeapon = null; }
+        gameObject.GetComponentInChildren<EquipmentPanel>().RemoveItem(weaponToDrop.GetComponent<Weapon>().weaponData);
+        playerMgmt.playerStats.attackDamage.RemoveModifier(weaponToDrop.damageMod);
         playerMgmt.animMgmt.ResetAnimation();
         currentlyEquippedWeapon = null;
-        weaponToDrop.GetComponent<CapsuleCollider>().enabled = true;
+
         weaponToDrop.transform.SetParent(null);
-        weaponToDrop.transform.position = this.transform.position;
-        weaponToDrop.transform.rotation = Quaternion.identity;
+        weaponToDrop.transform.position = dropPos.position;
+        weaponToDrop.GetComponent<CapsuleCollider>().enabled = true;
+        Rigidbody weaponRb = weaponToDrop.GetComponent<Rigidbody>();
+        weaponToDrop.GetComponent<BoxCollider>().enabled = true;
+        weaponRb.isKinematic = false;
+        weaponRb.AddForce(transform.forward * 1f, ForceMode.Impulse);
+        float random = Random.Range(-1f, 1f);
+        weaponRb.AddTorque(new Vector3(random, random, random) * 10f);
     }
 
     void SwapMainWeapon()

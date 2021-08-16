@@ -31,6 +31,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public Stat attackDamage;
     public Stat attackChargeRate;
     public Stat blockReduction;
+    public Stat weaponDurability;
     [HideInInspector] public float maxAttackCharge = 100f;
     [HideInInspector] public float currentAttackCharge = 0f;
 
