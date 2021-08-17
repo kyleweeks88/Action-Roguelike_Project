@@ -11,4 +11,5 @@ public enum CurrencyType
 public class CurrencyItem : ItemData
 {
     public CurrencyType currencyType;
+    public int currencyValue;
 }

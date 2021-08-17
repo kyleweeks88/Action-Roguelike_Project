@@ -17,11 +17,6 @@ public class PlayerStats : CharacterStats
         //base.charName = playerName.synchronizedName;
     }
 
-    private void Update()
-    {
-        Debug.Log(attackDamage.value);
-    }
-
     public override void TakeDamage(GameObject damager, float dmgVal)
     {
         playerEventChannel.DamageRecieved(dmgVal);

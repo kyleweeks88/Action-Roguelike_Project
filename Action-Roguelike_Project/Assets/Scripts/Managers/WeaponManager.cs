@@ -87,7 +87,7 @@ public class WeaponManager : MonoBehaviour
         // Deactivate currently equipped weapon
         _weaponToUnequip.gameObject.SetActive(false);
         // Clear modifiers
-        playerMgmt.playerStats.attackDamage.RemoveAllModifiersFromSource(_weaponToUnequip.GetComponent<WeaponData>());
+        playerMgmt.playerStats.attackDamage.RemoveModifier(_weaponToUnequip.damageMod);
         // Reset animation set
         playerMgmt.animMgmt.ResetAnimation();
         // Clear any added bonuses from weapon

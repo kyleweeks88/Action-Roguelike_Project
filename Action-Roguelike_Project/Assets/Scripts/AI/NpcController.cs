@@ -38,6 +38,7 @@ public class NpcController : MonoBehaviour
         combatMgmt = GetComponent<NpcCombatManager>();
 
         navAgent.speed = walkSpeed;
+        target = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()

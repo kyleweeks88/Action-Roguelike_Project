@@ -11,6 +11,9 @@ public class PlayerEventChannel : MonoBehaviour
     public delegate void OnHealthChanged(float currentHealth);
     public event OnHealthChanged healthChange_Event;
 
+    public delegate void OnSoulGathered(CurrencyItem currency);
+    public event OnSoulGathered soulGathered_Event;
+
     public void DamageRecieved(float dmgVal)
     {
         damageRecieved_Event?.Invoke(dmgVal);
@@ -19,5 +22,10 @@ public class PlayerEventChannel : MonoBehaviour
     public void HealthChanged(float currentHealth)
     {
         healthChange_Event?.Invoke(currentHealth);
+    }
+
+    public void SoulGathered(CurrencyItem soul)
+    {
+        soulGathered_Event?.Invoke(soul);
     }
 }

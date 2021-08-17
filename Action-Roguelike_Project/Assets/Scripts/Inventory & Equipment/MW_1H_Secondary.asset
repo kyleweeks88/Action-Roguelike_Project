@@ -20,7 +20,7 @@ MonoBehaviour:
   animationSet: {fileID: 22100000, guid: 5d9b3e5329003024d87b04fc42e0f360, type: 2}
   hitVisuals: {fileID: 1223552886627172470, guid: 17135e4a93a8d21488cef1ab439c9802,
     type: 3}
-  damage: 1
+  damageMod: 0.5
   isChargeable: 0
   damageType: 1
   staminaCost: 10

@@ -11,6 +11,10 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public delegate void OnStaminaChanged(float currentHealth);
     public event OnStaminaChanged staminaChange_Event;
 
+    //public delegate void OnDeath();
+    //public event OnDeath onDeath_Event;
+    public event System.Action OnDeath;
+
     [Header("General settings")]
     [SerializeField] Rigidbody chestRb;
     public string charName; 
@@ -76,6 +80,9 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #region Death!!!
     public virtual void Death()
     {
+        if (OnDeath != null)
+            OnDeath();
+
         Debug.Log(charName + " has died!");
     }
     #endregion

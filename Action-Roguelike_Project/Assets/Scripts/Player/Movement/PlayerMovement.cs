@@ -20,8 +20,7 @@ public class PlayerMovement : MonoBehaviour
     Vector3 rotationMovement;
     Vector2 _previousMovementInput;
 
-    //[HideInInspector] public float currentMoveSpeed = 0f;
-    float turnSpeed = 15f;
+    float turnSpeed = 30f;
 
     [HideInInspector] public bool isSprinting = false;
     [HideInInspector] public bool isJumping = false;

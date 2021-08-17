@@ -1300,7 +1300,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881297675874225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.2179575, y: 3.7094235, z: -5.757971}
+  m_LocalPosition: {x: -0.21795778, y: 3.7094235, z: -5.7579713}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3724881299075929364}
@@ -1348,7 +1348,7 @@ MonoBehaviour:
     Value: 0.5847948
     m_SpeedMode: 0
     m_MaxSpeed: 1
-    m_AccelTime: 1
+    m_AccelTime: 0.25
     m_DecelTime: 0.1
     m_InputAxisName: Mouse Y
     m_InputAxisValue: 0
@@ -1371,8 +1371,8 @@ MonoBehaviour:
   m_XAxis:
     Value: 2.167795
     m_SpeedMode: 0
-    m_MaxSpeed: 115
-    m_AccelTime: 0.5
+    m_MaxSpeed: 150
+    m_AccelTime: 0.25
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X
     m_InputAxisValue: 0
@@ -1604,9 +1604,9 @@ MonoBehaviour:
   jumpForce:
     baseValue: 15
   attackDamage:
-    baseValue: 100
+    baseValue: 50
   attackChargeRate:
-    baseValue: 10
+    baseValue: 100
   blockReduction:
     baseValue: 0.5
   weaponDurability:
@@ -1668,7 +1668,7 @@ MonoBehaviour:
   currentlyEquippedWeapon: {fileID: 0}
   mainWeapon: {fileID: 0}
   secondaryWeapon: {fileID: 0}
-  dropPos: {fileID: 0}
+  dropPos: {fileID: 2074600889}
   weaponEquipPos: {fileID: 8260514817541097335}
 --- !u!114 &14693031
 MonoBehaviour:
@@ -1820,8 +1820,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881298246990970}
-  m_LocalRotation: {x: 0.17822781, y: 0.018613415, z: -0.0033720303, w: 0.98380744}
-  m_LocalPosition: {x: -0.2179575, y: 3.7094235, z: -5.757971}
+  m_LocalRotation: {x: 0.17822781, y: 0.018613428, z: -0.0033720324, w: 0.98380744}
+  m_LocalPosition: {x: -8.797957, y: 3.7094235, z: -14.347971}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 214003658499284119}
@@ -1937,7 +1937,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881298544867454}
   m_LocalRotation: {x: 0.097694084, y: 0.000000004281019, z: -4.2024048e-10, w: 0.99521655}
-  m_LocalPosition: {x: 0.2179575, y: -0.70942354, z: -0.24202919}
+  m_LocalPosition: {x: 0.21795778, y: -0.70942354, z: -0.24202871}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3724881299498802088}
@@ -2010,7 +2010,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881299075929365}
-  m_LocalRotation: {x: 0.19306786, y: 0.01856038, z: -0.0036528052, w: 0.98100305}
+  m_LocalRotation: {x: 0.19306785, y: 0.0185604, z: -0.0036528085, w: 0.98100305}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2084,7 +2084,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881299168861756}
-  m_LocalRotation: {x: 0.17519198, y: 0.01862376, z: -0.0033145987, w: 0.9843526}
+  m_LocalRotation: {x: 0.17519197, y: 0.018623818, z: -0.0033146087, w: 0.9843526}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4270,6 +4270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 383b713dd2843d14c9a3e0d8fb874c00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerEventChannel: {fileID: 0}
   currencyParent: {fileID: 4407657274488710047}
   currencySlots:
   - {fileID: 874239937206540207}

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CurrencyPanel : MonoBehaviour
 {
+    [SerializeField] PlayerEventChannel playerEventChannel;
     [SerializeField] Transform currencyParent;
     [SerializeField] CurrencySlot[] currencySlots;
 
@@ -16,6 +17,8 @@ public class CurrencyPanel : MonoBehaviour
         {
             currencySlots[i].OnRightClickEvent += OnItemRightClickedEvent;
         }
+
+        playerEventChannel.soulGathered_Event += AddItem;
     }
 
     private void OnValidate()
@@ -24,19 +27,17 @@ public class CurrencyPanel : MonoBehaviour
             currencySlots = currencyParent.GetComponentsInChildren<CurrencySlot>();
     }
 
-    public bool AddItem(CurrencyItem _itemToAdd, int _amountToAdd)
+    public void AddItem(CurrencyItem _currencyToAdd)
     {
         for (int i = 0; i < currencySlots.Length; i++)
         {
-            if(currencySlots[i].currencyType == _itemToAdd.currencyType)
+            if(currencySlots[i].currencyType == _currencyToAdd.currencyType)
             {
-                currencySlots[i].currencyAmount += _amountToAdd;
+                currencySlots[i].currencyAmount += _currencyToAdd.currencyValue;
                 currencySlots[i].currencyAmountText.SetText(
                     currencySlots[i].currencyAmount.ToString());
-                return true;
             }
         }
-        return false;
     }
 
     public bool RemoveItem(CurrencyItem _itemToRemove)
