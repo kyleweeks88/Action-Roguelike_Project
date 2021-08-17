@@ -54,9 +54,8 @@ public class ItemPickup : MonoBehaviour
         if (item_Pf.GetComponent<Weapon>() != null)
         {
             // ADDS THE PICKED UP WEAPON TO THE EquipmentPanel UI SLOT
-            EquippableItem prevItem;
             interactingEntity.GetComponentInChildren<EquipmentPanel>()
-                .AddItem(item_Pf.GetComponent<Weapon>().weaponData, out prevItem);
+                .AddItem(item_Pf.GetComponent<Weapon>().weaponData);
             // TELLS INTERACTING ENTITY'S WeaponManger TO EQUIP THE WEAPON
             interactingEntity.GetComponent<WeaponManager>()
                 .AddWeapon(item_Pf.GetComponent<Weapon>());

@@ -25,8 +25,8 @@ public class NpcStats : CharacterStats
         base.Death();
 
         SpawnSouls();
-        GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<NpcController>().enabled = false;
+        GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
         GetComponentInChildren<HealthbarDisplay>().gameObject.SetActive(false);
         GetComponent<RagdollManager>().ActivateRagdoll();

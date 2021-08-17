@@ -77,9 +77,8 @@ public class Weapon : MonoBehaviour
         if(durability < 1) { return; }
 
         // ADDS THE PICKED UP WEAPON TO THE EquipmentPanel UI SLOT
-        EquippableItem prevItem;
-        interactingEntity.GetComponentInChildren<EquipmentPanel>()
-            .AddItem(weaponData, out prevItem);
+        interactingEntity.GetComponentInChildren<EquipmentPanel>().AddItem(weaponData);
+
         // TELLS INTERACTING ENTITY'S WeaponManger TO EQUIP THE WEAPON
         interactingEntity.GetComponent<WeaponManager>()
             .AddWeapon(this);

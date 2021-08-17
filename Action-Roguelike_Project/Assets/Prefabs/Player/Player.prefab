@@ -1491,6 +1491,7 @@ GameObject:
   - component: {fileID: 68361500}
   - component: {fileID: 1368904199}
   - component: {fileID: 9196730140393174752}
+  - component: {fileID: 2223636148583494994}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -1645,7 +1646,7 @@ MonoBehaviour:
   playerMgmt: {fileID: 4845021161842536216}
   whatIsWalkable:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8193
   groundColPos: {fileID: 8796029022928796929}
   isGrounded: 0
   slideVelocity: 1
@@ -1704,7 +1705,7 @@ MonoBehaviour:
   delayBeforeInvulnerable: 0.2
   invulnerableDuration: 0.5
   dodgeCooldown: 1
-  dodgeVelocity: 20
+  dodgeVelocity: 25
 --- !u!114 &68361500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1764,6 +1765,19 @@ MonoBehaviour:
   uiMask:
     serializedVersion: 2
     m_Bits: 2336
+--- !u!114 &2223636148583494994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3724881297973483383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38e34c068b112fb4ca4a19b5eaaff535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soulsGathered: 0
 --- !u!1 &3724881297989593384
 GameObject:
   m_ObjectHideFlags: 0

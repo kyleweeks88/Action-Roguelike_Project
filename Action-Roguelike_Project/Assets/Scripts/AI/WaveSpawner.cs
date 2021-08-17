@@ -33,7 +33,7 @@ public class WaveSpawner : MonoBehaviour
             goRemainingToSpawn--;
             nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;
 
-            CharacterStats spawnedGO = Instantiate(goToSpawn_PF, transform.position, Quaternion.identity) as CharacterStats;
+            CharacterStats spawnedGO = Instantiate(goToSpawn_PF, transform.position, transform.rotation) as CharacterStats;
             spawnedGO.OnDeath += OnEnemyDeath;
         }
     }

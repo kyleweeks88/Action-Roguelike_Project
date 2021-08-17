@@ -11,7 +11,7 @@ public class SoulPoint : MonoBehaviour
         StartCoroutine(Countdown());
     }
 
-    void OnTriggerEnter(Collider col)
+    void OnTriggerStay(Collider col)
     {
         if (!isPickupable) { return; }
 

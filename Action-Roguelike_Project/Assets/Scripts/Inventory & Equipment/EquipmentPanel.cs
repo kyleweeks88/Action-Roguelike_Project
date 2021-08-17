@@ -23,7 +23,7 @@ public class EquipmentPanel : MonoBehaviour
         equipmentSlots = equipmentSlotsParent.GetComponentsInChildren<EquipmentSlot>();
     }
 
-    public bool AddItem(EquippableItem _itemToAdd, out EquippableItem _prevItem)
+    public bool AddItem(EquippableItem _itemToAdd)
     {
         // Go through each equipment slot
         for (int i = 0; i < equipmentSlots.Length; i++)
@@ -35,13 +35,10 @@ public class EquipmentPanel : MonoBehaviour
                 if (equipmentSlots[i].item == null)
                 {
                     equipmentSlots[i].item = _itemToAdd;
-                    _prevItem = null;
                     return true;
                 }
-                // ELSE IF THE SLOT IS FULL
             }
         }
-        _prevItem = null;
         return false;
     }
 
