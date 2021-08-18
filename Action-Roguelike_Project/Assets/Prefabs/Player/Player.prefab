@@ -1673,8 +1673,6 @@ MonoBehaviour:
     baseValue: 100
   blockReduction:
     baseValue: 0.5
-  weaponDurability:
-    baseValue: 0
   maxAttackCharge: 100
   currentAttackCharge: 0
   stealth:

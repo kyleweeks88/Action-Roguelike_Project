@@ -132,7 +132,6 @@ public class PlayerMovement : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f, whatIsWalkable))
                 {
-                    //playerMgmt.playerStats._moveSpeed.RemoveModifier(playerMgmt.playerStats.aerialMovementModifier);
                     isJumping = false;
                 }
             }
