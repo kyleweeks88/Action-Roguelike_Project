@@ -16,6 +16,12 @@ public class PlayerMovement : MonoBehaviour
     float currentSlideVelocity;
     public bool isSliding;
 
+    [Header("Step Climb settings")]
+    [SerializeField] Transform stepRayUpper;
+    [SerializeField] Transform stepRayLower;
+    [SerializeField] float stepHeight = 0.3f;
+    [SerializeField] float stepSmooth = 0.1f;
+
     Vector3 movement;
     Vector3 rotationMovement;
     Vector2 _previousMovementInput;
@@ -39,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
         physMat = gameObject.GetComponent<CapsuleCollider>().material;
 
         currentSlideVelocity = slideVelocity;
+        stepRayUpper.position = new Vector3(stepRayUpper.position.x, stepHeight, stepRayUpper.position.z);
     }
 
     private void FixedUpdate()
@@ -59,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
         UpdateIsSprinting();
         Move();
         CameraControl();
+        StepClimb();
     }
 
     public Vector3 GetPrevMovement()
@@ -82,6 +90,20 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void StepClimb()
+    {
+        RaycastHit hitLower;
+        if(Physics.Raycast(stepRayLower.position, transform.TransformDirection(Vector3.forward), out hitLower, 0.3f, whatIsWalkable))
+        {
+            RaycastHit hitUpper;
+            if(!Physics.Raycast(stepRayUpper.position, transform.TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+            {
+                if(_previousMovementInput.y > 0.1)
+                    playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+            }
+        }
+    }
+
     void GroundCheck()
     {
         Collider[] groundCollisions = Physics.OverlapSphere(groundColPos.position, 0.25f, whatIsWalkable);
@@ -98,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 playerMgmt.myRb.velocity += Vector3.up * Physics.gravity.y * (10f - 1f) * Time.deltaTime;
             }
-            else if(playerMgmt.myRb.velocity.y > 0f && !jumpInputHeld)
+            else if (playerMgmt.myRb.velocity.y > 0f && !jumpInputHeld)
             {
                 playerMgmt.myRb.velocity += Vector3.up * Physics.gravity.y * (8f - 1f) * Time.deltaTime;
             }
