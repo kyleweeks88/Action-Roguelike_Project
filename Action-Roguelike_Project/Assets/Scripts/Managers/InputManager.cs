@@ -14,8 +14,12 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction dodgeEvent;
     public event UnityAction blockEventStarted;
     public event UnityAction blockEventCancelled;
-    public event UnityAction attackEventStarted;
-    public event UnityAction attackEventCancelled;
+    public event UnityAction heavyAttackStartedEvent;
+    public event UnityAction heavyAttackCancelledEvent;
+    public event UnityAction lightAttackStartedEvent;
+    public event UnityAction lightAttackCancelledEvent;
+    //public event UnityAction attackEventStarted;
+    //public event UnityAction attackEventCancelled;
     public event UnityAction rangedAttackEventStarted;
     public event UnityAction rangedAttackEventCancelled;
     // Used when the player interacts with contextual objects in the environment
@@ -69,15 +73,37 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         controls.UserInterface.Disable();
     }
 
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        if (attackEventStarted != null &&
-            context.phase == InputActionPhase.Started)
-            attackEventStarted.Invoke();
+    //public void OnAttack(InputAction.CallbackContext context)
+    //{
+    //    if (attackEventStarted != null &&
+    //        context.phase == InputActionPhase.Started)
+    //        attackEventStarted.Invoke();
 
-        if (attackEventCancelled != null &&
+    //    if (attackEventCancelled != null &&
+    //        context.phase == InputActionPhase.Canceled)
+    //        attackEventCancelled.Invoke();
+    //}
+
+    public void OnHeavyAttack(InputAction.CallbackContext context)
+    {
+        if (heavyAttackStartedEvent != null &&
+            context.phase == InputActionPhase.Started)
+            heavyAttackStartedEvent.Invoke();
+
+        if (heavyAttackCancelledEvent != null &&
             context.phase == InputActionPhase.Canceled)
-            attackEventCancelled.Invoke();
+            heavyAttackCancelledEvent.Invoke();
+    }
+
+    public void OnLightAttack(InputAction.CallbackContext context)
+    {
+        if (lightAttackStartedEvent != null &&
+            context.phase == InputActionPhase.Started)
+            lightAttackStartedEvent.Invoke();
+
+        if (lightAttackCancelledEvent != null &&
+            context.phase == InputActionPhase.Canceled)
+            lightAttackCancelledEvent.Invoke();
     }
 
     public void OnRangedAttack(InputAction.CallbackContext context)

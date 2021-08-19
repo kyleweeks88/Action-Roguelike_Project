@@ -46,14 +46,6 @@
                     "interactions": "Press(behavior=2)"
                 },
                 {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "b7b1f6db-3a28-47f0-a62c-68386f9496c6",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)"
-                },
-                {
                     "name": "UserInterface",
                     "type": "Button",
                     "id": "496e2920-f625-46a1-826a-8024c59169a3",
@@ -113,6 +105,22 @@
                     "name": "DropWeapon",
                     "type": "Button",
                     "id": "75f9a138-39b7-4915-8d28-34a350f83b21",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "HeavyAttack",
+                    "type": "Button",
+                    "id": "972a8cbc-35a9-4e81-9134-d314c0c99998",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "LightAttack",
+                    "type": "Button",
+                    "id": "612efc42-d367-4766-92f3-41c5ff4d1d2e",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
@@ -220,17 +228,6 @@
                 },
                 {
                     "name": "",
-                    "id": "9a640596-4236-497b-ae47-477ec3e63481",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "M&K",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "8ef35dd9-db77-4639-bf7a-b19ace747a30",
                     "path": "<Keyboard>/tab",
                     "interactions": "",
@@ -265,7 +262,7 @@
                 {
                     "name": "",
                     "id": "b1cde5d9-da22-4050-96bc-44aa6d3a2b6d",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Mouse>/middleButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "M&K",
@@ -314,6 +311,28 @@
                     "processors": "",
                     "groups": "M&K",
                     "action": "DropWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "17857c55-7627-457d-b5d4-bd97a75e385c",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "HeavyAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "41ae3e86-d2e3-4887-9539-05ea71c3a5e2",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "LightAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

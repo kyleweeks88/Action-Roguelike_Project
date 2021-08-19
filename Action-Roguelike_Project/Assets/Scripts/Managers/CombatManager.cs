@@ -15,8 +15,8 @@ public class CombatManager : MonoBehaviour
     WeaponManager weaponMgmt;
     AnimationManager animMgmt;
 
-    float combatTimer = 10f;
-    float currentCombatTimer;
+    protected float combatTimer = 10f;
+    protected float currentCombatTimer;
     [HideInInspector] public bool inCombat;
     [HideInInspector] public bool impactActivated;
     [HideInInspector] public bool isBlocking;

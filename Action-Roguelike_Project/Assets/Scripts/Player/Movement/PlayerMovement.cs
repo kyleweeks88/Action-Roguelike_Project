@@ -17,8 +17,17 @@ public class PlayerMovement : MonoBehaviour
     public bool isSliding;
 
     [Header("Step Climb settings")]
-    [SerializeField] Transform stepRayUpper;
-    [SerializeField] Transform stepRayLower;
+    // FORWARD RAYS
+    [SerializeField] Transform[] stepRaysLow;
+    [SerializeField] Transform[] stepRaysHigh;
+    //[SerializeField] Transform stepRayUpper_F;
+    //[SerializeField] Transform stepRayLower_F;
+    //[SerializeField] Transform stepRayUpper_L;
+    //[SerializeField] Transform stepRayLower_L;
+    //[SerializeField] Transform stepRayUpper_R;
+    //[SerializeField] Transform stepRayLower_R;
+    //[SerializeField] Transform stepRayUpper_B;
+    //[SerializeField] Transform stepRayLower_B;
     [SerializeField] float stepHeight = 0.3f;
     [SerializeField] float stepSmooth = 0.1f;
 
@@ -45,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
         physMat = gameObject.GetComponent<CapsuleCollider>().material;
 
         currentSlideVelocity = slideVelocity;
-        stepRayUpper.position = new Vector3(stepRayUpper.position.x, stepHeight, stepRayUpper.position.z);
+        //stepRayUpper_F.position = new Vector3(stepRayUpper_F.position.x, stepHeight, stepRayUpper_F.position.z);
     }
 
     private void FixedUpdate()
@@ -66,7 +75,6 @@ public class PlayerMovement : MonoBehaviour
         UpdateIsSprinting();
         Move();
         CameraControl();
-        StepClimb();
     }
 
     public Vector3 GetPrevMovement()
@@ -92,14 +100,20 @@ public class PlayerMovement : MonoBehaviour
 
     void StepClimb()
     {
-        RaycastHit hitLower;
-        if(Physics.Raycast(stepRayLower.position, transform.TransformDirection(Vector3.forward), out hitLower, 0.3f, whatIsWalkable))
+        for (int i = 0; i < stepRaysLow.Length; i++)
         {
-            RaycastHit hitUpper;
-            if(!Physics.Raycast(stepRayUpper.position, transform.TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+            RaycastHit hitLower;
+            if (Physics.Raycast(stepRaysLow[i].position, stepRaysLow[i].TransformDirection(Vector3.forward), out hitLower, 0.3f, whatIsWalkable))
             {
-                if(_previousMovementInput.y > 0.1)
-                    playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                foreach (Transform stepRayHigh in stepRaysHigh)
+                {
+                    RaycastHit hitUpper;
+                    if (!Physics.Raycast(stepRayHigh.position, stepRayHigh.TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                    {
+                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                        return;
+                    }
+                }
             }
         }
     }
@@ -191,6 +205,11 @@ public class PlayerMovement : MonoBehaviour
         if(isSprinting && movement.z <= 0)
         {
             SprintReleased();
+        }
+
+        if(movement.sqrMagnitude > 0.1f)
+        {
+            StepClimb();
         }
 
         // HANDLES ANIMATIONS

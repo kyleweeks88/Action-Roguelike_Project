@@ -59,14 +59,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": ""Press(behavior=2)""
                 },
                 {
-                    ""name"": ""Attack"",
-                    ""type"": ""Button"",
-                    ""id"": ""b7b1f6db-3a28-47f0-a62c-68386f9496c6"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)""
-                },
-                {
                     ""name"": ""UserInterface"",
                     ""type"": ""Button"",
                     ""id"": ""496e2920-f625-46a1-826a-8024c59169a3"",
@@ -126,6 +118,22 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": ""DropWeapon"",
                     ""type"": ""Button"",
                     ""id"": ""75f9a138-39b7-4915-8d28-34a350f83b21"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""HeavyAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""972a8cbc-35a9-4e81-9134-d314c0c99998"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""LightAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""612efc42-d367-4766-92f3-41c5ff4d1d2e"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
@@ -233,17 +241,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9a640596-4236-497b-ae47-477ec3e63481"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""M&K"",
-                    ""action"": ""Attack"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""8ef35dd9-db77-4639-bf7a-b19ace747a30"",
                     ""path"": ""<Keyboard>/tab"",
                     ""interactions"": """",
@@ -278,7 +275,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b1cde5d9-da22-4050-96bc-44aa6d3a2b6d"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""path"": ""<Mouse>/middleButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""M&K"",
@@ -327,6 +324,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""M&K"",
                     ""action"": ""DropWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""17857c55-7627-457d-b5d4-bd97a75e385c"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""M&K"",
+                    ""action"": ""HeavyAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""41ae3e86-d2e3-4887-9539-05ea71c3a5e2"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""M&K"",
+                    ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -386,7 +405,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
-        m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_UserInterface = m_Player.FindAction("UserInterface", throwIfNotFound: true);
         m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
@@ -395,6 +413,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Player_SwapMainWeapon = m_Player.FindAction("SwapMainWeapon", throwIfNotFound: true);
         m_Player_SwapSecondaryWeapon = m_Player.FindAction("SwapSecondaryWeapon", throwIfNotFound: true);
         m_Player_DropWeapon = m_Player.FindAction("DropWeapon", throwIfNotFound: true);
+        m_Player_HeavyAttack = m_Player.FindAction("HeavyAttack", throwIfNotFound: true);
+        m_Player_LightAttack = m_Player.FindAction("LightAttack", throwIfNotFound: true);
         // UserInterface
         m_UserInterface = asset.FindActionMap("UserInterface", throwIfNotFound: true);
         m_UserInterface_UserInterface = m_UserInterface.FindAction("UserInterface", throwIfNotFound: true);
@@ -452,7 +472,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Interact;
-    private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_UserInterface;
     private readonly InputAction m_Player_Dodge;
     private readonly InputAction m_Player_Throw;
@@ -461,6 +480,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_SwapMainWeapon;
     private readonly InputAction m_Player_SwapSecondaryWeapon;
     private readonly InputAction m_Player_DropWeapon;
+    private readonly InputAction m_Player_HeavyAttack;
+    private readonly InputAction m_Player_LightAttack;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -470,7 +491,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
-        public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @UserInterface => m_Wrapper.m_Player_UserInterface;
         public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
         public InputAction @Throw => m_Wrapper.m_Player_Throw;
@@ -479,6 +499,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @SwapMainWeapon => m_Wrapper.m_Player_SwapMainWeapon;
         public InputAction @SwapSecondaryWeapon => m_Wrapper.m_Player_SwapSecondaryWeapon;
         public InputAction @DropWeapon => m_Wrapper.m_Player_DropWeapon;
+        public InputAction @HeavyAttack => m_Wrapper.m_Player_HeavyAttack;
+        public InputAction @LightAttack => m_Wrapper.m_Player_LightAttack;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -503,9 +525,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
-                @Attack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
-                @Attack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
-                @Attack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
                 @UserInterface.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUserInterface;
                 @UserInterface.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUserInterface;
                 @UserInterface.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUserInterface;
@@ -530,6 +549,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @DropWeapon.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDropWeapon;
                 @DropWeapon.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDropWeapon;
                 @DropWeapon.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDropWeapon;
+                @HeavyAttack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHeavyAttack;
+                @HeavyAttack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHeavyAttack;
+                @HeavyAttack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHeavyAttack;
+                @LightAttack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
+                @LightAttack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
+                @LightAttack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -549,9 +574,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
-                @Attack.started += instance.OnAttack;
-                @Attack.performed += instance.OnAttack;
-                @Attack.canceled += instance.OnAttack;
                 @UserInterface.started += instance.OnUserInterface;
                 @UserInterface.performed += instance.OnUserInterface;
                 @UserInterface.canceled += instance.OnUserInterface;
@@ -576,6 +598,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @DropWeapon.started += instance.OnDropWeapon;
                 @DropWeapon.performed += instance.OnDropWeapon;
                 @DropWeapon.canceled += instance.OnDropWeapon;
+                @HeavyAttack.started += instance.OnHeavyAttack;
+                @HeavyAttack.performed += instance.OnHeavyAttack;
+                @HeavyAttack.canceled += instance.OnHeavyAttack;
+                @LightAttack.started += instance.OnLightAttack;
+                @LightAttack.performed += instance.OnLightAttack;
+                @LightAttack.canceled += instance.OnLightAttack;
             }
         }
     }
@@ -629,7 +657,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
-        void OnAttack(InputAction.CallbackContext context);
         void OnUserInterface(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
@@ -638,6 +665,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnSwapMainWeapon(InputAction.CallbackContext context);
         void OnSwapSecondaryWeapon(InputAction.CallbackContext context);
         void OnDropWeapon(InputAction.CallbackContext context);
+        void OnHeavyAttack(InputAction.CallbackContext context);
+        void OnLightAttack(InputAction.CallbackContext context);
     }
     public interface IUserInterfaceActions
     {
