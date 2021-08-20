@@ -45,6 +45,8 @@ GameObject:
   - component: {fileID: 1249432010}
   - component: {fileID: 1391794268571470581}
   - component: {fileID: 3694228505130662274}
+  - component: {fileID: 4286119180384814376}
+  - component: {fileID: 3836075178380133621}
   m_Layer: 0
   m_Name: Weapon_1H_Sword
   m_TagString: Untagged
@@ -132,6 +134,31 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4286119180384814376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905517544646722258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3397052e79bb0f847b08bffea3d9b624, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickup: {fileID: 5602960486171184564}
+--- !u!114 &3836075178380133621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905517544646722258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8505a5f535987504e9be1682e5c29f03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2551326141830011114
 GameObject:
   m_ObjectHideFlags: 0

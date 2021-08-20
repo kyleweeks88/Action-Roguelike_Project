@@ -4,7 +4,13 @@ public class ItemPickup : MonoBehaviour
 {
     protected GameObject interactingEntity;
     // The weapon prefab for this pickup
-    public GameObject item_Pf;
+
+    private IPickupResponse _pickupResponse;
+
+    private void Awake()
+    {
+        _pickupResponse = GetComponent<IPickupResponse>();   
+    }
 
     void OnTriggerEnter(Collider col)
     {
@@ -48,22 +54,9 @@ public class ItemPickup : MonoBehaviour
 
     public virtual void PickupItem()
     {
-        // CHECK WHAT KIND OF ITEM IS BEING PICKED UP
-
-        // IF THE ITEM IS A WEAPON...
-        if (item_Pf.GetComponent<Weapon>() != null)
-        {
-            // ADDS THE PICKED UP WEAPON TO THE EquipmentPanel UI SLOT
-            interactingEntity.GetComponentInChildren<EquipmentPanel>()
-                .AddItem(item_Pf.GetComponent<Weapon>().weaponData);
-            // TELLS INTERACTING ENTITY'S WeaponManger TO EQUIP THE WEAPON
-            interactingEntity.GetComponent<WeaponManager>()
-                .AddWeapon(item_Pf.GetComponent<Weapon>());
-        }
-        // ELSE IF ITEM IS CONSUMABLE
-        // ELSE IF ITEM IS RELIC
+        _pickupResponse.OnPickup(interactingEntity.transform, this.transform);
 
         interactingEntity.GetComponent<PlayerManager>().inputMgmt.interactEvent -= PickupItem;
-        Object.Destroy(this.gameObject);
+        //Object.Destroy(this.gameObject);
     }
 }
