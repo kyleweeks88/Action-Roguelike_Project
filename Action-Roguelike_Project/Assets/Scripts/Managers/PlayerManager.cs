@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -8,18 +9,18 @@ public class PlayerManager : MonoBehaviour
     public PlayerEventChannel playerEventChannel;
     public InputManager inputMgmt;
     public Rigidbody myRb;
-    public EquipmentManager equipmentMgmt;
+    public WeaponManager weaponMgmt;
     public PlayerStats playerStats;
     public AnimationManager animMgmt;
     public CombatManager combatMgmt;
     public PlayerMovement playerMovement;
     public DodgeControl dodgeCtrl;
-    public VitalsManager vitalsMgmt;
 
     [Header("Camera Ref")]
-    public GameObject myCamera = null;
+    public Camera myCamera = null;
     public GameObject freeLook;
     public GameObject sprintCamera;
+    public CinemachineVirtualCameraBase uiCamera;
 
     public bool isInteracting = false;
 
@@ -33,11 +34,8 @@ public class PlayerManager : MonoBehaviour
         playerMovement = gameObject.GetComponent<PlayerMovement>();
         playerMovement.enabled = true;
 
-        vitalsMgmt = gameObject.GetComponent<VitalsManager>();
-        vitalsMgmt.enabled = true;
-
-        equipmentMgmt = gameObject.GetComponent<EquipmentManager>();
-        equipmentMgmt.enabled = true;
+        weaponMgmt = gameObject.GetComponent<WeaponManager>();
+        weaponMgmt.enabled = true;
 
         playerStats = gameObject.GetComponent<PlayerStats>();
         playerStats.enabled = true;

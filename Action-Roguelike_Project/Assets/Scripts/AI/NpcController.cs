@@ -38,6 +38,7 @@ public class NpcController : MonoBehaviour
         combatMgmt = GetComponent<NpcCombatManager>();
 
         navAgent.speed = walkSpeed;
+        target = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()
@@ -106,12 +107,12 @@ public class NpcController : MonoBehaviour
 
             var dirVector = target.transform.position - transform.position;
             var lookPercentage = Vector3.Dot(transform.forward.normalized, dirVector.normalized);
-            
-            if (lookPercentage >= 0.4f)
+
+            if (lookPercentage >= -.1f)
             {
-                if (Physics.Raycast(sightRay, out hit, sightRange))
+                if (Physics.Raycast(sightRay, out hit, sightRange, whatIsTarget))
                 {
-                    if (hit.transform.tag == "Player" || hit.transform.tag == "Invulnerable")
+                    if (hit.transform.tag == "Player" || hit.transform.tag == "Invulnerable" || hit.transform.tag == "Enemy")
                     {
                         targetInSight = true;
                         return targetInSight;

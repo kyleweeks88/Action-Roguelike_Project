@@ -14,13 +14,22 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction dodgeEvent;
     public event UnityAction blockEventStarted;
     public event UnityAction blockEventCancelled;
-    public event UnityAction attackEventStarted;
-    public event UnityAction attackEventCancelled;
+    public event UnityAction heavyAttackStartedEvent;
+    public event UnityAction heavyAttackCancelledEvent;
+    public event UnityAction lightAttackStartedEvent;
+    public event UnityAction lightAttackCancelledEvent;
+    //public event UnityAction attackEventStarted;
+    //public event UnityAction attackEventCancelled;
     public event UnityAction rangedAttackEventStarted;
     public event UnityAction rangedAttackEventCancelled;
     // Used when the player interacts with contextual objects in the environment
     public event UnityAction interactEvent;
     public event UnityAction userInterfaceEvent;
+    public event UnityAction pauseEvent;
+
+    public event UnityAction swapMainWeaponEvent;
+    public event UnityAction swapSecondaryWeaponEvent;
+    public event UnityAction dropWeaponEvent;
 
     PlayerControls controls;
     public PlayerControls Controls
@@ -42,6 +51,8 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
 
     public void EnableGameplayInput()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         Controls.UserInterface.Disable();
         Controls.Player.Enable();
         Controls.Player.SetCallbacks(this);
@@ -49,6 +60,8 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
 
     public void EnableUserInterfaceInput()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         Controls.Player.Disable();
         Controls.UserInterface.Enable();
         Controls.UserInterface.SetCallbacks(this);
@@ -60,15 +73,37 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         controls.UserInterface.Disable();
     }
 
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        if (attackEventStarted != null &&
-            context.phase == InputActionPhase.Started)
-            attackEventStarted.Invoke();
+    //public void OnAttack(InputAction.CallbackContext context)
+    //{
+    //    if (attackEventStarted != null &&
+    //        context.phase == InputActionPhase.Started)
+    //        attackEventStarted.Invoke();
 
-        if (attackEventCancelled != null &&
+    //    if (attackEventCancelled != null &&
+    //        context.phase == InputActionPhase.Canceled)
+    //        attackEventCancelled.Invoke();
+    //}
+
+    public void OnHeavyAttack(InputAction.CallbackContext context)
+    {
+        if (heavyAttackStartedEvent != null &&
+            context.phase == InputActionPhase.Started)
+            heavyAttackStartedEvent.Invoke();
+
+        if (heavyAttackCancelledEvent != null &&
             context.phase == InputActionPhase.Canceled)
-            attackEventCancelled.Invoke();
+            heavyAttackCancelledEvent.Invoke();
+    }
+
+    public void OnLightAttack(InputAction.CallbackContext context)
+    {
+        if (lightAttackStartedEvent != null &&
+            context.phase == InputActionPhase.Started)
+            lightAttackStartedEvent.Invoke();
+
+        if (lightAttackCancelledEvent != null &&
+            context.phase == InputActionPhase.Canceled)
+            lightAttackCancelledEvent.Invoke();
     }
 
     public void OnRangedAttack(InputAction.CallbackContext context)
@@ -139,6 +174,13 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
             userInterfaceEvent.Invoke();
     }
 
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if (pauseEvent != null &&
+            context.phase == InputActionPhase.Started)
+            pauseEvent.Invoke();
+    }
+
     public void OnThrow(InputAction.CallbackContext context)
     {
         if (rangedAttackEventStarted != null &&
@@ -159,5 +201,26 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         if (blockEventCancelled != null &&
             context.phase == InputActionPhase.Canceled)
             blockEventCancelled.Invoke();
+    }
+
+    public void OnSwapMainWeapon(InputAction.CallbackContext context)
+    {
+        if (swapMainWeaponEvent != null &&
+            context.phase == InputActionPhase.Started)
+            swapMainWeaponEvent.Invoke();
+    }
+
+    public void OnSwapSecondaryWeapon(InputAction.CallbackContext context)
+    {
+        if (swapSecondaryWeaponEvent != null &&
+                    context.phase == InputActionPhase.Started)
+            swapSecondaryWeaponEvent.Invoke();
+    }
+
+    public void OnDropWeapon(InputAction.CallbackContext context)
+    {
+        if (dropWeaponEvent != null &&
+                    context.phase == InputActionPhase.Started)
+            dropWeaponEvent.Invoke();
     }
 }

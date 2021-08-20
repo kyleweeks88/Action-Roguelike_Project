@@ -6,6 +6,7 @@ public class AnimationManager : MonoBehaviour
 {
     public Animator animator;
     [SerializeField] PlayerManager playerMgmt;
+    public AnimatorOverrideController defaultController;
 
     #region Animator Parameters
     // My Animator parameters turned from costly Strings to cheap Ints
@@ -34,16 +35,16 @@ public class AnimationManager : MonoBehaviour
         animator.SetFloat(yVelocityParam, playerMgmt.myRb.velocity.y);
         animator.SetBool(inCombatParam, playerMgmt.combatMgmt.inCombat);
 
-        if (playerMgmt.combatMgmt.attackInputHeld)
-        {
-            if (playerMgmt.equipmentMgmt.currentlyEquippedWeapon != null &&
-                !playerMgmt.equipmentMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
-            {
-                MeleeWeapon myWeapon = playerMgmt.equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
-                if((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
-                    animator.SetTrigger(playerMgmt.combatMgmt.attackAnim);
-            }
-        }
+        //if (playerMgmt.combatMgmt.attackInputHeld)
+        //{
+        //    if (playerMgmt.weaponMgmt.currentlyEquippedWeapon != null &&
+        //        !playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
+        //    {
+        //        MeleeWeapon myWeapon = playerMgmt.weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
+        //        if((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
+        //            animator.SetTrigger(playerMgmt.combatMgmt.attackAnim);
+        //    }
+        //}
 
         if (playerMgmt.combatMgmt.attackInputHeld)
         {
@@ -62,6 +63,11 @@ public class AnimationManager : MonoBehaviour
     public void SetAnimation(AnimatorOverrideController overrideCtrl)
     {
         animator.runtimeAnimatorController = overrideCtrl;
+    }
+
+    public void ResetAnimation()
+    {
+        animator.runtimeAnimatorController = defaultController;
     }
 
     public void MovementAnimation(float xMove, float zMove)

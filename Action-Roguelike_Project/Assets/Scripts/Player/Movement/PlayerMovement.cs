@@ -16,18 +16,24 @@ public class PlayerMovement : MonoBehaviour
     float currentSlideVelocity;
     public bool isSliding;
 
+    [Header("Step Climb settings")]
+    [SerializeField] Transform[] stepRaysLow;
+    [SerializeField] Transform[] stepRaysHigh;
+    [SerializeField] float stepHeight = 0.3f;
+    [SerializeField] float stepSmooth = 0.1f;
+
     Vector3 movement;
     Vector3 rotationMovement;
     Vector2 _previousMovementInput;
 
-    //[HideInInspector] public float currentMoveSpeed = 0f;
-    float turnSpeed = 15f;
+    float turnSpeed = 30f;
 
     [HideInInspector] public bool isSprinting = false;
-    public bool isJumping = false;
+    [HideInInspector] public bool isJumping = false;
     bool jumpInputHeld = false;
 
     PhysicMaterial physMat;
+    public bool moveLocked;
 
     void Start()
     {
@@ -83,6 +89,56 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void StepClimb()
+    {
+        if (isSliding) { return; }
+
+        for (int i = 0; i < stepRaysLow.Length; i++)
+        {
+            RaycastHit hitLower;
+            if (Physics.Raycast(stepRaysLow[i].position, stepRaysLow[i].TransformDirection(Vector3.forward), out hitLower, 0.3f, whatIsWalkable))
+            {
+                if(stepRaysLow[i].name == "step low F")
+                {
+                    RaycastHit hitUpper;
+                    if(!Physics.Raycast(stepRaysHigh[0].position, stepRaysHigh[0].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                    {
+                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                        return;
+                    }
+                }
+                else if(stepRaysLow[i].name == "step low B")
+                {
+                    RaycastHit hitUpper;
+                    if (!Physics.Raycast(stepRaysHigh[1].position, stepRaysHigh[1].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                    {
+                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                        return;
+                    }
+                }
+                else if (stepRaysLow[i].name == "step low L")
+                {
+                    RaycastHit hitUpper;
+                    if (!Physics.Raycast(stepRaysHigh[2].position, stepRaysHigh[2].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                    {
+                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                        return;
+                    }
+                }
+                else if (stepRaysLow[i].name == "step low R")
+                {
+                    RaycastHit hitUpper;
+                    if (!Physics.Raycast(stepRaysHigh[3].position, stepRaysHigh[3].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                    {
+                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                        return;
+                    }
+                }
+                return;
+            }
+        }
+    }
+
     void GroundCheck()
     {
         Collider[] groundCollisions = Physics.OverlapSphere(groundColPos.position, 0.25f, whatIsWalkable);
@@ -99,7 +155,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 playerMgmt.myRb.velocity += Vector3.up * Physics.gravity.y * (10f - 1f) * Time.deltaTime;
             }
-            else if(playerMgmt.myRb.velocity.y > 0f && !jumpInputHeld)
+            else if (playerMgmt.myRb.velocity.y > 0f && !jumpInputHeld)
             {
                 playerMgmt.myRb.velocity += Vector3.up * Physics.gravity.y * (8f - 1f) * Time.deltaTime;
             }
@@ -111,7 +167,6 @@ public class PlayerMovement : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f, whatIsWalkable))
                 {
-                    //playerMgmt.playerStats._moveSpeed.RemoveModifier(playerMgmt.playerStats.aerialMovementModifier);
                     isJumping = false;
                 }
             }
@@ -159,25 +214,44 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move()
     {
+        if (moveLocked) { return; }
+
         // CONVERTS THE INPUT INTO A NORMALIZED VECTOR3
-        movement = new Vector3
+        //movement = new Vector3
+        //{
+        //    x = _previousMovementInput.x,
+        //    y = -currentSlideVelocity,
+        //    z = _previousMovementInput.y
+        //}.normalized;
+
+        Vector3 velocity = Vector3.zero;
+        movement = Vector3.Lerp(movement, new Vector3
         {
             x = _previousMovementInput.x,
             y = -currentSlideVelocity,
             z = _previousMovementInput.y
-        }.normalized;
+        }.normalized, 10f * Time.deltaTime);
 
+        if (_previousMovementInput.sqrMagnitude <= 0.5f)
+            movement = Vector3.zero;
+        Debug.Log(movement.sqrMagnitude);
+        
         // Only allows the player to sprint forwards
-        if(isSprinting && movement.z <= 0)
+        if (isSprinting && movement.z <= 0)
         {
             SprintReleased();
+        }
+
+        if(movement.sqrMagnitude > 0.1f)
+        {
+            StepClimb();
         }
 
         // HANDLES ANIMATIONS
         playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
 
         // MOVES THE PLAYER
-        if (movement.z < 0)
+        if (_previousMovementInput.y < 0)
         {
             playerMgmt.myRb.velocity += rotationMovement * (playerMgmt.playerStats.moveSpeed.value * .5f);
         }
@@ -208,12 +282,12 @@ public class PlayerMovement : MonoBehaviour
             - playerMgmt.playerStats.staminaDrainAmount > 0)
         {
             isSprinting = true;
-            playerMgmt.isInteracting = true;
+            //playerMgmt.isInteracting = true;
 
             // adds moveSpeed StatModifier
             playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.sprintMovementModifier);
 
-            playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 11;
+            //playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 11;
         }
     }
 
@@ -224,7 +298,7 @@ public class PlayerMovement : MonoBehaviour
         // removes moveSpeed StatModifier
         playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.sprintMovementModifier);
 
-        playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 9;
+        //playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 9;
     }
 
     void UpdateIsSprinting()

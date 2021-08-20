@@ -11,6 +11,8 @@ public class NpcStats : CharacterStats
     float blinkDuration = 0.1f;
     float blinkTimer;
 
+    public int soulWorth;
+
     public override void Start()
     {
         base.Start();
@@ -22,8 +24,9 @@ public class NpcStats : CharacterStats
     {
         base.Death();
 
-        GetComponent<NavMeshAgent>().enabled = false;
+        SpawnSouls();
         GetComponent<NpcController>().enabled = false;
+        GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
         GetComponentInChildren<HealthbarDisplay>().gameObject.SetActive(false);
         GetComponent<RagdollManager>().ActivateRagdoll();
@@ -35,6 +38,17 @@ public class NpcStats : CharacterStats
         blinkTimer = blinkDuration;
         StartCoroutine(BlinkTimer());
         base.TakeDamage(attacker, dmgVal);
+    }
+
+    public void SpawnSouls()
+    {
+        for (int i = 0; i < soulWorth; i++)
+        {
+            GameObject newSoul = Instantiate(Resources.Load("Soul Point"), transform.position, Quaternion.identity) as GameObject;
+
+            newSoul.GetComponent<Rigidbody>().AddForce(newSoul.transform.up * 4.5f, ForceMode.Impulse);
+            newSoul.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-5,5),0,Random.Range(-5,5)).normalized * 1f, ForceMode.Impulse);
+        }
     }
 
     IEnumerator BlinkTimer()

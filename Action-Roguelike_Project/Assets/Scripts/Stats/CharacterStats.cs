@@ -11,6 +11,10 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public delegate void OnStaminaChanged(float currentHealth);
     public event OnStaminaChanged staminaChange_Event;
 
+    //public delegate void OnDeath();
+    //public event OnDeath onDeath_Event;
+    public event System.Action OnDeath;
+
     [Header("General settings")]
     [SerializeField] Rigidbody chestRb;
     public string charName; 
@@ -31,6 +35,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public Stat attackDamage;
     public Stat attackChargeRate;
     public Stat blockReduction;
+    //public Stat weaponDurability;
     [HideInInspector] public float maxAttackCharge = 100f;
     [HideInInspector] public float currentAttackCharge = 0f;
 
@@ -66,11 +71,6 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
         InitializeVitals();
     }
 
-    //void Update()
-    //{
-    //    Debug.Log(charName+" Health: " + currentHealthPoints + " / " + maxHealthPoints);
-    //}
-
     public void InitializeVitals()
     {
         SetHealth(maxHealthPoints);
@@ -80,6 +80,9 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #region Death!!!
     public virtual void Death()
     {
+        if (OnDeath != null)
+            OnDeath();
+
         Debug.Log(charName + " has died!");
     }
     #endregion

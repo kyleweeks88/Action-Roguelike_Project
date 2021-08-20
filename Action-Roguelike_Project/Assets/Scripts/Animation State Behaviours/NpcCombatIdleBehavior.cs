@@ -14,11 +14,11 @@ public class NpcCombatIdleBehavior : StateMachineBehaviour
         combatManager = animator.transform.GetComponentInParent<NpcCombatManager>();
         npcCtrl = animator.transform.GetComponentInParent<NpcController>();
         npcCtrl.navAgent.velocity = Vector3.zero;
-        npcCtrl.navAgent.angularSpeed = 240;
+        npcCtrl.navAgent.angularSpeed = 300;
         npcCtrl.navAgent.stoppingDistance = combatManager.meleeAttackDistance;
         animator.SetBool("meleeAttackHold", false);
 
-        randInt = Random.Range(0, 2);
+        randInt = Random.Range(0, 3);
     }
 
 
@@ -29,6 +29,7 @@ public class NpcCombatIdleBehavior : StateMachineBehaviour
             npcCtrl.SetDestinationWithDelay();
             if (npcCtrl.DistanceToTarget() <= combatManager.meleeAttackDistance)
             {
+                // ATTACK
                 if (randInt > 0)
                 {
                     // Handles a timer that upon reaching 0, flips canRecieveAttackInput to true!
@@ -40,6 +41,7 @@ public class NpcCombatIdleBehavior : StateMachineBehaviour
                     }
                 }
                 
+                // STRAFE
                 if(randInt == 0)
                 {
                     int dirInt = Random.Range(0, 2);

@@ -12,11 +12,11 @@ public class CombatManager : MonoBehaviour
     [SerializeField] protected Transform leftHand;
     [SerializeField] protected Transform rightHand;
     protected CharacterStats charStats;
-    EquipmentManager equipmentMgmt;
+    WeaponManager weaponMgmt;
     AnimationManager animMgmt;
 
-    float combatTimer = 10f;
-    float currentCombatTimer;
+    protected float combatTimer = 10f;
+    protected float currentCombatTimer;
     [HideInInspector] public bool inCombat;
     [HideInInspector] public bool impactActivated;
     [HideInInspector] public bool isBlocking;
@@ -33,12 +33,14 @@ public class CombatManager : MonoBehaviour
     public bool canRecieveAttackInput;
     public bool attackInputHeld;
     public bool rangedAttackHeld;
+    public bool lightAttack;
+    public bool heavyAttack;
     #endregion
 
     public virtual void Start()
     {
         charStats = GetComponent<CharacterStats>();
-        equipmentMgmt = GetComponent<EquipmentManager>();
+        weaponMgmt = GetComponent<WeaponManager>();
         animMgmt = GetComponent<AnimationManager>();
 
         canRecieveAttackInput = true;
@@ -48,15 +50,15 @@ public class CombatManager : MonoBehaviour
     {
         CheckMeleeAttack();
 
-        if(attackInputHeld)
+        if(attackInputHeld && heavyAttack)
         {
             ChargeMeleeAttack();
         }
 
-        if(rangedAttackHeld)
-        {
-            ChargeRangedAttack();
-        }
+        //if(rangedAttackHeld)
+        //{
+        //    ChargeRangedAttack();
+        //}
     }
 
     /// <summary>
@@ -131,11 +133,12 @@ public class CombatManager : MonoBehaviour
 
     public virtual void ChargeMeleeAttack()
     {
+        if(!heavyAttack) { return; }
         // If you have a weapon equipped...
-        if (equipmentMgmt.currentlyEquippedWeapon != null)
+        if (weaponMgmt.currentlyEquippedWeapon != null)
         {
             // If the current weapon is chargeable...
-            if (equipmentMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
+            if (weaponMgmt.currentlyEquippedWeapon.weaponData.isChargeable)
             {
                 // If the current weapon's charge is high enough, set the bool to true
                 // to perform maxCharge special attack.
@@ -170,7 +173,7 @@ public class CombatManager : MonoBehaviour
                 animMgmt.animator.SetBool("maxAttackCharge", true);
             }
 
-            if (charStats.currentAttackCharge <=
+            if (charStats.currentAttackCharge <
                 charStats.maxAttackCharge)
             {
                 charStats.currentAttackCharge +=
@@ -193,28 +196,29 @@ public class CombatManager : MonoBehaviour
     /// <param name="handInt"></param>
     public virtual void ActivateImpact(int impactID)
     {
-        if (equipmentMgmt.currentlyEquippedWeapon != null)
+        if (weaponMgmt.currentlyEquippedWeapon != null)
         {
-            MeleeWeapon myWeapon = equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+            MeleeWeapon myWeapon = weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
             charStats.DamageStamina(myWeapon.meleeData.staminaCost);
         }
         else
         {
+            Debug.Log("FIX THIS: DETERMINE HEAVY OR LIGHT ATTACK STAMINA COST!");
             charStats.DamageStamina(10f);
+            switch (impactID)
+            {
+                case 1:
+                    CreateImpactCollider(leftHand);
+                    break;
+                case 2:
+                    CreateImpactCollider(rightHand);
+                    break;
+                case 3:
+                    Debug.Log("Kick");
+                    break;
+            }
         }
 
-        switch(impactID)
-        {
-            case 1:
-                CreateImpactCollider(leftHand);
-                break;
-            case 2:
-                CreateImpactCollider(rightHand);
-                break;
-            case 3:
-                Debug.Log("Kick");
-                break;
-        }
         impactActivated = true;
     }
 
@@ -228,6 +232,8 @@ public class CombatManager : MonoBehaviour
         // for each object the collider hits do this stuff...
         foreach (Collider hit in impactCollisions)
         {
+            if(hit.transform.tag == "Invulnerable") { return; }
+
             // Create equippedWeapon's hit visuals
             GameObject hitVis = Instantiate(hitFX, hit.ClosestPoint(impactTrans.position), Quaternion.identity);
             CharacterStats hitStats = hit.gameObject.GetComponent<CharacterStats>();
@@ -249,7 +255,7 @@ public class CombatManager : MonoBehaviour
     {
         if (impactActivated)
         {
-            MeleeWeapon equippedWeapon = equipmentMgmt.currentlyEquippedWeapon as MeleeWeapon;
+            MeleeWeapon equippedWeapon = weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
             if (equippedWeapon != null)
             {
                 // Creates the collider on the weapon, the weapon then calls the Cmd
