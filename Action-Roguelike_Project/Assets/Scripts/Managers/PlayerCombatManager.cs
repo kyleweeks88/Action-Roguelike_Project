@@ -15,8 +15,6 @@ public class PlayerCombatManager : CombatManager
     {
         base.Start();
 
-        //playerMgmt.inputMgmt.attackEventStarted += AttackPerformed;
-        //playerMgmt.inputMgmt.attackEventCancelled += AttackReleased;
         playerMgmt.inputMgmt.heavyAttackStartedEvent += HeavyAttackPerformed;
         playerMgmt.inputMgmt.heavyAttackCancelledEvent += AttackReleased;
         playerMgmt.inputMgmt.lightAttackStartedEvent += LightAttackPerformed;
@@ -67,67 +65,6 @@ public class PlayerCombatManager : CombatManager
     #endregion
 
     #region Melee
-    /// <summary>
-    /// Called by the player's attack input.
-    /// </summary>
-    public override void AttackPerformed()
-    {
-        // If the player is interacting with a contextual object, exit.
-        if (playerMgmt.isInteracting) { return; }
-        if (playerMgmt.playerMovement.isSprinting) { return; }
-
-        base.AttackPerformed();
-
-        if (canRecieveAttackInput)
-        {
-            attackInputHeld = true;
-
-//TEST============>// IF THE PLAYER IS IN THE AIR AND LOOKING DOWNWARDS!!!
-            if (!playerMgmt.playerMovement.isGrounded)
-            {
-                if (Vector3.Dot(playerMgmt.myCamera.transform.forward, Vector3.up) <= -0.65f)
-                {
-                    playerMgmt.myRb.AddForce(playerMgmt.myCamera.transform.forward * 75f, ForceMode.Impulse);
-                }
-            }
-
-            // If you have a weapon equipped
-            if (playerMgmt.weaponMgmt.currentlyEquippedWeapon != null)
-            {
-                // If current weapon is a melee type...
-                if (playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.weaponType == WeaponType.Melee)
-                {
-                    MeleeWeapon myWeapon = playerMgmt.weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
-                    // Checks if the entity has enough stamina to do an attack...
-                    if ((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
-                    {
-                        // If the weapon is a chargeable weapon...
-                        if (myWeapon.meleeData.isChargeable)
-                        {
-                            attackAnim = "meleeAttackHold";
-                            playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
-                        }
-                        // If the weapon is a rapid attack weapon...
-                        else
-                        {
-                            attackAnim = "meleeAttackTrigger";
-                        }
-                    }
-
-                }
-            }
-            // If you have no equipped weapon, you're unarmed
-            else
-            {
-                if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
-                {
-                    attackAnim = "meleeAttackHold";
-                    playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
-                }
-            }
-        }
-    }
-
     public void LightAttackPerformed()
     {
         // If the player is interacting with a contextual object, exit.
@@ -141,15 +78,7 @@ public class PlayerCombatManager : CombatManager
         if (canRecieveAttackInput)
         {
             attackInputHeld = true;
-
-            //TEST============>// IF THE PLAYER IS IN THE AIR AND LOOKING DOWNWARDS!!!
-            if (!playerMgmt.playerMovement.isGrounded)
-            {
-                if (Vector3.Dot(playerMgmt.myCamera.transform.forward, Vector3.up) <= -0.65f)
-                {
-                    playerMgmt.myRb.AddForce(playerMgmt.myCamera.transform.forward * 75f, ForceMode.Impulse);
-                }
-            }
+            lightAttack = true;
 
             // If you have a weapon equipped
             if (playerMgmt.weaponMgmt.currentlyEquippedWeapon != null)
@@ -192,6 +121,7 @@ public class PlayerCombatManager : CombatManager
         if (canRecieveAttackInput)
         {
             attackInputHeld = true;
+            heavyAttack = true;
 
             //TEST============>// IF THE PLAYER IS IN THE AIR AND LOOKING DOWNWARDS!!!
             if (!playerMgmt.playerMovement.isGrounded)
@@ -236,6 +166,8 @@ public class PlayerCombatManager : CombatManager
     void AttackReleased()
     {
         attackInputHeld = false;
+        lightAttack = false;
+        heavyAttack = false;
         playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
 
         playerMgmt.playerStats.ResetAttackCharge();
@@ -251,8 +183,6 @@ public class PlayerCombatManager : CombatManager
 
     private void OnDisable()
     {
-        //playerMgmt.inputMgmt.attackEventStarted -= AttackPerformed;
-        //playerMgmt.inputMgmt.attackEventCancelled -= AttackReleased;
         playerMgmt.inputMgmt.heavyAttackStartedEvent -= HeavyAttackPerformed;
         playerMgmt.inputMgmt.heavyAttackCancelledEvent -= AttackReleased;
         playerMgmt.inputMgmt.lightAttackStartedEvent -= LightAttackPerformed;
