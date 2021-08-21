@@ -15,6 +15,7 @@ public class PlayerManager : MonoBehaviour
     public CombatManager combatMgmt;
     public PlayerMovement playerMovement;
     public DodgeControl dodgeCtrl;
+    public SlideManager slideMgmt;
 
     [Header("Camera Ref")]
     public Camera myCamera = null;
@@ -27,6 +28,9 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         myRb = gameObject.GetComponent<Rigidbody>();
+
+        slideMgmt = GetComponent<SlideManager>();
+        slideMgmt.enabled = true;
 
         inputMgmt = gameObject.GetComponent<InputManager>();
         inputMgmt.enabled = true;

@@ -5,16 +5,13 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Component Ref")]
     [SerializeField] PlayerManager playerMgmt = null;
+    PhysicMaterial physMat;
+    SlideManager slideMgmt;
 
     [Header("Ground detection")]
     public LayerMask whatIsWalkable;
     public Transform groundColPos;
     public bool isGrounded;
-
-    [Header("Slide settings")]
-    public float slideVelocity;
-    float currentSlideVelocity;
-    public bool isSliding;
 
     [Header("Step Climb settings")]
     [SerializeField] Transform[] stepRaysLow;
@@ -32,7 +29,6 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool isJumping = false;
     bool jumpInputHeld = false;
 
-    PhysicMaterial physMat;
     public bool moveLocked;
 
     void Start()
@@ -44,8 +40,7 @@ public class PlayerMovement : MonoBehaviour
         playerMgmt.inputMgmt.moveEvent += OnMove;
 
         physMat = gameObject.GetComponent<CapsuleCollider>().material;
-
-        currentSlideVelocity = slideVelocity;
+        slideMgmt = GetComponent<SlideManager>();
     }
 
     private void FixedUpdate()
@@ -56,12 +51,11 @@ public class PlayerMovement : MonoBehaviour
         {
             physMat.dynamicFriction = 0f;
         }
-        else if(_previousMovementInput.sqrMagnitude == 0 && !isSliding)
+        else if(_previousMovementInput.sqrMagnitude == 0 && !slideMgmt.isSliding)
         {
             physMat.dynamicFriction = 1f;
         }
 
-        HandleSliding();
         GroundCheck();
         UpdateIsSprinting();
         Move();
@@ -73,25 +67,9 @@ public class PlayerMovement : MonoBehaviour
         return _previousMovementInput;
     }
 
-    void HandleSliding()
-    {
-        Vector3 adjustedPos = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
-        if (!CheckSlope(adjustedPos, Vector3.down, 10f))
-        {
-            isSliding = false;
-            currentSlideVelocity = 0f;
-        }
-        else
-        {
-            isSliding = true;
-            currentSlideVelocity = slideVelocity;
-            physMat.dynamicFriction = 0f;
-        }
-    }
-
     void StepClimb()
     {
-        if (isSliding) { return; }
+        if (slideMgmt.isSliding) { return; }
 
         for (int i = 0; i < stepRaysLow.Length; i++)
         {
@@ -185,28 +163,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    bool CheckSlope(Vector3 position, Vector3 desiredDirection, float distance)
-    {
-        Debug.DrawRay(position, desiredDirection, Color.green);
-
-        Ray myRay = new Ray(position, desiredDirection); // cast a Ray from the position of our gameObject into our desired direction. Add the slopeRayHeight to the Y parameter.
-        RaycastHit hit;
-
-        if (Physics.Raycast(myRay, out hit, distance, whatIsWalkable))
-        {
-            float slopeAngle = Mathf.Deg2Rad * Vector3.Angle(Vector3.up, hit.normal); // Here we get the angle between the Up Vector and the normal of the wall we are checking against: 90 for straight up walls, 0 for flat ground.
-
-            if (slopeAngle >= 45f * Mathf.Deg2Rad) //You can set "steepSlopeAngle" to any angle you wish.
-            {
-                return true; // return false if we are very near / on the slope && the slope is steep
-            }
-
-            return false; // return true if the slope is not steep
-        }
-
-        return false;
-    }
-
     void OnMove(Vector2 movement)
     {
         _previousMovementInput = movement;
@@ -228,13 +184,12 @@ public class PlayerMovement : MonoBehaviour
         movement = Vector3.Lerp(movement, new Vector3
         {
             x = _previousMovementInput.x,
-            y = -currentSlideVelocity,
+            y = 0,
             z = _previousMovementInput.y
         }.normalized, 10f * Time.deltaTime);
 
         if (_previousMovementInput.sqrMagnitude <= 0.5f)
             movement = Vector3.zero;
-        Debug.Log(movement.sqrMagnitude);
         
         // Only allows the player to sprint forwards
         if (isSprinting && movement.z <= 0)
@@ -324,7 +279,7 @@ public class PlayerMovement : MonoBehaviour
     public void Jump()
     {
         if (playerMgmt.isInteracting) { return; }
-        if (isSliding) { return; }
+        if (slideMgmt.isSliding) { return; }
 
         jumpInputHeld = true;
         

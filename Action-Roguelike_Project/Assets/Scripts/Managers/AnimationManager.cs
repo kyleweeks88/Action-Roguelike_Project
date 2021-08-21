@@ -28,7 +28,7 @@ public class AnimationManager : MonoBehaviour
     {
         animator.SetFloat(moveAnimSpeedParam, 1f);
         animator.SetBool(isBlockingParam, playerMgmt.combatMgmt.isBlocking);
-        animator.SetBool(isSlidingParam, playerMgmt.playerMovement.isSliding);
+        animator.SetBool(isSlidingParam, playerMgmt.slideMgmt.isSliding);
         animator.SetBool(isSprintingParam, playerMgmt.playerMovement.isSprinting);
         animator.SetBool(isJumpingParam, playerMgmt.playerMovement.isJumping);
         animator.SetBool(isGroundedParam, playerMgmt.playerMovement.isGrounded);

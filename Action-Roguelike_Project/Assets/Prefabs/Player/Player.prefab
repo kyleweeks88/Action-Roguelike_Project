@@ -2560,6 +2560,7 @@ MonoBehaviour:
   combatMgmt: {fileID: 1368904199}
   playerMovement: {fileID: 3724881297973483382}
   dodgeCtrl: {fileID: 14693032}
+  slideMgmt: {fileID: 0}
   myCamera: {fileID: 3724881298246990974}
   freeLook: {fileID: 3130366754860221888}
   sprintCamera: {fileID: 8796323682798494517}
@@ -2638,8 +2639,6 @@ MonoBehaviour:
     m_Bits: 8193
   groundColPos: {fileID: 8796029022928796929}
   isGrounded: 0
-  slideVelocity: 2
-  isSliding: 0
   stepRaysLow:
   - {fileID: 7734049440786607027}
   - {fileID: 385723157302149357}
