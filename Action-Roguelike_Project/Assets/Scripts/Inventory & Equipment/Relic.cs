@@ -9,7 +9,7 @@ public class Relic : MonoBehaviour
 
     private void Awake()
     {
-        statMod = new StatModifier(relicData.modValue, StatModType.PercentAdd);
+        statMod = new StatModifier(relicData.modValue, StatModType.PercentMulti);
         relicActivation = GetComponent<IActivateRelic>();
     }
     public virtual void ActivateRelic(Transform _interactingEntity_)

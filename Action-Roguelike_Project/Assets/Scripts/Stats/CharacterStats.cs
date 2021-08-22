@@ -17,7 +17,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     [Header("General settings")]
     [SerializeField] Rigidbody chestRb;
-    public string charName; 
+    public string charName;
 
     float gainInterval = 0f;
     float drainInterval = 0f;
@@ -32,7 +32,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public StatModifier sprintMovementModifier = new StatModifier(1f, StatModType.PercentAdd);
     public StatModifier aerialMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
     public StatModifier combatMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
-    
+
     [Header("Combat Stats")]
     public Stat attackDamage;
     public Stat attackChargeRate;
@@ -73,6 +73,12 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public virtual void Start()
     {
         InitializeVitals();
+    }
+
+    void Update()
+    {
+        Debug.Log(attackDamage.value);
+        Debug.Log(moveSpeed.value);
     }
 
     public void InitializeVitals()
