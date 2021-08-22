@@ -34,6 +34,6 @@ public class PlayerEventChannel : MonoBehaviour
 
     public void RelicGathered(Relic relic)
     {
-        // relicGathered_Event?.Invoke(relic);
+        relicGathered_Event?.Invoke(relic);
     }
 }

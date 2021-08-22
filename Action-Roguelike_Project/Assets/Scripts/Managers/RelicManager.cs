@@ -24,6 +24,16 @@ public class RelicManager : MonoBehaviour
         if(!currentRelics.Contains(_relicToAdd_))
         {
             currentRelics.Add(_relicToAdd_);
+            _relicToAdd_.ActivateRelic(this.transform);
+        }
+    }
+
+    void RemoveRelic(Relic _relicToRemove_)
+    {
+        if (currentRelics.Contains(_relicToRemove_))
+        {
+            currentRelics.Remove(_relicToRemove_);
+            _relicToRemove_.DeactivateRelic(this.transform);
         }
     }
 }
