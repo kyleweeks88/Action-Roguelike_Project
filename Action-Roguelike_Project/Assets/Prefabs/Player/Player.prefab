@@ -2594,6 +2594,8 @@ MonoBehaviour:
   charName: PlayerMan
   moveSpeed:
     baseValue: 1
+  sprintSpeed:
+    baseValue: 0
   jumpForce:
     baseValue: 15
   attackDamage:

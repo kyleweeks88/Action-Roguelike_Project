@@ -24,6 +24,8 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     [Header("Locomotion stats")]
     public Stat moveSpeed;
+    public Stat sprintSpeed;
+
     [Tooltip("The force behind the character's jump!")]
     public Stat jumpForce;
 
@@ -42,6 +44,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     [Header("General Stats")]
     public Stat stealth;
 
+    #region Vitals Stamina & Health
     [Header("Stamina vital")]
     public float maxStaminaPoints;
     float currentStaminaPoints;
@@ -65,6 +68,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public float healthDrainAmount;
     public float healthDrainDelay;
     bool drainingHealth;
+    #endregion
 
     public virtual void Start()
     {

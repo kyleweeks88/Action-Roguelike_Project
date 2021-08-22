@@ -9,6 +9,7 @@ public enum StatType
 [CreateAssetMenu(fileName = "RelicData", menuName = "ItemData/RelicData")]
 public class RelicData : EquippableItem
 {
+    //public StatType[] statType;
     public StatType statType;
     public float modValue;
 }
