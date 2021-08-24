@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        UpdateGameState(GameState.Gameplay_State);
+        UpdateGameState(GameState.MainMenu_State);
     }
 
     public void UpdateGameState(GameState _newGameState_)
@@ -23,6 +24,7 @@ public class GameManager : Singleton<GameManager>
             case GameState.MainMenu_State:
                 break;
             case GameState.Gameplay_State:
+                SceneManager.LoadScene("Scene_Test");
                 break;
             case GameState.Fail_State:
                 break;
