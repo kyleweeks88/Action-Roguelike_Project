@@ -7,13 +7,14 @@
     PercentMulti = 300, 
 }
 
+[System.Serializable]
 public class StatModifier
 {
     // type can determine the order in which this modifier is processed.
     // also how it will be calculated when modifying the affected Stat.
-    public readonly StatModType type;
+    public StatModType type;
     // value is amount to modify the affected Stat by
-    public readonly float value;
+    public float value;
     // order is used to determine the order, this modifier will be
     // processed by the affected Stat
     public readonly int order;

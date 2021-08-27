@@ -30,28 +30,38 @@ public class PlayerMovement : MonoBehaviour
     bool jumpInputHeld = false;
 
     public bool moveLocked;
+    int currentJumps;
+    [SerializeField] Transform aimLookTarget;
+    bool isAiming;
 
-    void Start()
+    private void OnEnable()
     {
         playerMgmt.inputMgmt.jumpEventStarted += Jump;
         playerMgmt.inputMgmt.jumpEventCancelled += JumpReleased;
         playerMgmt.inputMgmt.sprintEventStarted += SprintPressed;
         playerMgmt.inputMgmt.sprintEventCancelled += SprintReleased;
         playerMgmt.inputMgmt.moveEvent += OnMove;
+    }
 
+    private void Awake()
+    {
         physMat = gameObject.GetComponent<CapsuleCollider>().material;
         slideMgmt = GetComponent<SlideManager>();
+
+        currentJumps = (int)playerMgmt.playerStats.jumpMultiplier.value;
     }
 
     private void FixedUpdate()
     {
+        //print(Mathf.Abs(playerMgmt.myRb.velocity.y));
+
         // Handles the player's PhysicMaterial to prevent slow-sliding down shallow slopes when standing still.
         // but turns friction to zero when the player is moving.
         if (_previousMovementInput.sqrMagnitude != 0)
         {
             physMat.dynamicFriction = 0f;
         }
-        else if(_previousMovementInput.sqrMagnitude == 0 && !slideMgmt.isSliding)
+        else if (_previousMovementInput.sqrMagnitude == 0 && !slideMgmt.isSliding)
         {
             physMat.dynamicFriction = 1f;
         }
@@ -59,13 +69,85 @@ public class PlayerMovement : MonoBehaviour
         GroundCheck();
         UpdateIsSprinting();
         Move();
-        CameraControl();
+        //CameraControl();
+
+        //if(isAiming)
+        //{
+        //    Aim();
+        //}
+    }
+
+    #region Movement
+    void OnMove(Vector2 movement)
+    {
+        _previousMovementInput = movement;
     }
 
     public Vector3 GetPrevMovement()
     {
         return _previousMovementInput;
     }
+
+    public void Move()
+    {
+        if (moveLocked) { return; }
+
+        // CONVERTS THE INPUT INTO A NORMALIZED VECTOR3
+        //movement = new Vector3
+        //{
+        //    x = _previousMovementInput.x,
+        //    y = -currentSlideVelocity,
+        //    z = _previousMovementInput.y
+        //}.normalized;
+
+        // !!! THIS CODE COULD BE CAUSING BUGS OR PERFORMANCE ISSUES !!!
+        Vector3 velocity = Vector3.zero;
+        movement = Vector3.Lerp(movement, new Vector3
+        {
+            x = _previousMovementInput.x,
+            y = 0,
+            z = _previousMovementInput.y
+        }.normalized, 10f * Time.deltaTime);
+
+        if (_previousMovementInput.sqrMagnitude <= 0.5f)
+            movement = Vector3.zero;
+
+        // MAKES THE CHARACTER'S FORWARD AXIS MATCH THE CAMERA'S FORWARD AXIS
+        rotationMovement = Quaternion.Euler(0, playerMgmt.cameraCtrl.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
+
+        // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
+        // ... ONLY IF THE PLAYER IS MOVING, BLOCKING OR ATTACKING
+        if (movement.sqrMagnitude > 0 || playerMgmt.combatMgmt.isBlocking || playerMgmt.combatMgmt.attackInputHeld)
+        {
+            float cameraYaw = playerMgmt.cameraCtrl.myCamera.transform.rotation.eulerAngles.y;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
+        }
+
+        // Only allows the player to sprint forwards
+        if (isSprinting && movement.z <= 0)
+        {
+            SprintReleased();
+        }
+
+        if (movement.sqrMagnitude > 0.1f && isGrounded)
+        {
+            StepClimb();
+        }
+
+        // HANDLES ANIMATIONS
+        playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
+
+        // MOVES THE PLAYER
+        if (_previousMovementInput.y < 0)
+        {
+            playerMgmt.myRb.velocity += rotationMovement * (playerMgmt.playerStats.moveSpeed.value * .5f);
+        }
+        else
+        {
+            playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
+        }
+    }
+    #endregion
 
     void StepClimb()
     {
@@ -124,6 +206,7 @@ public class PlayerMovement : MonoBehaviour
         if (groundCollisions.Length <= 0)
         {
             isGrounded = false;
+
             // Add the aerialMovementModifier if it isn't already affecting _moveSpeed.
             if (!playerMgmt.playerStats.moveSpeed.StatModifiers.Contains(playerMgmt.playerStats.aerialMovementModifier))
                 playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.aerialMovementModifier);
@@ -140,7 +223,7 @@ public class PlayerMovement : MonoBehaviour
 
             // If the player has jumped and is now falling downwards, cast a ray 
             // to check for ground and turn isJumping false if hit.
-            if (isJumping && playerMgmt.myRb.velocity.y < 0f)
+            if (playerMgmt.myRb.velocity.y < -5f)
             {
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f, whatIsWalkable))
@@ -160,78 +243,56 @@ public class PlayerMovement : MonoBehaviour
             // This stops the ground collision from pre-emptively turning isJumping to false when the player jumps.
             if (Mathf.Abs(playerMgmt.myRb.velocity.y) < 0.01f && Mathf.Abs(playerMgmt.myRb.velocity.y) > -0.01f)
                 isJumping = false;
+
+            if (isGrounded && !isJumping)
+                currentJumps = (int)playerMgmt.playerStats.jumpMultiplier.value;
         }
     }
 
-    void OnMove(Vector2 movement)
-    {
-        _previousMovementInput = movement;
-    }
+    #region Camera Control
+    //void CameraControl()
+    //{
 
-    public void Move()
-    {
-        if (moveLocked) { return; }
+//}
 
-        // CONVERTS THE INPUT INTO A NORMALIZED VECTOR3
-        //movement = new Vector3
-        //{
-        //    x = _previousMovementInput.x,
-        //    y = -currentSlideVelocity,
-        //    z = _previousMovementInput.y
-        //}.normalized;
+//public void SetAim(bool _aim_)
+//{
+//    isAiming = _aim_;
 
-        Vector3 velocity = Vector3.zero;
-        movement = Vector3.Lerp(movement, new Vector3
-        {
-            x = _previousMovementInput.x,
-            y = 0,
-            z = _previousMovementInput.y
-        }.normalized, 10f * Time.deltaTime);
+//    if (_aim_)
+//    {
+//        transform.rotation = Quaternion.Euler(0f, playerMgmt.freeLook.m_XAxis.Value, 0f);
+//        playerMgmt.sprintCamera.m_Priority = 11;
+//        //DOVirtual.Float(playerMgmt.aimRig.weight, 1f, 0.2f, SetAimRigthWeight);
+//    }
+//    else
+//    {
+//        playerMgmt.sprintCamera.m_Priority = 9;
+//        //DOVirtual.Float(playerMgmt.aimRig.weight, 0f, 0.2f, SetAimRigthWeight);
+//    }
+//    //void SetAimRigWeight(float _weight_)
+//    //{
+//    //    aimRig.weight = weight;
+//    //}
+//}
 
-        if (_previousMovementInput.sqrMagnitude <= 0.5f)
-            movement = Vector3.zero;
-        
-        // Only allows the player to sprint forwards
-        if (isSprinting && movement.z <= 0)
-        {
-            SprintReleased();
-        }
+//void Aim()
+//{
+//    var rot = aimLookTarget.localRotation.eulerAngles;
+//    rot.x -= playerMgmt.inputMgmt.lookDelta.y;
+//    if (rot.x > 180)
+//        rot.x -= 360;
+//    rot.x = Mathf.Clamp(rot.x, -80, 80);
+//    aimLookTarget.localRotation = Quaternion.Slerp(aimLookTarget.localRotation, Quaternion.Euler(rot), 0.5f);
 
-        if(movement.sqrMagnitude > 0.1f)
-        {
-            StepClimb();
-        }
+//    rot = transform.eulerAngles;
+//    rot.y += playerMgmt.inputMgmt.lookDelta.x;
+//    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(rot), 0.5f);
+//}
+#endregion
 
-        // HANDLES ANIMATIONS
-        playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
-
-        // MOVES THE PLAYER
-        if (_previousMovementInput.y < 0)
-        {
-            playerMgmt.myRb.velocity += rotationMovement * (playerMgmt.playerStats.moveSpeed.value * .5f);
-        }
-        else
-        {
-            playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
-        }
-    }
-
-    void CameraControl()
-    {
-        // MAKES THE CHARACTER'S FORWARD AXIS MATCH THE CAMERA'S FORWARD AXIS
-        rotationMovement = Quaternion.Euler(0, playerMgmt.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
-
-        // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
-        // ... ONLY IF THE PLAYER IS MOVING, BLOCKING OR ATTACKING
-        if (movement.sqrMagnitude > 0 || playerMgmt.combatMgmt.isBlocking || playerMgmt.combatMgmt.attackInputHeld)
-        {
-            float cameraYaw = playerMgmt.myCamera.transform.rotation.eulerAngles.y;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
-        }
-    }
-
-    #region Sprinting
-    public void SprintPressed()
+#region Sprinting
+public void SprintPressed()
     {
         if (movement.z > 0.1 && playerMgmt.playerStats.GetCurrentStamina()
             - playerMgmt.playerStats.staminaDrainAmount > 0)
@@ -276,22 +337,33 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
+    #region Jumping
     public void Jump()
     {
+        if(currentJumps <= 0 && !isGrounded) { return; }
         if (playerMgmt.isInteracting) { return; }
         if (slideMgmt.isSliding) { return; }
 
         jumpInputHeld = true;
-        
-        if (!isJumping && isGrounded)
+
+        // Check if player has enough Stamina to perform the jump
+        if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
         {
-            if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
+            // if the player is not currently in the air...
+            if (!isJumping)
             {
                 isJumping = true;
-                //playerMgmt.isInteracting = true;
                 playerMgmt.playerStats.DamageStamina(10f);
                 playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpForce.value;
-                playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpForce.value;
+                playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpForce.value/2f;
+                currentJumps--;
+            }
+            // if the player is in the air and jumps...
+            else
+            {
+                playerMgmt.playerStats.DamageStamina(10f);
+                playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpForce.value * 1.25f;
+                currentJumps--;
             }
         }
     }
@@ -300,4 +372,5 @@ public class PlayerMovement : MonoBehaviour
     {
         jumpInputHeld = false;
     }
+    #endregion
 }

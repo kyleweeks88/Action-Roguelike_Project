@@ -52,7 +52,7 @@ public class PlayerCombatManager : CombatManager
     public override void CheckRangedAttack()
     {
         // Ask the server to check your pos, and spawn a projectile for the server
-        SpawnProjectile(projectileSpawn.position, projectileSpawn.rotation, playerMgmt.myCamera.transform.forward);
+        SpawnProjectile(projectileSpawn.position, projectileSpawn.rotation, playerMgmt.cameraCtrl.myCamera.transform.forward);
     }
 
     void SpawnProjectile(Vector3 pos, Quaternion rot, Vector3 dir)
@@ -126,9 +126,9 @@ public class PlayerCombatManager : CombatManager
             //TEST============>// IF THE PLAYER IS IN THE AIR AND LOOKING DOWNWARDS!!!
             if (!playerMgmt.playerMovement.isGrounded)
             {
-                if (Vector3.Dot(playerMgmt.myCamera.transform.forward, Vector3.up) <= -0.65f)
+                if (Vector3.Dot(playerMgmt.cameraCtrl.myCamera.transform.forward, Vector3.up) <= -0.65f)
                 {
-                    playerMgmt.myRb.AddForce(playerMgmt.myCamera.transform.forward * 75f, ForceMode.Impulse);
+                    playerMgmt.myRb.AddForce(playerMgmt.cameraCtrl.myCamera.transform.forward * 75f, ForceMode.Impulse);
                 }
             }
 

@@ -124,6 +124,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "TEST",
+                    "type": "Button",
+                    "id": "b27f5da7-dabd-4869-a09e-166ae8ddaa08",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -487,6 +495,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "LightAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "26f405a4-4db8-4577-b147-5c97286629e5",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "TEST",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

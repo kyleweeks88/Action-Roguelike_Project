@@ -79,11 +79,17 @@ public class WeaponManager : MonoBehaviour
             _weaponToEquip.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
             playerMgmt.animMgmt.SetAnimation(_weaponToEquip.weaponData.animationSet);
+
+            if (_weaponToEquip.weaponData.weaponType == WeaponType.Ranged)
+                playerMgmt.cameraCtrl.SetAim(true);
         }
     }
 
     void UnequipWeapon(Weapon _weaponToUnequip)
     {
+        if (_weaponToUnequip.weaponData.weaponType == WeaponType.Ranged)
+            playerMgmt.cameraCtrl.SetAim(false);
+
         // Deactivate currently equipped weapon
         _weaponToUnequip.gameObject.SetActive(false);
         // Clear modifiers

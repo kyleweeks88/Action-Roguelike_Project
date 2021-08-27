@@ -137,6 +137,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""TEST"",
+                    ""type"": ""Button"",
+                    ""id"": ""b27f5da7-dabd-4869-a09e-166ae8ddaa08"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -502,6 +510,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""26f405a4-4db8-4577-b147-5c97286629e5"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""M&K"",
+                    ""action"": ""TEST"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -580,6 +599,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Player_DropWeapon = m_Player.FindAction("DropWeapon", throwIfNotFound: true);
         m_Player_HeavyAttack = m_Player.FindAction("HeavyAttack", throwIfNotFound: true);
         m_Player_LightAttack = m_Player.FindAction("LightAttack", throwIfNotFound: true);
+        m_Player_TEST = m_Player.FindAction("TEST", throwIfNotFound: true);
         // UserInterface
         m_UserInterface = asset.FindActionMap("UserInterface", throwIfNotFound: true);
         m_UserInterface_UserInterface = m_UserInterface.FindAction("UserInterface", throwIfNotFound: true);
@@ -647,6 +667,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_DropWeapon;
     private readonly InputAction m_Player_HeavyAttack;
     private readonly InputAction m_Player_LightAttack;
+    private readonly InputAction m_Player_TEST;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -666,6 +687,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @DropWeapon => m_Wrapper.m_Player_DropWeapon;
         public InputAction @HeavyAttack => m_Wrapper.m_Player_HeavyAttack;
         public InputAction @LightAttack => m_Wrapper.m_Player_LightAttack;
+        public InputAction @TEST => m_Wrapper.m_Player_TEST;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -720,6 +742,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @LightAttack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
                 @LightAttack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
                 @LightAttack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLightAttack;
+                @TEST.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTEST;
+                @TEST.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTEST;
+                @TEST.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTEST;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -769,6 +794,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @LightAttack.started += instance.OnLightAttack;
                 @LightAttack.performed += instance.OnLightAttack;
                 @LightAttack.canceled += instance.OnLightAttack;
+                @TEST.started += instance.OnTEST;
+                @TEST.performed += instance.OnTEST;
+                @TEST.canceled += instance.OnTEST;
             }
         }
     }
@@ -841,6 +869,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnDropWeapon(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnLightAttack(InputAction.CallbackContext context);
+        void OnTEST(InputAction.CallbackContext context);
     }
     public interface IUserInterfaceActions
     {

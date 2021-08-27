@@ -28,6 +28,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     [Tooltip("The force behind the character's jump!")]
     public Stat jumpForce;
+    public Stat jumpMultiplier;
 
     public StatModifier sprintMovementModifier = new StatModifier(1f, StatModType.PercentAdd);
     public StatModifier aerialMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
@@ -75,11 +76,11 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
         InitializeVitals();
     }
 
-    void Update()
-    {
-        Debug.Log(attackDamage.value);
-        Debug.Log(moveSpeed.value);
-    }
+    //void Update()
+    //{
+    //    Debug.Log(attackDamage.value);
+    //    Debug.Log(moveSpeed.value);
+    //}
 
     public void InitializeVitals()
     {

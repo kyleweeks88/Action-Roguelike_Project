@@ -18,8 +18,6 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction heavyAttackCancelledEvent;
     public event UnityAction lightAttackStartedEvent;
     public event UnityAction lightAttackCancelledEvent;
-    //public event UnityAction attackEventStarted;
-    //public event UnityAction attackEventCancelled;
     public event UnityAction rangedAttackEventStarted;
     public event UnityAction rangedAttackEventCancelled;
     // Used when the player interacts with contextual objects in the environment
@@ -30,6 +28,10 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction swapMainWeaponEvent;
     public event UnityAction swapSecondaryWeaponEvent;
     public event UnityAction dropWeaponEvent;
+
+    // FOR TESTING!!!
+    public event UnityAction testEvent;
+    [HideInInspector] public Vector2 lookDelta;
 
     PlayerControls controls;
     public PlayerControls Controls
@@ -72,17 +74,6 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         controls.Player.Disable();
         controls.UserInterface.Disable();
     }
-
-    //public void OnAttack(InputAction.CallbackContext context)
-    //{
-    //    if (attackEventStarted != null &&
-    //        context.phase == InputActionPhase.Started)
-    //        attackEventStarted.Invoke();
-
-    //    if (attackEventCancelled != null &&
-    //        context.phase == InputActionPhase.Canceled)
-    //        attackEventCancelled.Invoke();
-    //}
 
     public void OnHeavyAttack(InputAction.CallbackContext context)
     {
@@ -146,6 +137,7 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     {
         // USE FOR DIFFERENT FORMS OF MOUSE MOVEMENT EVENTUALLY...
         // I.E. UI MOVEMENT etc.
+        lookDelta = context.ReadValue<Vector2>();
     }
 
     public void OnMovement(InputAction.CallbackContext context)
@@ -222,5 +214,12 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
         if (dropWeaponEvent != null &&
                     context.phase == InputActionPhase.Started)
             dropWeaponEvent.Invoke();
+    }
+
+    public void OnTEST(InputAction.CallbackContext context)
+    {
+        if (testEvent != null &&
+            context.phase == InputActionPhase.Started)
+            testEvent.Invoke();
     }
 }

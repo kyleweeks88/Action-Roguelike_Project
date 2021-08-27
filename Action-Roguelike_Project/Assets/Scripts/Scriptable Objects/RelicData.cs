@@ -3,7 +3,9 @@
 public enum StatType
 {
     Speed,
-    Strength
+    Strength,
+    JumpForce,
+    JumpMultiplier,
 }
 
 [CreateAssetMenu(fileName = "RelicData", menuName = "ItemData/RelicData")]
@@ -11,5 +13,6 @@ public class RelicData : EquippableItem
 {
     public StatType[] statType;
     //public StatType statType;
-    public float modValue;
+    public StatModifier stadModifier;
+    //public float modValue;
 }

@@ -3,20 +3,20 @@
 public class Relic : MonoBehaviour
 {
     public RelicData relicData;
-    public StatModifier statMod;
+    [HideInInspector] public StatModifier statMod;
 
     IActivateRelic relicActivation;
 
     private void Awake()
     {
-        statMod = new StatModifier(relicData.modValue, StatModType.PercentMulti);
+        //statMod = new StatModifier(relicData.modValue, StatModType.PercentMulti);
+        statMod = relicData.stadModifier;
         relicActivation = GetComponent<IActivateRelic>();
     }
     public virtual void ActivateRelic(Transform _interactingEntity_)
     {
         relicActivation.OnActivateRelic(_interactingEntity_, this);
         
-        Debug.Log("Relic Activated!");
         gameObject.SetActive(false);
     }
 
