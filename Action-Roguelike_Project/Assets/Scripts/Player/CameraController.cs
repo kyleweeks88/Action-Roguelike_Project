@@ -42,16 +42,21 @@ public class CameraController : MonoBehaviour
             sprintCamera.m_Priority = 9;
             freeLook.m_RecenterToTargetHeading.RecenterNow();
             freeLook.m_YAxisRecentering.RecenterNow();
-            freeLook.m_YAxisRecentering.m_enabled = false;
-            freeLook.m_RecenterToTargetHeading.m_enabled = false;
-            //freeLook.m_RecenterToTargetHeading.RecenterNow();
-            //freeLook.m_YAxisRecentering.RecenterNow();
+            StartCoroutine(DelayDisableRecenter());
+
             //DOVirtual.Float(playerMgmt.aimRig.weight, 0f, 0.2f, SetAimRigthWeight);
         }
         //void SetAimRigWeight(float _weight_)
         //{
         //    aimRig.weight = weight;
         //}
+    }
+
+    IEnumerator DelayDisableRecenter()
+    {
+        yield return new WaitForSeconds(0.1f);
+        freeLook.m_YAxisRecentering.m_enabled = false;
+        freeLook.m_RecenterToTargetHeading.m_enabled = false;
     }
 
     void Aim()

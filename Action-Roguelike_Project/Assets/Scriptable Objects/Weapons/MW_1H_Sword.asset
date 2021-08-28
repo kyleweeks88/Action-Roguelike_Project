@@ -15,12 +15,13 @@ MonoBehaviour:
   itemName: Sword
   icon: {fileID: 21300000, guid: 5fd50594014b70e48bd6993443d46b32, type: 3}
   equipmentType: 0
-  weaponType: 1
   wieldStyle: 0
   animationSet: {fileID: 22100000, guid: 35481be5bbf005e40921d719cbb2ef05, type: 2}
   hitVisuals: {fileID: 1223552886627172470, guid: 17135e4a93a8d21488cef1ab439c9802,
     type: 3}
-  damageMod: 2
   isChargeable: 1
+  meleeDamage:
+    type: 100
+    value: 100
   damageType: 1
   staminaCost: 10

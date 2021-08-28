@@ -198,8 +198,8 @@ public class CombatManager : MonoBehaviour
     {
         if (weaponMgmt.currentlyEquippedWeapon != null)
         {
-            MeleeWeapon myWeapon = weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
-            charStats.DamageStamina(myWeapon.meleeData.staminaCost);
+            MeleeWeaponData meleeData = weaponMgmt.currentlyEquippedWeapon.weaponData as MeleeWeaponData;
+            charStats.DamageStamina(meleeData.staminaCost);
         }
         else
         {

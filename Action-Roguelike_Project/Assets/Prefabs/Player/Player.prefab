@@ -2300,8 +2300,8 @@ MonoBehaviour:
     m_Bias: 0
   m_RecenterToTargetHeading:
     m_enabled: 0
-    m_WaitTime: 1
-    m_RecenteringTime: 2
+    m_WaitTime: 30
+    m_RecenteringTime: 0
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_BindingMode: 4
@@ -2402,6 +2402,7 @@ GameObject:
   - component: {fileID: 2223636148583494994}
   - component: {fileID: 759192745}
   - component: {fileID: 759192746}
+  - component: {fileID: 1800350747}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -2584,7 +2585,7 @@ MonoBehaviour:
   isSprinting: 0
   isJumping: 0
   moveLocked: 0
-  aimLookTarget: {fileID: 0}
+  aimLookTarget: {fileID: 3136541238040018427}
 --- !u!114 &6279629840684721378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2617,7 +2618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 3666928712302175822}
   playerMgmt: {fileID: 4845021161842536216}
-  defaultController: {fileID: 22100000, guid: aab63e02d68e56c4fa3379c8f457e8a4, type: 2}
+  defaultController: {fileID: 22100000, guid: d53dac1eaa8c97f48bc1bbb19a80bff1, type: 2}
   isSprintingParam: 1125312739
   inputXParam: -1468965832
   inputYParam: -545887058
@@ -2741,6 +2742,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentRelics: []
+--- !u!114 &1800350747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3724881297973483383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d5b16790203a3341867f33a89e70748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myCamera: {fileID: 3724881298246990974}
+  freeLook: {fileID: 3724881297675874230}
+  sprintCamera: {fileID: 2583530131908580210}
+  uiCamera: {fileID: 3120378254141617259}
+  aimLookTarget: {fileID: 3136541238040018427}
 --- !u!1 &3724881297989593384
 GameObject:
   m_ObjectHideFlags: 0
@@ -2797,8 +2815,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881298246990970}
-  m_LocalRotation: {x: 0.0357581, y: -0.0000000037229084, z: 1.3320932e-10, w: 0.9993605}
-  m_LocalPosition: {x: -8.58, y: 8.96, z: -14.59}
+  m_LocalRotation: {x: 0.03575813, y: 0.000000007511024, z: -2.6875202e-10, w: 0.9993605}
+  m_LocalPosition: {x: 0, y: 2, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 214003658499284119}
@@ -2913,7 +2931,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881298544867454}
-  m_LocalRotation: {x: 0.01762239, y: -0, z: -0, w: 0.99984473}
+  m_LocalRotation: {x: 0.017622387, y: 0.0000000010752319, z: -1.8951094e-11, w: 0.99984473}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2986,7 +3004,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881299075929365}
-  m_LocalRotation: {x: 0.05393007, y: 0.0000000021476683, z: -1.1599269e-10, w: 0.99854475}
+  m_LocalRotation: {x: 0.05393007, y: -0.0000000021476672, z: 1.1599263e-10, w: 0.99854475}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3059,7 +3077,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724881299168861756}
-  m_LocalRotation: {x: 0.035758123, y: -9.875714e-10, z: 3.5336283e-11, w: 0.9993605}
+  m_LocalRotation: {x: 0.035758123, y: 9.875714e-10, z: -3.5336283e-11, w: 0.9993605}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4805,7 +4823,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6653691500102859803}
-  m_LocalRotation: {x: -0, y: 0.99910027, z: 0.042410955, w: 0}
+  m_LocalRotation: {x: -8.950209e-11, y: 0.99910027, z: 0.042411, w: 0.000000002108452}
   m_LocalPosition: {x: 0, y: 1.02, z: 3.88}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4861,7 +4879,7 @@ GameObject:
   - component: {fileID: 8486776104798521978}
   - component: {fileID: 6485305062587365886}
   m_Layer: 5
-  m_Name: SecondaryWeapon Slot
+  m_Name: RangedWeapon Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5686,7 +5704,7 @@ GameObject:
   - component: {fileID: 2539095516463641027}
   - component: {fileID: 7488367392907797362}
   m_Layer: 5
-  m_Name: MainWeapon Slot
+  m_Name: MeleeWeapon Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6515,7 +6533,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7467583358125121115
 Transform:
   m_ObjectHideFlags: 0

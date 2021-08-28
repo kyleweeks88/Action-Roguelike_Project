@@ -12,7 +12,7 @@ public class PlayerManager : MonoBehaviour
     public WeaponManager weaponMgmt;
     public PlayerStats playerStats;
     public AnimationManager animMgmt;
-    public CombatManager combatMgmt;
+    public PlayerCombatManager combatMgmt;
     public PlayerMovement playerMovement;
     public DodgeControl dodgeCtrl;
     public SlideManager slideMgmt;
@@ -44,7 +44,7 @@ public class PlayerManager : MonoBehaviour
         animMgmt = gameObject.GetComponent<AnimationManager>();
         //animMgmt.enabled = true;
 
-        combatMgmt = gameObject.GetComponent<CombatManager>();
+        combatMgmt = gameObject.GetComponent<PlayerCombatManager>();
         //combatMgmt.enabled = true;
 
         dodgeCtrl = gameObject.GetComponent<DodgeControl>();

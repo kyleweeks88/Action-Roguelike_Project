@@ -12,14 +12,12 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
     public event UnityAction jumpEventStarted;
     public event UnityAction jumpEventCancelled;
     public event UnityAction dodgeEvent;
-    public event UnityAction blockEventStarted;
-    public event UnityAction blockEventCancelled;
+    public event UnityAction combatContextEventStarted;
+    public event UnityAction combatContextEventCancelled;
     public event UnityAction heavyAttackStartedEvent;
     public event UnityAction heavyAttackCancelledEvent;
     public event UnityAction lightAttackStartedEvent;
     public event UnityAction lightAttackCancelledEvent;
-    public event UnityAction rangedAttackEventStarted;
-    public event UnityAction rangedAttackEventCancelled;
     // Used when the player interacts with contextual objects in the environment
     public event UnityAction interactEvent;
     public event UnityAction userInterfaceEvent;
@@ -97,17 +95,6 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
             lightAttackCancelledEvent.Invoke();
     }
 
-    public void OnRangedAttack(InputAction.CallbackContext context)
-    {
-        if (rangedAttackEventStarted != null &&
-            context.phase == InputActionPhase.Started)
-            rangedAttackEventStarted.Invoke();
-
-        if (rangedAttackEventCancelled != null &&
-            context.phase == InputActionPhase.Canceled)
-            rangedAttackEventCancelled.Invoke();
-    }
-
     public void OnDodge(InputAction.CallbackContext context)
     {
         if (dodgeEvent != null &&
@@ -173,26 +160,15 @@ public class InputManager : MonoBehaviour, PlayerControls.IPlayerActions, Player
             pauseEvent.Invoke();
     }
 
-    public void OnThrow(InputAction.CallbackContext context)
-    {
-        if (rangedAttackEventStarted != null &&
-            context.phase == InputActionPhase.Started)
-            rangedAttackEventStarted.Invoke();
-
-        if (rangedAttackEventCancelled != null &&
-            context.phase == InputActionPhase.Canceled)
-            rangedAttackEventCancelled.Invoke();
-    }
-
     public void OnBlock(InputAction.CallbackContext context)
     {
-        if (blockEventStarted != null &&
+        if (combatContextEventStarted != null &&
             context.phase == InputActionPhase.Started)
-            blockEventStarted.Invoke();
+            combatContextEventStarted.Invoke();
 
-        if (blockEventCancelled != null &&
+        if (combatContextEventCancelled != null &&
             context.phase == InputActionPhase.Canceled)
-            blockEventCancelled.Invoke();
+            combatContextEventCancelled.Invoke();
     }
 
     public void OnSwapMainWeapon(InputAction.CallbackContext context)

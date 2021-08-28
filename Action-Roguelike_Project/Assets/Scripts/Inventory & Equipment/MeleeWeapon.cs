@@ -5,7 +5,6 @@ using UnityEngine;
 public class MeleeWeapon : Weapon
 {
     [Header("Melee Specs")]
-    public MeleeWeaponData meleeData;
     public Transform impactOrigin;
     public Transform impactEnd;
     public float impactRadius;

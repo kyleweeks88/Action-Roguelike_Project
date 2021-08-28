@@ -29,7 +29,6 @@ public class WeaponManager : MonoBehaviour
 
     public void AddWeapon(Weapon _weaponToAdd)
     {
-        //Weapon newWeapon = Instantiate(_weaponToAdd, weaponEquipPos);
         // PLACE NEWLY PICKED UP WEAPON IN SHEATHED LOCATION
         _weaponToAdd.transform.SetParent(weaponEquipPos);
         _weaponToAdd.transform.localPosition = Vector3.zero;
@@ -37,7 +36,7 @@ public class WeaponManager : MonoBehaviour
         _weaponToAdd.gameObject.SetActive(false);
 
         // If the new weapon is a Main Weapon
-        if (_weaponToAdd.weaponData.equipmentType == EquipmentType.MainWeapon)
+        if (_weaponToAdd.weaponData.equipmentType == EquipmentType.MeleeWeapon)
         {
             // If player has no main weapon
             if (mainWeapon == null)
@@ -55,7 +54,7 @@ public class WeaponManager : MonoBehaviour
                 mainWeapon = _weaponToAdd;
             }
         }
-        if (_weaponToAdd.weaponData.equipmentType == EquipmentType.SecondaryWeapon)
+        if (_weaponToAdd.weaponData.equipmentType == EquipmentType.RangedWeapon)
         {
             secondaryWeapon = _weaponToAdd;
         }
@@ -70,8 +69,23 @@ public class WeaponManager : MonoBehaviour
     {
         if(currentlyEquippedWeapon == null)
         {
+            if(_weaponToEquip.weaponData.equipmentType == EquipmentType.MeleeWeapon)
+            {
+                MeleeWeaponData meleeData = _weaponToEquip.weaponData as MeleeWeaponData;
+                playerMgmt.playerStats.attackDamage.AddModifer(meleeData.meleeDamage);
+            }
+
+            if(_weaponToEquip.weaponData.equipmentType == EquipmentType.RangedWeapon)
+            {
+                playerMgmt.inputMgmt.combatContextEventStarted -= playerMgmt.combatMgmt.BlockPerformed;
+                playerMgmt.inputMgmt.combatContextEventCancelled -= playerMgmt.combatMgmt.BlockReleased;
+
+                playerMgmt.inputMgmt.combatContextEventStarted += playerMgmt.combatMgmt.AimPerformed;
+                playerMgmt.inputMgmt.combatContextEventCancelled += playerMgmt.combatMgmt.AimReleased;
+            }
+
             currentlyEquippedWeapon = _weaponToEquip;
-            playerMgmt.playerStats.attackDamage.AddModifer(_weaponToEquip.damageMod);
+            
             _weaponToEquip.gameObject.SetActive(true);
 
             _weaponToEquip.transform.SetParent(weaponEquipPos);
@@ -79,21 +93,28 @@ public class WeaponManager : MonoBehaviour
             _weaponToEquip.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
             playerMgmt.animMgmt.SetAnimation(_weaponToEquip.weaponData.animationSet);
-
-            if (_weaponToEquip.weaponData.weaponType == WeaponType.Ranged)
-                playerMgmt.cameraCtrl.SetAim(true);
         }
     }
 
     void UnequipWeapon(Weapon _weaponToUnequip)
     {
-        if (_weaponToUnequip.weaponData.weaponType == WeaponType.Ranged)
-            playerMgmt.cameraCtrl.SetAim(false);
+        if (_weaponToUnequip.weaponData.equipmentType == EquipmentType.RangedWeapon)
+        {
+            playerMgmt.inputMgmt.combatContextEventStarted -= playerMgmt.combatMgmt.AimPerformed;
+            playerMgmt.inputMgmt.combatContextEventCancelled -= playerMgmt.combatMgmt.AimReleased;
+
+            playerMgmt.inputMgmt.combatContextEventStarted += playerMgmt.combatMgmt.BlockPerformed;
+            playerMgmt.inputMgmt.combatContextEventCancelled += playerMgmt.combatMgmt.BlockReleased;
+        }
 
         // Deactivate currently equipped weapon
         _weaponToUnequip.gameObject.SetActive(false);
         // Clear modifiers
-        playerMgmt.playerStats.attackDamage.RemoveModifier(_weaponToUnequip.damageMod);
+        if (_weaponToUnequip.weaponData.equipmentType == EquipmentType.MeleeWeapon)
+        {
+            MeleeWeaponData meleeData = _weaponToUnequip.weaponData as MeleeWeaponData;
+            playerMgmt.playerStats.attackDamage.RemoveModifier(meleeData.meleeDamage);
+        }
         // Reset animation set
         playerMgmt.animMgmt.ResetAnimation();
         // Clear any added bonuses from weapon
@@ -104,10 +125,24 @@ public class WeaponManager : MonoBehaviour
     {
         if(currentlyEquippedWeapon != null) { weaponToDrop = currentlyEquippedWeapon; }
 
-        if(weaponToDrop.weaponData.equipmentType == EquipmentType.MainWeapon) { mainWeapon = null; }
-        if(weaponToDrop.weaponData.equipmentType == EquipmentType.SecondaryWeapon) { secondaryWeapon = null; }
+        if(weaponToDrop.weaponData.equipmentType == EquipmentType.MeleeWeapon) 
+        {
+            MeleeWeaponData meleeData = weaponToDrop.weaponData as MeleeWeaponData;
+            playerMgmt.playerStats.attackDamage.RemoveModifier(meleeData.meleeDamage);
+            mainWeapon = null; 
+        }
+        if(weaponToDrop.weaponData.equipmentType == EquipmentType.RangedWeapon) 
+        {
+            playerMgmt.inputMgmt.combatContextEventStarted -= playerMgmt.combatMgmt.AimPerformed;
+            playerMgmt.inputMgmt.combatContextEventCancelled -= playerMgmt.combatMgmt.AimReleased;
+
+            playerMgmt.inputMgmt.combatContextEventStarted += playerMgmt.combatMgmt.BlockPerformed;
+            playerMgmt.inputMgmt.combatContextEventCancelled += playerMgmt.combatMgmt.BlockReleased;
+            secondaryWeapon = null; 
+        }
+
         gameObject.GetComponentInChildren<EquipmentPanel>().RemoveItem(weaponToDrop.GetComponent<Weapon>().weaponData);
-        playerMgmt.playerStats.attackDamage.RemoveModifier(weaponToDrop.damageMod);
+        
         playerMgmt.animMgmt.ResetAnimation();
         currentlyEquippedWeapon = null;
 
@@ -134,6 +169,8 @@ public class WeaponManager : MonoBehaviour
             }
             else if(currentlyEquippedWeapon == secondaryWeapon)
             {
+                if (mainWeapon == null) { print("NO MAIN WEAPON!"); return; }
+
                 UnequipWeapon(currentlyEquippedWeapon);
                 EquipWeapon(mainWeapon);
             }

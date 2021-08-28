@@ -6,6 +6,7 @@ public class MeleeWeaponData : WeaponData
     public enum DamageType { Blunt, Slash, Pierce }
 
     [Header("Melee Settings")]
+    public StatModifier meleeDamage;
     public DamageType damageType;
     public float staminaCost;
 }

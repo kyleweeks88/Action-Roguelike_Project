@@ -5,18 +5,12 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public WeaponData weaponData;
-    public StatModifier damageMod;
     public int durability = 0;
     public float maxCharge = 2f;
     public float chargeRate = 5f;
     [HideInInspector] public float currentCharge = 1f;
 
     protected GameObject interactingEntity;
-
-    private void Awake()
-    {
-        damageMod = new StatModifier(weaponData.damageMod, StatModType.PercentAdd);
-    }
 
     public void ResetCharge()
     {

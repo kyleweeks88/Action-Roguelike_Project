@@ -19,19 +19,9 @@ public class PlayerCombatManager : CombatManager
         playerMgmt.inputMgmt.heavyAttackCancelledEvent += AttackReleased;
         playerMgmt.inputMgmt.lightAttackStartedEvent += LightAttackPerformed;
         playerMgmt.inputMgmt.lightAttackCancelledEvent += AttackReleased;
-        playerMgmt.inputMgmt.rangedAttackEventStarted += RangedAttackPerformed;
-        playerMgmt.inputMgmt.rangedAttackEventCancelled += RangedAttackReleased;
-        playerMgmt.inputMgmt.blockEventStarted += BlockPerformed;
-        playerMgmt.inputMgmt.blockEventCancelled += BlockReleased;
+        playerMgmt.inputMgmt.combatContextEventStarted += BlockPerformed;
+        playerMgmt.inputMgmt.combatContextEventCancelled += BlockReleased;
     }
-
-    void BlockPerformed()
-    {
-        if (playerMgmt.playerMovement.isSprinting) { return; }
-        base.Blocking();
-    }
-
-    void BlockReleased() => isBlocking = false;
 
     #region Ranged
     public override void RangedAttackPerformed()
@@ -62,6 +52,14 @@ public class PlayerCombatManager : CombatManager
             rot);
         newProjectile.SetSpeed(20f, dir);
     }
+
+    public void AimPerformed()
+    {
+        if (playerMgmt.playerMovement.isSprinting) { return; }
+        playerMgmt.cameraCtrl.SetAim(true);
+    }
+
+    public void AimReleased() => playerMgmt.cameraCtrl.SetAim(false);
     #endregion
 
     #region Melee
@@ -84,17 +82,26 @@ public class PlayerCombatManager : CombatManager
             if (playerMgmt.weaponMgmt.currentlyEquippedWeapon != null)
             {
                 // If current weapon is a melee type...
-                if (playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.weaponType == WeaponType.Melee)
+                if (playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.equipmentType == EquipmentType.MeleeWeapon)
                 {
-                    MeleeWeapon myWeapon = playerMgmt.weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
+                    MeleeWeaponData meleeData = playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData as MeleeWeaponData;
                     // Checks if the entity has enough stamina to do an attack...
-                    if ((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
+                    if ((playerMgmt.playerStats.GetCurrentStamina() - meleeData.staminaCost) > 0)
                     {
                         attackAnim = "attackLight";
                         playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
                     }
                 }
                 // else if the weapon is a ranged type...
+                else if(playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.equipmentType == EquipmentType.RangedWeapon)
+                {
+                    // IF THE PLAYER ISN'T AIMING DO A PUSH/BASH ATTACK
+                    // IF THE PLAYER IS AIMING THEN CALL SHOOTING LOGIC
+                    // DO I CALL SHOOTING LOGIC ON THE WEAPON ITSELF???
+
+                    attackAnim = "attackLight";
+                    playerMgmt.animMgmt.HandleRangedAttackAnimation(attackInputHeld);
+                }
             }
             // If you have no equipped weapon, you're unarmed
             else
@@ -136,11 +143,11 @@ public class PlayerCombatManager : CombatManager
             if (playerMgmt.weaponMgmt.currentlyEquippedWeapon != null)
             {
                 // If current weapon is a melee type...
-                if (playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.weaponType == WeaponType.Melee)
+                if (playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.equipmentType == EquipmentType.MeleeWeapon)
                 {
-                    MeleeWeapon myWeapon = playerMgmt.weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
+                    MeleeWeaponData meleeData = playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData as MeleeWeaponData;
                     // Checks if the entity has enough stamina to do an attack...
-                    if ((playerMgmt.playerStats.GetCurrentStamina() - myWeapon.meleeData.staminaCost) > 0)
+                    if ((playerMgmt.playerStats.GetCurrentStamina() - meleeData.staminaCost) > 0)
                     {
                         attackAnim = "attackHeavy";
                         playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
@@ -160,6 +167,21 @@ public class PlayerCombatManager : CombatManager
         }
     }
 
+    public void SpecialAttack()
+    {
+        print("ERROR: Disabled this function because it doesn't make sense right now.");
+        //playerMgmt.myRb.AddForce((transform.forward + transform.up) * 50f, ForceMode.Impulse);
+    }
+
+    public void BlockPerformed()
+    {
+        if (playerMgmt.playerMovement.isSprinting) { return; }
+        base.Blocking();
+    }
+
+    public void BlockReleased() => isBlocking = false;
+    #endregion
+
     /// <summary>
     /// Called by the player releasing attack input.
     /// </summary>
@@ -169,17 +191,12 @@ public class PlayerCombatManager : CombatManager
         lightAttack = false;
         heavyAttack = false;
         playerMgmt.animMgmt.HandleMeleeAttackAnimation(attackInputHeld);
+        playerMgmt.animMgmt.HandleRangedAttackAnimation(attackInputHeld);
 
         playerMgmt.playerStats.ResetAttackCharge();
 
         playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.combatMovementModifier);
     }
-
-    public void SpecialAttack()
-    {
-        playerMgmt.myRb.AddForce((transform.forward + transform.up) * 50f, ForceMode.Impulse);
-    }
-    #endregion
 
     private void OnDisable()
     {
@@ -187,7 +204,5 @@ public class PlayerCombatManager : CombatManager
         playerMgmt.inputMgmt.heavyAttackCancelledEvent -= AttackReleased;
         playerMgmt.inputMgmt.lightAttackStartedEvent -= LightAttackPerformed;
         playerMgmt.inputMgmt.lightAttackCancelledEvent -= AttackReleased;
-        playerMgmt.inputMgmt.rangedAttackEventStarted -= RangedAttackPerformed;
-        playerMgmt.inputMgmt.rangedAttackEventCancelled -= RangedAttackReleased;
     }
 }

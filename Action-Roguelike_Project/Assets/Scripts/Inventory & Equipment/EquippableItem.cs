@@ -2,8 +2,8 @@
 
 public enum EquipmentType
 {
-    MainWeapon,
-    SecondaryWeapon,
+    MeleeWeapon,
+    RangedWeapon,
     Relic
 }
 
