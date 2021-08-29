@@ -45,8 +45,10 @@ GameObject:
   - component: {fileID: 174456916}
   - component: {fileID: 2334987125148756265}
   - component: {fileID: 3477651193996818431}
+  - component: {fileID: 1778886124}
+  - component: {fileID: 1778886125}
   m_Layer: 0
-  m_Name: Weapon_1H_Secondary
+  m_Name: PF_Weapon_1H_Secondary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,7 +87,6 @@ MonoBehaviour:
   maxCharge: 2
   chargeRate: 1
   currentCharge: 1
-  meleeData: {fileID: 11400000, guid: 95290b8935918fd4d82d663076bbe4a3, type: 2}
   impactOrigin: {fileID: 5902610352259035847}
   impactEnd: {fileID: 6957746010058641597}
   impactRadius: 0.25
@@ -132,6 +133,30 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1778886124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905517544646722258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8505a5f535987504e9be1682e5c29f03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1778886125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905517544646722258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3397052e79bb0f847b08bffea3d9b624, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2551326141830011114
 GameObject:
   m_ObjectHideFlags: 0
