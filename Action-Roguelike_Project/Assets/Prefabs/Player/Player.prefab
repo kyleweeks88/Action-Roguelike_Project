@@ -2692,28 +2692,32 @@ MonoBehaviour:
   combatMovementModifier:
     type: 300
     value: -0.5
-  attackDamage:
-    baseValue: 50
-  attackChargeRate:
-    baseValue: 100
-  blockReduction:
-    baseValue: 0.5
+  attackDamage_Stat:
+    baseValue: 0
+  attackChargeRate_Stat:
+    baseValue: 0
+  blockReduction_Stat:
+    baseValue: 0
   maxAttackCharge: 100
   currentAttackCharge: 0
-  stealth:
-    baseValue: 1
+  stealth_Stat:
+    baseValue: 0
   maxStaminaPoints: 100
   staminaGainAmount: 1
   staminaGainDelay: 1
   staminaGainTickrate: 100
   staminaDrainAmount: 1
   staminaDrainDelay: 1
-  maxHealthPoints: 100
   healthGainAmount: 1
   healthGainDelay: 2
   healthGainTickrate: 500
   healthDrainAmount: 1
   healthDrainDelay: 1
+  health_Stat:
+    baseValue: 0
+  stamina_Stat:
+    baseValue: 0
+  r: {fileID: 0}
   playerGravity: 1.1
   currentPlayerGravity: 0
   playerEventChannel: {fileID: 68361500}
@@ -4830,7 +4834,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 070cc2219a2dc4645b63efef32dd246e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthbar: {fileID: 1112617647079780171}
   staminabar: {fileID: 3122604355637840659}
   characterStats: {fileID: 3686533163998362675}
 --- !u!1 &6570045543500566987

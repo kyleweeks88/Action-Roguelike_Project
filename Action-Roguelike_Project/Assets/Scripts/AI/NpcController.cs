@@ -110,7 +110,7 @@ public class NpcController : MonoBehaviour
 
             if (lookPercentage >= -.1f)
             {
-                if (Physics.Raycast(sightRay, out hit, sightRange, whatIsTarget))
+                if (Physics.Raycast(sightRay, out hit, sightRange))
                 {
                     if (hit.transform.tag == "Player" || hit.transform.tag == "Invulnerable" || hit.transform.tag == "Enemy")
                     {

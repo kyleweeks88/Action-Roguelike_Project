@@ -11,7 +11,7 @@ public class HazardTest : MonoBehaviour
             CharacterStats entity = other.gameObject.GetComponent<CharacterStats>();
             if (entity != null)
             {
-                entity.TakeDamage(this.gameObject, 1f);
+                entity.TakeDamage(this.gameObject, 10f);
             }
         }
     }

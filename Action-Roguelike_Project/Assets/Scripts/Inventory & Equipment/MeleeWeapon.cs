@@ -10,11 +10,6 @@ public class MeleeWeapon : Weapon
     public float impactRadius;
 
 
-    public void InstantiateHitVisuals(Vector3 hitPoint)
-    {
-        GameObject hitVis = Instantiate(weaponData.hitVisuals, hitPoint, Quaternion.identity);
-    }
-
     /// SHOULD I CREATE THE IMPACT COLLIDER HERE ON THE WEAPON??? ///
     public void CreateImpactCollider(CombatManager _combatMgmt)
     {

@@ -5,12 +5,16 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public WeaponData weaponData;
-    public int durability = 0;
-    public float maxCharge = 2f;
-    public float chargeRate = 5f;
-    [HideInInspector] public float currentCharge = 1f;
+    [HideInInspector] public float currentCharge = 0f;
+    [HideInInspector] public float currentDurability = 0f;
 
-    protected GameObject interactingEntity;
+    [HideInInspector] public GameObject wieldingEntity;
+
+    void Awake()
+    {
+        currentCharge = weaponData.maxCharge;
+        currentDurability = weaponData.maxDurability;
+    }
 
     public void ResetCharge()
     {
@@ -21,9 +25,17 @@ public class Weapon : MonoBehaviour
     {
         // MAKE IT MORE FLESHED OUT i.e...
         // DURABILITY DEGRADES FASTER OR SLOWER BASED ON CHARACTER STATS etc.
-        durability -= 1;
-        if (durability < 1)
-            interactingEntity.GetComponent<WeaponManager>().DropWeapon();
+        currentDurability -= 1;
+        if (currentDurability <= 0)
+        {
+            wieldingEntity.GetComponent<WeaponManager>().DropWeapon();
+            currentDurability = 0f;
+        }
+    }
+
+    public virtual void InstantiateHitVisuals(Vector3 hitPoint)
+    {
+        GameObject hitVis = Instantiate(weaponData.hitVisuals, hitPoint, Quaternion.identity);
     }
 }
 
