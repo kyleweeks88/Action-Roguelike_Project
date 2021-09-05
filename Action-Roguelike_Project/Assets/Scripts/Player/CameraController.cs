@@ -11,6 +11,10 @@ public class CameraController : MonoBehaviour
     public CinemachineVirtualCamera sprintCamera;
     public CinemachineVirtualCameraBase uiCamera;
 
+    [Header("Settings")]
+    public float aimSensitivity;
+    public float lookSensitivity;
+    float camSensitivity;
     [SerializeField] Transform aimLookTarget;
     bool isAiming;
     PlayerManager playerMgmt;
@@ -18,6 +22,7 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         playerMgmt = GetComponent<PlayerManager>();
+
     }
 
     private void Update()
@@ -66,10 +71,10 @@ public class CameraController : MonoBehaviour
         if (rot.x > 180)
             rot.x -= 360;
         rot.x = Mathf.Clamp(rot.x, -80, 80);
-        aimLookTarget.localRotation = Quaternion.Slerp(aimLookTarget.localRotation, Quaternion.Euler(rot), 0.5f);
+        aimLookTarget.localRotation = Quaternion.Slerp(aimLookTarget.localRotation, Quaternion.Euler(rot), 0.25f);
 
         rot = transform.eulerAngles;
         rot.y += playerMgmt.inputMgmt.lookDelta.x;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(rot), 0.5f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(rot), 0.25f);
     }
 }
