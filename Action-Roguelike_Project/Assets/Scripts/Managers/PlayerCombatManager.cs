@@ -31,6 +31,15 @@ public class PlayerCombatManager : CombatManager
     }
 
     public void AimReleased() => playerMgmt.cameraCtrl.SetAim(false);
+
+    // Called by an Animation Event
+    public override void Shoot()
+    {
+        RangedWeapon rw = playerMgmt.weaponMgmt.currentlyEquippedWeapon as RangedWeapon;
+        Vector3 aimDir = (playerMgmt.cameraCtrl.debugTransform.position - projectileSpawn.position).normalized;
+
+        rw.SpawnProjectile(projectileSpawn, aimDir);
+    }
     #endregion
 
     #region Melee
@@ -89,7 +98,7 @@ public class PlayerCombatManager : CombatManager
 
     public void HeavyAttackPerformed()
     {
-        if (!playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.isChargeable) { return; }
+        //if (!playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.isChargeable) { return; }
         // If the player is interacting with a contextual object, exit.
         if (playerMgmt.isInteracting) { return; }
         if (playerMgmt.playerMovement.isSprinting) { return; }

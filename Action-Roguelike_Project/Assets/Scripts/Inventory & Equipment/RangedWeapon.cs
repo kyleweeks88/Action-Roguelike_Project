@@ -17,7 +17,7 @@ public class RangedWeapon : Weapon
     {
         Projectile newProjectile = Instantiate(rwData.projectile,
             pos.position,
-            pos.rotation);
+            Quaternion.LookRotation(dir, Vector3.up));
 
         newProjectile.SetSpeed(20f, dir);
     }

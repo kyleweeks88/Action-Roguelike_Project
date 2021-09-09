@@ -1,7 +1,17 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class RelicPickupResponse : MonoBehaviour, IPickupResponse
 {
+    TextMeshProUGUI test_Text;
+    [SerializeField] string pickupName;
+
+    void Awake()
+    {
+        test_Text = GetComponentInChildren<TextMeshProUGUI>();
+        test_Text.text = pickupName;
+    }
+
     public void OnPickup(Transform interactingEntity, Transform pickup)
     {
         Relic relic = pickup.GetComponent<Relic>();

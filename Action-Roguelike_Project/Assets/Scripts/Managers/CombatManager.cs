@@ -82,9 +82,7 @@ public class CombatManager : MonoBehaviour
 
     public virtual void Shoot()
     {
-        RangedWeapon rw = GetComponent<WeaponManager>().currentlyEquippedWeapon as RangedWeapon;
-
-        rw.SpawnProjectile(projectileSpawn, GetComponent<CameraController>().myCamera.transform.forward);
+        print("Shoot base logic.");
     }
     #endregion
 
