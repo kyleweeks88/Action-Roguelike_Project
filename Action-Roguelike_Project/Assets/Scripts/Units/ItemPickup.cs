@@ -1,16 +1,12 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
     protected GameObject interactingEntity;
-    // The weapon prefab for this pickup
-
     private IPickupResponse _pickupResponse;
 
-    private void Awake()
-    {
-        _pickupResponse = GetComponent<IPickupResponse>();   
-    }
+    private void Awake() => _pickupResponse = GetComponent<IPickupResponse>();
 
     void OnTriggerEnter(Collider col)
     {

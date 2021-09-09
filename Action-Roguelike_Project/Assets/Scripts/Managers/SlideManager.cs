@@ -7,6 +7,7 @@ public class SlideManager : MonoBehaviour
     public LayerMask whatIsWalkable;
 
     [Header("Slide settings")]
+    public float steepSlopeAngle = 45f;
     public float slideVelocity;
     float currentSlideVelocity;
     bool _isSliding;
@@ -20,12 +21,12 @@ public class SlideManager : MonoBehaviour
     }
 
     PhysicMaterial physMat;
-    PlayerManager playerMgmt;
+    Rigidbody rb;
 
     private void Start()
     {
-        physMat = GetComponent<CapsuleCollider>().material;
-        playerMgmt = GetComponent<PlayerManager>();
+        physMat = GetComponentInParent<Collider>().material;
+        rb = GetComponentInParent<Rigidbody>();
 
         currentSlideVelocity = slideVelocity;
     }
@@ -48,14 +49,12 @@ public class SlideManager : MonoBehaviour
             _isSliding = true;
             currentSlideVelocity = slideVelocity;
             physMat.dynamicFriction = 0f;
-            playerMgmt.myRb.velocity += -Vector3.up * slideVelocity;
+            rb.velocity += -Vector3.up * slideVelocity;
         }
     }
 
     bool CheckSlope(Vector3 position, Vector3 desiredDirection, float distance)
     {
-        Debug.DrawRay(position, desiredDirection, Color.green);
-
         Ray myRay = new Ray(position, desiredDirection); // cast a Ray from the position of our gameObject into our desired direction. Add the slopeRayHeight to the Y parameter.
         RaycastHit hit;
 
@@ -63,7 +62,7 @@ public class SlideManager : MonoBehaviour
         {
             float slopeAngle = Mathf.Deg2Rad * Vector3.Angle(Vector3.up, hit.normal); // Here we get the angle between the Up Vector and the normal of the wall we are checking against: 90 for straight up walls, 0 for flat ground.
 
-            if (slopeAngle >= 45f * Mathf.Deg2Rad) //You can set "steepSlopeAngle" to any angle you wish.
+            if (slopeAngle >= steepSlopeAngle * Mathf.Deg2Rad) //You can set "steepSlopeAngle" to any angle you wish.
             {
                 return true; // return false if we are very near / on the slope && the slope is steep
             }

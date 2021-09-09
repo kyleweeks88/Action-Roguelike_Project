@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -11,9 +12,15 @@ public class CameraController : MonoBehaviour
     public CinemachineVirtualCamera sprintCamera;
     public CinemachineVirtualCameraBase uiCamera;
 
+    [Header("Settings")]
+    public float aimSensitivity;
+    public float lookSensitivity;
+    float camSensitivity;
     [SerializeField] Transform aimLookTarget;
     bool isAiming;
     PlayerManager playerMgmt;
+    [SerializeField] LayerMask aimColliderMask;
+    public Transform debugTransform;
 
     private void Awake()
     {
@@ -23,6 +30,13 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         if (isAiming) { Aim(); }
+
+        Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        Ray ray = myCamera.ScreenPointToRay(screenCenterPoint);
+        if(Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderMask))
+        {
+            debugTransform.position = raycastHit.point;
+        }
     }
 
     public void SetAim(bool _aim_)
@@ -52,13 +66,6 @@ public class CameraController : MonoBehaviour
         //}
     }
 
-    IEnumerator DelayDisableRecenter()
-    {
-        yield return new WaitForSeconds(0.1f);
-        freeLook.m_YAxisRecentering.m_enabled = false;
-        freeLook.m_RecenterToTargetHeading.m_enabled = false;
-    }
-
     void Aim()
     {
         var rot = aimLookTarget.localRotation.eulerAngles;
@@ -66,10 +73,17 @@ public class CameraController : MonoBehaviour
         if (rot.x > 180)
             rot.x -= 360;
         rot.x = Mathf.Clamp(rot.x, -80, 80);
-        aimLookTarget.localRotation = Quaternion.Slerp(aimLookTarget.localRotation, Quaternion.Euler(rot), 0.5f);
+        aimLookTarget.localRotation = Quaternion.Slerp(aimLookTarget.localRotation, Quaternion.Euler(rot), 0.25f);
 
         rot = transform.eulerAngles;
         rot.y += playerMgmt.inputMgmt.lookDelta.x;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(rot), 0.5f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(rot), 0.25f);
+    }
+
+    IEnumerator DelayDisableRecenter()
+    {
+        yield return new WaitForSeconds(0.1f);
+        freeLook.m_YAxisRecentering.m_enabled = false;
+        freeLook.m_RecenterToTargetHeading.m_enabled = false;
     }
 }

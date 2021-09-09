@@ -35,7 +35,7 @@ public class WeaponManager : MonoBehaviour
         _weaponToAdd.transform.localRotation = Quaternion.Euler(Vector3.zero);
         _weaponToAdd.gameObject.SetActive(false);
 
-        // If the new weapon is a Main Weapon
+        // If the new weapon is a Melee Weapon
         if (_weaponToAdd.weaponData.equipmentType == EquipmentType.MeleeWeapon)
         {
             // If player has no main weapon
@@ -54,9 +54,24 @@ public class WeaponManager : MonoBehaviour
                 mainWeapon = _weaponToAdd;
             }
         }
-        if (_weaponToAdd.weaponData.equipmentType == EquipmentType.RangedWeapon)
+        // If the new weapon is a Ranged Weapon
+        else if (_weaponToAdd.weaponData.equipmentType == EquipmentType.RangedWeapon)
         {
-            secondaryWeapon = _weaponToAdd;
+            // If player has no main weapon
+            if (secondaryWeapon == null)
+            {
+                secondaryWeapon = _weaponToAdd;
+            }
+            // If player already has a main weapon
+            else
+            {
+                weaponToDrop = secondaryWeapon;
+
+                // Drop old main weapon
+                DropWeapon();
+
+                secondaryWeapon = _weaponToAdd;
+            }
         }
 
         if (currentlyEquippedWeapon == null)
@@ -72,7 +87,7 @@ public class WeaponManager : MonoBehaviour
             if(_weaponToEquip.weaponData.equipmentType == EquipmentType.MeleeWeapon)
             {
                 MeleeWeaponData meleeData = _weaponToEquip.weaponData as MeleeWeaponData;
-                playerMgmt.playerStats.attackDamage.AddModifer(meleeData.meleeDamage);
+                playerMgmt.playerStats.attackDamage_Stat.AddModifer(meleeData.weaponDamage);
             }
 
             if(_weaponToEquip.weaponData.equipmentType == EquipmentType.RangedWeapon)
@@ -85,7 +100,7 @@ public class WeaponManager : MonoBehaviour
             }
 
             currentlyEquippedWeapon = _weaponToEquip;
-            
+            _weaponToEquip.wieldingEntity = this.gameObject;
             _weaponToEquip.gameObject.SetActive(true);
 
             _weaponToEquip.transform.SetParent(weaponEquipPos);
@@ -113,7 +128,7 @@ public class WeaponManager : MonoBehaviour
         if (_weaponToUnequip.weaponData.equipmentType == EquipmentType.MeleeWeapon)
         {
             MeleeWeaponData meleeData = _weaponToUnequip.weaponData as MeleeWeaponData;
-            playerMgmt.playerStats.attackDamage.RemoveModifier(meleeData.meleeDamage);
+            playerMgmt.playerStats.attackDamage_Stat.RemoveModifier(meleeData.weaponDamage);
         }
         // Reset animation set
         playerMgmt.animMgmt.ResetAnimation();
@@ -128,7 +143,7 @@ public class WeaponManager : MonoBehaviour
         if(weaponToDrop.weaponData.equipmentType == EquipmentType.MeleeWeapon) 
         {
             MeleeWeaponData meleeData = weaponToDrop.weaponData as MeleeWeaponData;
-            playerMgmt.playerStats.attackDamage.RemoveModifier(meleeData.meleeDamage);
+            playerMgmt.playerStats.attackDamage_Stat.RemoveModifier(meleeData.weaponDamage);
             mainWeapon = null; 
         }
         if(weaponToDrop.weaponData.equipmentType == EquipmentType.RangedWeapon) 

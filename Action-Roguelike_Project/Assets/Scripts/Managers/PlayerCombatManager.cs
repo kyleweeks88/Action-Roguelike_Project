@@ -24,35 +24,6 @@ public class PlayerCombatManager : CombatManager
     }
 
     #region Ranged
-    public override void RangedAttackPerformed()
-    {
-        // if player is locked into an "interacting" state then don't let this happen.
-        if (playerMgmt.isInteracting) { return; }
-
-        base.RangedAttackPerformed();
-    }
-
-    public void RangedAttackReleased()
-    {
-        rangedAttackHeld = false;
-        playerMgmt.animMgmt.HandleRangedAttackAnimation(rangedAttackHeld);
-    }
-
-    // CALLED BY AN ANIMATION EVENT 
-    public override void CheckRangedAttack()
-    {
-        // Ask the server to check your pos, and spawn a projectile for the server
-        SpawnProjectile(projectileSpawn.position, projectileSpawn.rotation, playerMgmt.cameraCtrl.myCamera.transform.forward);
-    }
-
-    void SpawnProjectile(Vector3 pos, Quaternion rot, Vector3 dir)
-    {
-        Projectile newProjectile = Instantiate(projectile,
-            pos,
-            rot);
-        newProjectile.SetSpeed(20f, dir);
-    }
-
     public void AimPerformed()
     {
         if (playerMgmt.playerMovement.isSprinting) { return; }
@@ -60,6 +31,15 @@ public class PlayerCombatManager : CombatManager
     }
 
     public void AimReleased() => playerMgmt.cameraCtrl.SetAim(false);
+
+    // Called by an Animation Event
+    public override void Shoot()
+    {
+        RangedWeapon rw = playerMgmt.weaponMgmt.currentlyEquippedWeapon as RangedWeapon;
+        Vector3 aimDir = (playerMgmt.cameraCtrl.debugTransform.position - projectileSpawn.position).normalized;
+
+        rw.SpawnProjectile(projectileSpawn, aimDir);
+    }
     #endregion
 
     #region Melee
@@ -68,8 +48,9 @@ public class PlayerCombatManager : CombatManager
         // If the player is interacting with a contextual object, exit.
         if (playerMgmt.isInteracting) { return; }
         if (playerMgmt.playerMovement.isSprinting) { return; }
-
         if (!canRecieveAttackInput) { return; }
+
+        attackId = 1;
         inCombat = true;
         currentCombatTimer = combatTimer;
 
@@ -117,11 +98,13 @@ public class PlayerCombatManager : CombatManager
 
     public void HeavyAttackPerformed()
     {
+        //if (!playerMgmt.weaponMgmt.currentlyEquippedWeapon.weaponData.isChargeable) { return; }
         // If the player is interacting with a contextual object, exit.
         if (playerMgmt.isInteracting) { return; }
         if (playerMgmt.playerMovement.isSprinting) { return; }
-
         if (!canRecieveAttackInput) { return; }
+
+        attackId = 2;
         inCombat = true;
         currentCombatTimer = combatTimer;
 

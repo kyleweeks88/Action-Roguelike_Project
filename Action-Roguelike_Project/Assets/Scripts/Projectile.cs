@@ -3,13 +3,19 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    Rigidbody rb;
 	public GameObject hitFx_Pf;
 	public LayerMask collisionsMask;
 	public float projDmg = 10f;
-    public float projSpeed = 10f;
 	public float raycastLength = 1f;
+    //Cinemachine.CinemachineImpulseSource source;
 
-	void Start()
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void Start()
     {
 		StartCoroutine(DestroyAfterLifetime());
     }
@@ -36,7 +42,9 @@ public class Projectile : MonoBehaviour
 
     public void SetSpeed(float newSpeed, Vector3 dir)
     {
-    	projSpeed = newSpeed;
+        //source = GetComponent<Cinemachine.CinemachineImpulseSource>();
+        //source.GenerateImpulse(Camera.main.transform.forward);
+
     	StartCoroutine(TranslateProjectile(newSpeed, dir));
     }
 
@@ -45,7 +53,7 @@ public class Projectile : MonoBehaviour
     	WaitForEndOfFrame wait = new WaitForEndOfFrame();
     	while(this.gameObject != null)
         {
-    		this.transform.position += (dir * speed * Time.deltaTime);
+    		this.transform.position += (dir * speed * Time.fixedDeltaTime);
     		yield return wait;
         }
     }

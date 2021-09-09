@@ -35,15 +35,15 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public StatModifier combatMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
 
     [Header("Combat Stats")]
-    public Stat attackDamage;
-    public Stat attackChargeRate;
-    public Stat blockReduction;
+    public Stat attackDamage_Stat;
+    public Stat attackChargeRate_Stat;
+    public Stat blockReduction_Stat;
     //public Stat weaponDurability;
     [HideInInspector] public float maxAttackCharge = 100f;
     [HideInInspector] public float currentAttackCharge = 0f;
 
     [Header("General Stats")]
-    public Stat stealth;
+    public Stat stealth_Stat;
 
     #region Vitals Stamina & Health
     [Header("Stamina vital")]
@@ -58,7 +58,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     bool drainingStamina;
 
     [Header("Health vital")]
-    public float maxHealthPoints;
+    //public float maxHealthPoints;
     protected float currentHealthPoints;
     [Tooltip("How much health is gained for each healthGainTickrate when regenerating.")]
     public float healthGainAmount;
@@ -69,22 +69,31 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public float healthDrainAmount;
     public float healthDrainDelay;
     bool drainingHealth;
+
+    public Stat health_Stat;
+    public Stat stamina_Stat;
+    [SerializeField] protected Renderer r;
+    Color lerpedColor = Color.white;
+    float normalizedHealth = 0f;
     #endregion
 
     public virtual void Start()
     {
+        r = GetComponentInChildren<Renderer>();
         InitializeVitals();
+        healthChange_Event += ChangeColor;
     }
 
-    //void Update()
-    //{
-    //    Debug.Log(attackDamage.value);
-    //    Debug.Log(moveSpeed.value);
-    //}
+    protected void ChangeColor(float currentHealth)
+    {
+        lerpedColor = Color.Lerp(Color.red, Color.white, GetNormalizedHealth());
+        r.material.color = lerpedColor;
+        //print("TEST: " + GetNormalizedHealth());
+    }
 
     public void InitializeVitals()
     {
-        SetHealth(maxHealthPoints);
+        SetHealth(health_Stat.baseValue);
         SetStamina(maxStaminaPoints);
     }
 
@@ -93,8 +102,6 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     {
         if (OnDeath != null)
             OnDeath();
-
-        Debug.Log(charName + " has died!");
     }
     #endregion
 
@@ -126,9 +133,15 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
         return currentHealthPoints;
     }
 
+    public float GetNormalizedHealth()
+    {
+        normalizedHealth = currentHealthPoints / health_Stat.value;
+        return normalizedHealth;
+    }
+
     public virtual void SetHealth(float setVal)
     {
-        currentHealthPoints = Mathf.Clamp(setVal, 0f, maxHealthPoints);
+        currentHealthPoints = Mathf.Clamp(setVal, 0f, health_Stat.value);
         healthChange_Event?.Invoke(currentHealthPoints);
     }
 
@@ -144,7 +157,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     public void GainHealth(float gainAmount)
     {
-        currentHealthPoints = Mathf.Clamp((currentHealthPoints += gainAmount), 0f, maxHealthPoints);
+        currentHealthPoints = Mathf.Clamp((currentHealthPoints += gainAmount), 0f, health_Stat.value);
     }
 
     IEnumerator HealthGainDelay(float gainAmount, float oldValue)
@@ -156,7 +169,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
             drainingHealth = false;
 
             WaitForEndOfFrame wait = new WaitForEndOfFrame();
-            while (currentHealthPoints < maxHealthPoints && !drainingHealth)
+            while (currentHealthPoints < health_Stat.value && !drainingHealth)
             {
                 HealthGainOverTime(gainAmount);
                 yield return wait;
@@ -178,14 +191,14 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
         {
             if(GetComponent<CombatManager>().isBlocking)
             {
-                if(blockReduction.value >= 1)
+                if(blockReduction_Stat.value >= 1)
                 {
-                    dmgVal /= blockReduction.value;
+                    dmgVal /= blockReduction_Stat.value;
                     DamageStamina(dmgVal / 2);
                 }
                 else
                 {
-                    dmgVal *= blockReduction.value;
+                    dmgVal *= blockReduction_Stat.value;
                     DamageStamina(dmgVal / 2);
                 }
             }
@@ -193,14 +206,12 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
         // Affect the currentHealthPoints of this Character!
         // Clamps between 0 and the maxHealthPoints
-        currentHealthPoints = Mathf.Clamp((currentHealthPoints -= dmgVal), 0f, maxHealthPoints);
+        currentHealthPoints = Mathf.Clamp((currentHealthPoints -= dmgVal), 0f, health_Stat.value);
         healthChange_Event?.Invoke(currentHealthPoints);
         drainingHealth = true;
 
         // WE ONLY WANNA START THIS HEALTH REGEN IF THE PLAYER HAS HEALTH REGEN AVAILABLE???
         //StartCoroutine(HealthGainDelay(healthGainAmount, currentHealthPoints));
-
-        Debug.Log(charName + " took " + dmgVal + " damage, from " + attacker.name + "!!!");
 
         if (currentHealthPoints <= 0f)
         {

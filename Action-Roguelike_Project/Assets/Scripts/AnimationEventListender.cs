@@ -31,6 +31,6 @@ public class AnimationEventListender : MonoBehaviour
 
     public void CheckRangedAttack()
     {
-        combatManager.CheckRangedAttack();
+        combatManager.Shoot();
     }
 }

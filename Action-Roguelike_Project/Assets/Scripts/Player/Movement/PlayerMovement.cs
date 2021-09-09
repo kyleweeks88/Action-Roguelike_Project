@@ -28,11 +28,9 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool isSprinting = false;
     [HideInInspector] public bool isJumping = false;
     bool jumpInputHeld = false;
+    int currentJumps;
 
     public bool moveLocked;
-    int currentJumps;
-    [SerializeField] Transform aimLookTarget;
-    bool isAiming;
 
     private void OnEnable()
     {
@@ -53,8 +51,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //print(Mathf.Abs(playerMgmt.myRb.velocity.y));
-
         // Handles the player's PhysicMaterial to prevent slow-sliding down shallow slopes when standing still.
         // but turns friction to zero when the player is moving.
         if (_previousMovementInput.sqrMagnitude != 0)
@@ -69,12 +65,6 @@ public class PlayerMovement : MonoBehaviour
         GroundCheck();
         UpdateIsSprinting();
         Move();
-        //CameraControl();
-
-        //if(isAiming)
-        //{
-        //    Aim();
-        //}
     }
 
     #region Movement
@@ -117,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
 
         // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
         // ... ONLY IF THE PLAYER IS MOVING, BLOCKING OR ATTACKING
-        if (movement.sqrMagnitude > 0 || playerMgmt.combatMgmt.isBlocking || playerMgmt.combatMgmt.attackInputHeld)
+        if (movement.sqrMagnitude > 0 || playerMgmt.combatMgmt.inCombat || playerMgmt.combatMgmt.isBlocking)
         {
             float cameraYaw = playerMgmt.cameraCtrl.myCamera.transform.rotation.eulerAngles.y;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
@@ -152,49 +142,59 @@ public class PlayerMovement : MonoBehaviour
     void StepClimb()
     {
         if (slideMgmt.isSliding) { return; }
+        Ray myRay = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
 
-        for (int i = 0; i < stepRaysLow.Length; i++)
+        if (Physics.Raycast(myRay, out hit, 10f, whatIsWalkable))
         {
-            RaycastHit hitLower;
-            if (Physics.Raycast(stepRaysLow[i].position, stepRaysLow[i].TransformDirection(Vector3.forward), out hitLower, 0.3f, whatIsWalkable))
+            float slopeAngle = Mathf.Deg2Rad * Vector3.Angle(Vector3.up, hit.normal); 
+
+            if (slopeAngle <= 10 * Mathf.Deg2Rad) 
             {
-                if(stepRaysLow[i].name == "step low F")
+                for (int i = 0; i < stepRaysLow.Length; i++)
                 {
-                    RaycastHit hitUpper;
-                    if(!Physics.Raycast(stepRaysHigh[0].position, stepRaysHigh[0].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                    RaycastHit hitLower;
+                    if (Physics.Raycast(stepRaysLow[i].position, stepRaysLow[i].TransformDirection(Vector3.forward), out hitLower, 0.3f, whatIsWalkable))
                     {
-                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                        if (stepRaysLow[i].name == "step low F")
+                        {
+                            RaycastHit hitUpper;
+                            if (!Physics.Raycast(stepRaysHigh[0].position, stepRaysHigh[0].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                            {
+                                playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                                return;
+                            }
+                        }
+                        else if (stepRaysLow[i].name == "step low B")
+                        {
+                            RaycastHit hitUpper;
+                            if (!Physics.Raycast(stepRaysHigh[1].position, stepRaysHigh[1].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                            {
+                                playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                                return;
+                            }
+                        }
+                        else if (stepRaysLow[i].name == "step low L")
+                        {
+                            RaycastHit hitUpper;
+                            if (!Physics.Raycast(stepRaysHigh[2].position, stepRaysHigh[2].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                            {
+                                playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                                return;
+                            }
+                        }
+                        else if (stepRaysLow[i].name == "step low R")
+                        {
+                            RaycastHit hitUpper;
+                            if (!Physics.Raycast(stepRaysHigh[3].position, stepRaysHigh[3].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                            {
+                                playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                                return;
+                            }
+                        }
                         return;
                     }
                 }
-                else if(stepRaysLow[i].name == "step low B")
-                {
-                    RaycastHit hitUpper;
-                    if (!Physics.Raycast(stepRaysHigh[1].position, stepRaysHigh[1].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
-                    {
-                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
-                        return;
-                    }
-                }
-                else if (stepRaysLow[i].name == "step low L")
-                {
-                    RaycastHit hitUpper;
-                    if (!Physics.Raycast(stepRaysHigh[2].position, stepRaysHigh[2].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
-                    {
-                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
-                        return;
-                    }
-                }
-                else if (stepRaysLow[i].name == "step low R")
-                {
-                    RaycastHit hitUpper;
-                    if (!Physics.Raycast(stepRaysHigh[3].position, stepRaysHigh[3].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
-                    {
-                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
-                        return;
-                    }
-                }
-                return;
             }
         }
     }
@@ -249,63 +249,19 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    #region Camera Control
-    //void CameraControl()
-    //{
-
-//}
-
-//public void SetAim(bool _aim_)
-//{
-//    isAiming = _aim_;
-
-//    if (_aim_)
-//    {
-//        transform.rotation = Quaternion.Euler(0f, playerMgmt.freeLook.m_XAxis.Value, 0f);
-//        playerMgmt.sprintCamera.m_Priority = 11;
-//        //DOVirtual.Float(playerMgmt.aimRig.weight, 1f, 0.2f, SetAimRigthWeight);
-//    }
-//    else
-//    {
-//        playerMgmt.sprintCamera.m_Priority = 9;
-//        //DOVirtual.Float(playerMgmt.aimRig.weight, 0f, 0.2f, SetAimRigthWeight);
-//    }
-//    //void SetAimRigWeight(float _weight_)
-//    //{
-//    //    aimRig.weight = weight;
-//    //}
-//}
-
-//void Aim()
-//{
-//    var rot = aimLookTarget.localRotation.eulerAngles;
-//    rot.x -= playerMgmt.inputMgmt.lookDelta.y;
-//    if (rot.x > 180)
-//        rot.x -= 360;
-//    rot.x = Mathf.Clamp(rot.x, -80, 80);
-//    aimLookTarget.localRotation = Quaternion.Slerp(aimLookTarget.localRotation, Quaternion.Euler(rot), 0.5f);
-
-//    rot = transform.eulerAngles;
-//    rot.y += playerMgmt.inputMgmt.lookDelta.x;
-//    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(rot), 0.5f);
-//}
-#endregion
-
-#region Sprinting
-public void SprintPressed()
-    {
-        if (movement.z > 0.1 && playerMgmt.playerStats.GetCurrentStamina()
-            - playerMgmt.playerStats.staminaDrainAmount > 0)
+    #region Sprinting
+    public void SprintPressed()
         {
-            isSprinting = true;
-            //playerMgmt.isInteracting = true;
+            if (movement.z > 0.1 && playerMgmt.playerStats.GetCurrentStamina()
+                - playerMgmt.playerStats.staminaDrainAmount > 0)
+            {
+                isSprinting = true;
+                //playerMgmt.isInteracting = true;
 
-            // adds moveSpeed StatModifier
-            playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.sprintMovementModifier);
-
-            //playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 11;
+                // adds moveSpeed StatModifier
+                playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.sprintMovementModifier);
+            }
         }
-    }
 
     public void SprintReleased()
     {
@@ -313,8 +269,6 @@ public void SprintPressed()
 
         // removes moveSpeed StatModifier
         playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.sprintMovementModifier);
-
-        //playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 9;
     }
 
     void UpdateIsSprinting()
