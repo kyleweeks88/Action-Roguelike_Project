@@ -13,6 +13,9 @@ public class PlayerEventChannel : MonoBehaviour
 
     public delegate void OnSoulGathered(CurrencyItem currency);
     public event OnSoulGathered soulGathered_Event;
+    
+    public delegate void OnRelicGathered(Relic relic);
+    public event OnRelicGathered relicGathered_Event;
 
     public void DamageRecieved(float dmgVal)
     {
@@ -27,5 +30,10 @@ public class PlayerEventChannel : MonoBehaviour
     public void SoulGathered(CurrencyItem soul)
     {
         soulGathered_Event?.Invoke(soul);
+    }
+
+    public void RelicGathered(Relic relic)
+    {
+        relicGathered_Event?.Invoke(relic);
     }
 }

@@ -11,7 +11,7 @@ public class UserInterfaceManager : MonoBehaviour
 
     void Start()
     {
-        oldMask = playerMgmt.myCamera.cullingMask;
+        oldMask = playerMgmt.cameraCtrl.myCamera.cullingMask;
         playerMgmt.inputMgmt.userInterfaceEvent += OnUserInterface;
         playerMgmt.inputMgmt.pauseEvent += PauseGame;
     }
@@ -21,16 +21,16 @@ public class UserInterfaceManager : MonoBehaviour
         if(!menuCanvas.enabled)
         {
             playerMgmt.inputMgmt.EnableUserInterfaceInput();
-            playerMgmt.myCamera.cullingMask = uiMask;
-            playerMgmt.uiCamera.m_Priority = 11;
+            playerMgmt.cameraCtrl.myCamera.cullingMask = uiMask;
+            playerMgmt.cameraCtrl.uiCamera.m_Priority = 11;
 
             menuCanvas.enabled = true;
         }
         else
         {
             playerMgmt.inputMgmt.EnableGameplayInput();
-            playerMgmt.myCamera.cullingMask = oldMask;
-            playerMgmt.uiCamera.m_Priority = 8;
+            playerMgmt.cameraCtrl.myCamera.cullingMask = oldMask;
+            playerMgmt.cameraCtrl.uiCamera.m_Priority = 8;
 
             menuCanvas.enabled = false;
         }

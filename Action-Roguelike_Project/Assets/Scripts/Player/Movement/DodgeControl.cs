@@ -68,17 +68,17 @@ public class DodgeControl : MonoBehaviour
             if (_dir.sqrMagnitude != 0)
             {
                 // Get entity's direction/rotation relative to the camera
-                Vector3 rotationMovement = Quaternion.Euler(0, playerMgmt.myCamera.transform.rotation.eulerAngles.y, 0) * _dir;
+                Vector3 rotationMovement = Quaternion.Euler(0, playerMgmt.cameraCtrl.myCamera.transform.rotation.eulerAngles.y, 0) * _dir;
                 Vector3 verticalMovement = Vector3.up * playerMgmt.myRb.velocity.y;
 
                 // Adds force relative to the camera in a direction
-                playerMgmt.myRb.AddForce((verticalMovement + (rotationMovement * dodgeVelocity)), ForceMode.Impulse);
+                playerMgmt.myRb.AddForce((verticalMovement + (rotationMovement * dodgeVelocity)), ForceMode.VelocityChange);
 
             }
             // If the player isn't pressing any direction...
             else
             {
-                playerMgmt.myRb.AddForce(-transform.forward * dodgeVelocity/2f, ForceMode.Impulse);
+                playerMgmt.myRb.AddForce(-transform.forward * dodgeVelocity/2f, ForceMode.VelocityChange);
             }
 
             // PLAY DODGE ANIMATION FROM AnimationManager

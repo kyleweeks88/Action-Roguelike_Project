@@ -12,42 +12,43 @@ public class PlayerManager : MonoBehaviour
     public WeaponManager weaponMgmt;
     public PlayerStats playerStats;
     public AnimationManager animMgmt;
-    public CombatManager combatMgmt;
+    public PlayerCombatManager combatMgmt;
     public PlayerMovement playerMovement;
     public DodgeControl dodgeCtrl;
-
-    [Header("Camera Ref")]
-    public Camera myCamera = null;
-    public GameObject freeLook;
-    public GameObject sprintCamera;
-    public CinemachineVirtualCameraBase uiCamera;
+    public SlideManager slideMgmt;
+    public CameraController cameraCtrl;
 
     public bool isInteracting = false;
 
-    void Start()
+    void Awake()
     {
         myRb = gameObject.GetComponent<Rigidbody>();
 
+        cameraCtrl = GetComponent<CameraController>();
+
+        slideMgmt = GetComponent<SlideManager>();
+        //slideMgmt.enabled = true;
+
         inputMgmt = gameObject.GetComponent<InputManager>();
-        inputMgmt.enabled = true;
+        //inputMgmt.enabled = true;
 
         playerMovement = gameObject.GetComponent<PlayerMovement>();
-        playerMovement.enabled = true;
+        //playerMovement.enabled = true;
 
         weaponMgmt = gameObject.GetComponent<WeaponManager>();
-        weaponMgmt.enabled = true;
+        //weaponMgmt.enabled = true;
 
         playerStats = gameObject.GetComponent<PlayerStats>();
-        playerStats.enabled = true;
+        //playerStats.enabled = true;
 
         animMgmt = gameObject.GetComponent<AnimationManager>();
-        animMgmt.enabled = true;
+        //animMgmt.enabled = true;
 
-        combatMgmt = gameObject.GetComponent<CombatManager>();
-        combatMgmt.enabled = true;
+        combatMgmt = gameObject.GetComponent<PlayerCombatManager>();
+        //combatMgmt.enabled = true;
 
         dodgeCtrl = gameObject.GetComponent<DodgeControl>();
-        dodgeCtrl.enabled = true;
+        //dodgeCtrl.enabled = true;
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;

@@ -35,6 +35,8 @@ public class CombatManager : MonoBehaviour
     public bool rangedAttackHeld;
     public bool lightAttack;
     public bool heavyAttack;
+
+    protected int attackId;
     #endregion
 
     public virtual void Start()
@@ -54,11 +56,6 @@ public class CombatManager : MonoBehaviour
         {
             ChargeMeleeAttack();
         }
-
-        //if(rangedAttackHeld)
-        //{
-        //    ChargeRangedAttack();
-        //}
     }
 
     /// <summary>
@@ -82,39 +79,10 @@ public class CombatManager : MonoBehaviour
     }
 
     #region Ranged
-    public virtual void RangedAttackPerformed()
+
+    public virtual void Shoot()
     {
-        if (!canRecieveAttackInput) { return; }
-
-        rangedAttackHeld = true;
-        attackAnim = "rangedAttackHold";
-        animMgmt.HandleRangedAttackAnimation(rangedAttackHeld);
-    }
-
-    public virtual void ChargeRangedAttack()
-    {
-        // CHECK IF CHARACTER HAS A RANGED WEAPON \\
-
-        // ACCESS THAT RANGED WEAPON SOMEHOW \\
-
-        // INCREASE THAT RANGED WEAPON'S DAMAGE AND/OR PROJECTILE VELOCITY \\
-
-        Debug.Log("CHARGING RANGED ATTACK!");
-    }
-
-    // CALLED BY AN ANIMATION EVENT 
-    public virtual void CheckRangedAttack()
-    {
-        // Ask the server to check your pos, and spawn a projectile for the server
-        SpawnProjectile(projectileSpawn.position, projectileSpawn.rotation, this.transform.forward);
-    }
-
-    void SpawnProjectile(Vector3 pos, Quaternion rot, Vector3 dir)
-    {
-        Projectile newProjectile = Instantiate(projectile,
-            pos,
-            rot);
-        newProjectile.SetSpeed(20f, dir);
+        print("Shoot base logic.");
     }
     #endregion
 
@@ -152,7 +120,7 @@ public class CombatManager : MonoBehaviour
                     charStats.maxAttackCharge)
                 {
                     charStats.currentAttackCharge +=
-                        Time.deltaTime * charStats.attackChargeRate.value;
+                        Time.deltaTime * charStats.attackChargeRate_Stat.value;
                 }
                 else
                 {
@@ -177,7 +145,7 @@ public class CombatManager : MonoBehaviour
                 charStats.maxAttackCharge)
             {
                 charStats.currentAttackCharge +=
-                    Time.deltaTime * charStats.attackChargeRate.value;
+                    Time.deltaTime * charStats.attackChargeRate_Stat.value;
             }
             else
             {
@@ -196,29 +164,55 @@ public class CombatManager : MonoBehaviour
     /// <param name="handInt"></param>
     public virtual void ActivateImpact(int impactID)
     {
-        if (weaponMgmt.currentlyEquippedWeapon != null)
+        // If the attack is a Heavy Attack
+        if (attackId > 1)
         {
-            MeleeWeapon myWeapon = weaponMgmt.currentlyEquippedWeapon as MeleeWeapon;
-            charStats.DamageStamina(myWeapon.meleeData.staminaCost);
+            // If the attacker has a weapon equipped
+            if (weaponMgmt.currentlyEquippedWeapon != null)
+            {
+                MeleeWeaponData meleeData = weaponMgmt.currentlyEquippedWeapon.weaponData as MeleeWeaponData;
+                charStats.DamageStamina(meleeData.staminaCost);
+            }
+            // If the attacker is unarmed
+            else
+            {
+                //Debug.Log("FIX THIS: DETERMINE HEAVY OR LIGHT ATTACK STAMINA COST!");
+                charStats.DamageStamina(20f);
+                switch (impactID)
+                {
+                    case 1:
+                        CreateImpactCollider(leftHand);
+                        break;
+                    case 2:
+                        CreateImpactCollider(rightHand);
+                        break;
+                    case 3:
+                        Debug.Log("Kick");
+                        break;
+                }
+            }
         }
+        // If the attack is a Light Attack
         else
         {
-            Debug.Log("FIX THIS: DETERMINE HEAVY OR LIGHT ATTACK STAMINA COST!");
-            charStats.DamageStamina(10f);
-            switch (impactID)
+            if(weaponMgmt.currentlyEquippedWeapon == null)
             {
-                case 1:
-                    CreateImpactCollider(leftHand);
-                    break;
-                case 2:
-                    CreateImpactCollider(rightHand);
-                    break;
-                case 3:
-                    Debug.Log("Kick");
-                    break;
+                switch (impactID)
+                {
+                    case 1:
+                        CreateImpactCollider(leftHand);
+                        break;
+                    case 2:
+                        CreateImpactCollider(rightHand);
+                        break;
+                    case 3:
+                        Debug.Log("Kick");
+                        break;
+                }
             }
         }
 
+        attackId = 0;
         impactActivated = true;
     }
 
@@ -266,13 +260,13 @@ public class CombatManager : MonoBehaviour
 
     public void ProcessAttack(CharacterStats target)
     {
-        float dmgVal = charStats.attackDamage.value;
+        float dmgVal = charStats.attackDamage_Stat.value;
 
         Vector3 angleToTarget = target.transform.position - this.transform.position;
         if (Vector3.Dot(target.transform.forward, angleToTarget) >= 0f)
         {
             Debug.Log("BACKSTAB!");
-            dmgVal += GetComponent<CharacterStats>().stealth.value;
+            dmgVal += GetComponent<CharacterStats>().stealth_Stat.value;
         }
 
         target.TakeDamage(this.gameObject, dmgVal);

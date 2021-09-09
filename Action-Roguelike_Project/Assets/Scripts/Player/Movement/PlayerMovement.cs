@@ -5,16 +5,13 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Component Ref")]
     [SerializeField] PlayerManager playerMgmt = null;
+    PhysicMaterial physMat;
+    SlideManager slideMgmt;
 
     [Header("Ground detection")]
     public LayerMask whatIsWalkable;
     public Transform groundColPos;
     public bool isGrounded;
-
-    [Header("Slide settings")]
-    public float slideVelocity;
-    float currentSlideVelocity;
-    public bool isSliding;
 
     [Header("Step Climb settings")]
     [SerializeField] Transform[] stepRaysLow;
@@ -31,21 +28,25 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool isSprinting = false;
     [HideInInspector] public bool isJumping = false;
     bool jumpInputHeld = false;
+    int currentJumps;
 
-    PhysicMaterial physMat;
     public bool moveLocked;
 
-    void Start()
+    private void OnEnable()
     {
         playerMgmt.inputMgmt.jumpEventStarted += Jump;
         playerMgmt.inputMgmt.jumpEventCancelled += JumpReleased;
         playerMgmt.inputMgmt.sprintEventStarted += SprintPressed;
         playerMgmt.inputMgmt.sprintEventCancelled += SprintReleased;
         playerMgmt.inputMgmt.moveEvent += OnMove;
+    }
 
+    private void Awake()
+    {
         physMat = gameObject.GetComponent<CapsuleCollider>().material;
+        slideMgmt = GetComponent<SlideManager>();
 
-        currentSlideVelocity = slideVelocity;
+        currentJumps = (int)playerMgmt.playerStats.jumpMultiplier.value;
     }
 
     private void FixedUpdate()
@@ -56,16 +57,20 @@ public class PlayerMovement : MonoBehaviour
         {
             physMat.dynamicFriction = 0f;
         }
-        else if(_previousMovementInput.sqrMagnitude == 0 && !isSliding)
+        else if (_previousMovementInput.sqrMagnitude == 0 && !slideMgmt.isSliding)
         {
             physMat.dynamicFriction = 1f;
         }
 
-        HandleSliding();
         GroundCheck();
         UpdateIsSprinting();
         Move();
-        CameraControl();
+    }
+
+    #region Movement
+    void OnMove(Vector2 movement)
+    {
+        _previousMovementInput = movement;
     }
 
     public Vector3 GetPrevMovement()
@@ -73,68 +78,123 @@ public class PlayerMovement : MonoBehaviour
         return _previousMovementInput;
     }
 
-    void HandleSliding()
+    public void Move()
     {
-        Vector3 adjustedPos = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
-        if (!CheckSlope(adjustedPos, Vector3.down, 10f))
+        if (moveLocked) { return; }
+
+        // CONVERTS THE INPUT INTO A NORMALIZED VECTOR3
+        //movement = new Vector3
+        //{
+        //    x = _previousMovementInput.x,
+        //    y = -currentSlideVelocity,
+        //    z = _previousMovementInput.y
+        //}.normalized;
+
+        // !!! THIS CODE COULD BE CAUSING BUGS OR PERFORMANCE ISSUES !!!
+        Vector3 velocity = Vector3.zero;
+        movement = Vector3.Lerp(movement, new Vector3
         {
-            isSliding = false;
-            currentSlideVelocity = 0f;
+            x = _previousMovementInput.x,
+            y = 0,
+            z = _previousMovementInput.y
+        }.normalized, 10f * Time.deltaTime);
+
+        if (_previousMovementInput.sqrMagnitude <= 0.5f)
+            movement = Vector3.zero;
+
+        // MAKES THE CHARACTER'S FORWARD AXIS MATCH THE CAMERA'S FORWARD AXIS
+        rotationMovement = Quaternion.Euler(0, playerMgmt.cameraCtrl.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
+
+        // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
+        // ... ONLY IF THE PLAYER IS MOVING, BLOCKING OR ATTACKING
+        if (movement.sqrMagnitude > 0 || playerMgmt.combatMgmt.inCombat || playerMgmt.combatMgmt.isBlocking)
+        {
+            float cameraYaw = playerMgmt.cameraCtrl.myCamera.transform.rotation.eulerAngles.y;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
+        }
+
+        // Only allows the player to sprint forwards
+        if (isSprinting && movement.z <= 0)
+        {
+            SprintReleased();
+        }
+
+        if (movement.sqrMagnitude > 0.1f && isGrounded)
+        {
+            StepClimb();
+        }
+
+        // HANDLES ANIMATIONS
+        playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
+
+        // MOVES THE PLAYER
+        if (_previousMovementInput.y < 0)
+        {
+            playerMgmt.myRb.velocity += rotationMovement * (playerMgmt.playerStats.moveSpeed.value * .5f);
         }
         else
         {
-            isSliding = true;
-            currentSlideVelocity = slideVelocity;
-            physMat.dynamicFriction = 0f;
+            playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
         }
     }
+    #endregion
 
     void StepClimb()
     {
-        if (isSliding) { return; }
+        if (slideMgmt.isSliding) { return; }
+        Ray myRay = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
 
-        for (int i = 0; i < stepRaysLow.Length; i++)
+        if (Physics.Raycast(myRay, out hit, 10f, whatIsWalkable))
         {
-            RaycastHit hitLower;
-            if (Physics.Raycast(stepRaysLow[i].position, stepRaysLow[i].TransformDirection(Vector3.forward), out hitLower, 0.3f, whatIsWalkable))
+            float slopeAngle = Mathf.Deg2Rad * Vector3.Angle(Vector3.up, hit.normal); 
+
+            if (slopeAngle <= 10 * Mathf.Deg2Rad) 
             {
-                if(stepRaysLow[i].name == "step low F")
+                for (int i = 0; i < stepRaysLow.Length; i++)
                 {
-                    RaycastHit hitUpper;
-                    if(!Physics.Raycast(stepRaysHigh[0].position, stepRaysHigh[0].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                    RaycastHit hitLower;
+                    if (Physics.Raycast(stepRaysLow[i].position, stepRaysLow[i].TransformDirection(Vector3.forward), out hitLower, 0.3f, whatIsWalkable))
                     {
-                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                        if (stepRaysLow[i].name == "step low F")
+                        {
+                            RaycastHit hitUpper;
+                            if (!Physics.Raycast(stepRaysHigh[0].position, stepRaysHigh[0].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                            {
+                                playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                                return;
+                            }
+                        }
+                        else if (stepRaysLow[i].name == "step low B")
+                        {
+                            RaycastHit hitUpper;
+                            if (!Physics.Raycast(stepRaysHigh[1].position, stepRaysHigh[1].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                            {
+                                playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                                return;
+                            }
+                        }
+                        else if (stepRaysLow[i].name == "step low L")
+                        {
+                            RaycastHit hitUpper;
+                            if (!Physics.Raycast(stepRaysHigh[2].position, stepRaysHigh[2].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                            {
+                                playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                                return;
+                            }
+                        }
+                        else if (stepRaysLow[i].name == "step low R")
+                        {
+                            RaycastHit hitUpper;
+                            if (!Physics.Raycast(stepRaysHigh[3].position, stepRaysHigh[3].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
+                            {
+                                playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
+                                return;
+                            }
+                        }
                         return;
                     }
                 }
-                else if(stepRaysLow[i].name == "step low B")
-                {
-                    RaycastHit hitUpper;
-                    if (!Physics.Raycast(stepRaysHigh[1].position, stepRaysHigh[1].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
-                    {
-                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
-                        return;
-                    }
-                }
-                else if (stepRaysLow[i].name == "step low L")
-                {
-                    RaycastHit hitUpper;
-                    if (!Physics.Raycast(stepRaysHigh[2].position, stepRaysHigh[2].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
-                    {
-                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
-                        return;
-                    }
-                }
-                else if (stepRaysLow[i].name == "step low R")
-                {
-                    RaycastHit hitUpper;
-                    if (!Physics.Raycast(stepRaysHigh[3].position, stepRaysHigh[3].TransformDirection(Vector3.forward), out hitUpper, 0.4f, whatIsWalkable))
-                    {
-                        playerMgmt.myRb.position -= new Vector3(0f, -stepSmooth, 0f);
-                        return;
-                    }
-                }
-                return;
             }
         }
     }
@@ -146,6 +206,7 @@ public class PlayerMovement : MonoBehaviour
         if (groundCollisions.Length <= 0)
         {
             isGrounded = false;
+
             // Add the aerialMovementModifier if it isn't already affecting _moveSpeed.
             if (!playerMgmt.playerStats.moveSpeed.StatModifiers.Contains(playerMgmt.playerStats.aerialMovementModifier))
                 playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.aerialMovementModifier);
@@ -162,7 +223,7 @@ public class PlayerMovement : MonoBehaviour
 
             // If the player has jumped and is now falling downwards, cast a ray 
             // to check for ground and turn isJumping false if hit.
-            if (isJumping && playerMgmt.myRb.velocity.y < 0f)
+            if (playerMgmt.myRb.velocity.y < -5f)
             {
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f, whatIsWalkable))
@@ -182,114 +243,25 @@ public class PlayerMovement : MonoBehaviour
             // This stops the ground collision from pre-emptively turning isJumping to false when the player jumps.
             if (Mathf.Abs(playerMgmt.myRb.velocity.y) < 0.01f && Mathf.Abs(playerMgmt.myRb.velocity.y) > -0.01f)
                 isJumping = false;
-        }
-    }
 
-    bool CheckSlope(Vector3 position, Vector3 desiredDirection, float distance)
-    {
-        Debug.DrawRay(position, desiredDirection, Color.green);
-
-        Ray myRay = new Ray(position, desiredDirection); // cast a Ray from the position of our gameObject into our desired direction. Add the slopeRayHeight to the Y parameter.
-        RaycastHit hit;
-
-        if (Physics.Raycast(myRay, out hit, distance, whatIsWalkable))
-        {
-            float slopeAngle = Mathf.Deg2Rad * Vector3.Angle(Vector3.up, hit.normal); // Here we get the angle between the Up Vector and the normal of the wall we are checking against: 90 for straight up walls, 0 for flat ground.
-
-            if (slopeAngle >= 45f * Mathf.Deg2Rad) //You can set "steepSlopeAngle" to any angle you wish.
-            {
-                return true; // return false if we are very near / on the slope && the slope is steep
-            }
-
-            return false; // return true if the slope is not steep
-        }
-
-        return false;
-    }
-
-    void OnMove(Vector2 movement)
-    {
-        _previousMovementInput = movement;
-    }
-
-    public void Move()
-    {
-        if (moveLocked) { return; }
-
-        // CONVERTS THE INPUT INTO A NORMALIZED VECTOR3
-        //movement = new Vector3
-        //{
-        //    x = _previousMovementInput.x,
-        //    y = -currentSlideVelocity,
-        //    z = _previousMovementInput.y
-        //}.normalized;
-
-        Vector3 velocity = Vector3.zero;
-        movement = Vector3.Lerp(movement, new Vector3
-        {
-            x = _previousMovementInput.x,
-            y = -currentSlideVelocity,
-            z = _previousMovementInput.y
-        }.normalized, 10f * Time.deltaTime);
-
-        if (_previousMovementInput.sqrMagnitude <= 0.5f)
-            movement = Vector3.zero;
-        Debug.Log(movement.sqrMagnitude);
-        
-        // Only allows the player to sprint forwards
-        if (isSprinting && movement.z <= 0)
-        {
-            SprintReleased();
-        }
-
-        if(movement.sqrMagnitude > 0.1f)
-        {
-            StepClimb();
-        }
-
-        // HANDLES ANIMATIONS
-        playerMgmt.animMgmt.MovementAnimation(movement.x, movement.z);
-
-        // MOVES THE PLAYER
-        if (_previousMovementInput.y < 0)
-        {
-            playerMgmt.myRb.velocity += rotationMovement * (playerMgmt.playerStats.moveSpeed.value * .5f);
-        }
-        else
-        {
-            playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.moveSpeed.value;
-        }
-    }
-
-    void CameraControl()
-    {
-        // MAKES THE CHARACTER'S FORWARD AXIS MATCH THE CAMERA'S FORWARD AXIS
-        rotationMovement = Quaternion.Euler(0, playerMgmt.myCamera.transform.rotation.eulerAngles.y, 0) * movement;
-
-        // MAKES THE CHARACTER MODEL TURN TOWARDS THE CAMERA'S FORWARD AXIS
-        // ... ONLY IF THE PLAYER IS MOVING, BLOCKING OR ATTACKING
-        if (movement.sqrMagnitude > 0 || playerMgmt.combatMgmt.isBlocking || playerMgmt.combatMgmt.attackInputHeld)
-        {
-            float cameraYaw = playerMgmt.myCamera.transform.rotation.eulerAngles.y;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), turnSpeed * Time.deltaTime);
+            if (isGrounded && !isJumping)
+                currentJumps = (int)playerMgmt.playerStats.jumpMultiplier.value;
         }
     }
 
     #region Sprinting
     public void SprintPressed()
-    {
-        if (movement.z > 0.1 && playerMgmt.playerStats.GetCurrentStamina()
-            - playerMgmt.playerStats.staminaDrainAmount > 0)
         {
-            isSprinting = true;
-            //playerMgmt.isInteracting = true;
+            if (movement.z > 0.1 && playerMgmt.playerStats.GetCurrentStamina()
+                - playerMgmt.playerStats.staminaDrainAmount > 0)
+            {
+                isSprinting = true;
+                //playerMgmt.isInteracting = true;
 
-            // adds moveSpeed StatModifier
-            playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.sprintMovementModifier);
-
-            //playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 11;
+                // adds moveSpeed StatModifier
+                playerMgmt.playerStats.moveSpeed.AddModifer(playerMgmt.playerStats.sprintMovementModifier);
+            }
         }
-    }
 
     public void SprintReleased()
     {
@@ -297,8 +269,6 @@ public class PlayerMovement : MonoBehaviour
 
         // removes moveSpeed StatModifier
         playerMgmt.playerStats.moveSpeed.RemoveModifier(playerMgmt.playerStats.sprintMovementModifier);
-
-        //playerMgmt.sprintCamera.GetComponent<CinemachineVirtualCameraBase>().m_Priority = 9;
     }
 
     void UpdateIsSprinting()
@@ -321,22 +291,33 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
+    #region Jumping
     public void Jump()
     {
+        if(currentJumps <= 0 && !isGrounded) { return; }
         if (playerMgmt.isInteracting) { return; }
-        if (isSliding) { return; }
+        if (slideMgmt.isSliding) { return; }
 
         jumpInputHeld = true;
-        
-        if (!isJumping && isGrounded)
+
+        // Check if player has enough Stamina to perform the jump
+        if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
         {
-            if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
+            // if the player is not currently in the air...
+            if (!isJumping)
             {
                 isJumping = true;
-                //playerMgmt.isInteracting = true;
                 playerMgmt.playerStats.DamageStamina(10f);
                 playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpForce.value;
-                playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpForce.value;
+                playerMgmt.myRb.velocity += rotationMovement * playerMgmt.playerStats.jumpForce.value/2f;
+                currentJumps--;
+            }
+            // if the player is in the air and jumps...
+            else
+            {
+                playerMgmt.playerStats.DamageStamina(10f);
+                playerMgmt.myRb.velocity += Vector3.up * playerMgmt.playerStats.jumpForce.value * 1.25f;
+                currentJumps--;
             }
         }
     }
@@ -345,4 +326,5 @@ public class PlayerMovement : MonoBehaviour
     {
         jumpInputHeld = false;
     }
+    #endregion
 }

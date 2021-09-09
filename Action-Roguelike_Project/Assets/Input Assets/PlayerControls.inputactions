@@ -62,14 +62,6 @@
                     "interactions": "Press(behavior=2)"
                 },
                 {
-                    "name": "Throw",
-                    "type": "Button",
-                    "id": "f1863cee-3c5d-4f0b-903e-6c9960c52733",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)"
-                },
-                {
                     "name": "Block",
                     "type": "Button",
                     "id": "a4bd6522-a03e-43e6-89ce-d06ae9b226e7",
@@ -121,6 +113,14 @@
                     "name": "LightAttack",
                     "type": "Button",
                     "id": "612efc42-d367-4766-92f3-41c5ff4d1d2e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "TEST",
+                    "type": "Button",
+                    "id": "b27f5da7-dabd-4869-a09e-166ae8ddaa08",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
@@ -327,17 +327,6 @@
                 },
                 {
                     "name": "",
-                    "id": "907b8ea2-077d-4d44-923f-4ceec7e55e22",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Throw",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b1cde5d9-da22-4050-96bc-44aa6d3a2b6d",
                     "path": "<Mouse>/middleButton",
                     "interactions": "",
@@ -487,6 +476,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "LightAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "26f405a4-4db8-4577-b147-5c97286629e5",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "M&K",
+                    "action": "TEST",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

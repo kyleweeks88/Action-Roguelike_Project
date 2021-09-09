@@ -28,16 +28,16 @@ public class NpcStats : CharacterStats
         GetComponent<NpcController>().enabled = false;
         GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
-        GetComponentInChildren<HealthbarDisplay>().gameObject.SetActive(false);
+        //GetComponentInChildren<HealthbarDisplay>().gameObject.SetActive(false);
         GetComponent<RagdollManager>().ActivateRagdoll();
         StartCoroutine(DelayedDestroy());
     }
 
     public override void TakeDamage(GameObject attacker, float dmgVal)
     {
+        base.TakeDamage(attacker, dmgVal);
         blinkTimer = blinkDuration;
         StartCoroutine(BlinkTimer());
-        base.TakeDamage(attacker, dmgVal);
     }
 
     public void SpawnSouls()
@@ -59,9 +59,11 @@ public class NpcStats : CharacterStats
             blinkTimer -= Time.deltaTime;
             float lerp = Mathf.Clamp01(blinkTimer / blinkDuration);
             float intensity = (lerp * blinkIntensity) + 1f;
-            skinnedMeshRenderer.material.color = Color.white * intensity;
+            r.material.color = r.material.color * intensity;
             yield return wait;
         }
+
+        ChangeColor(currentHealthPoints);
     }
 
     IEnumerator DelayedDestroy()
