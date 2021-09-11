@@ -160,10 +160,10 @@ MonoBehaviour:
   - {fileID: 4409242443460057170, guid: 13774240983247a42903e65f31238b24, type: 3}
   - {fileID: 6280271100551695828, guid: 9ca9ab133d864844e8d21b637c29270c, type: 3}
   - {fileID: 4364434534114219970, guid: 4560e2645ef9d144fbbccb4a47f7d9aa, type: 3}
-  iterationRanged: {x: 3, y: 10}
+  iterationRanged: {x: 20, y: 40}
   roomLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!4 &1367133694
 Transform:
   m_ObjectHideFlags: 0
