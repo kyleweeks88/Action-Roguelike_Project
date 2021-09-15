@@ -6,6 +6,7 @@ public class LevelGenerator : MonoBehaviour
 {
     public Room startRoomPrefab, endRoomPrefab;
     public List<Room> roomPrefabs = new List<Room>();
+    public List<EventRoom> eventRoomPrefabs = new List<EventRoom>();
     public Vector2 iterationRanged = new Vector2(3, 10);
 
     List<Doorway> allAvailableDoorways = new List<Doorway>();
@@ -13,49 +14,21 @@ public class LevelGenerator : MonoBehaviour
     StartRoom startRoom;
     EndRoom endRoom;
     List<Room> placedRooms = new List<Room>();
+    List<EventRoom> placedEventRooms = new List<EventRoom>();
 
     public LayerMask roomLayerMask;
 
     Coroutine generationCoroutine = null;
 
+    public int eventRoomsToPlace = 0;
+
     private void Start()
     {
-        generationCoroutine = StartCoroutine("GenerateLevel");
-    }
+        //generationCoroutine = StartCoroutine("GenerateLevel");
 
-    IEnumerator GenerateLevel()
-    {
-        WaitForSeconds startup = new WaitForSeconds(1);
-        WaitForFixedUpdate interval = new WaitForFixedUpdate();
-
-        yield return startup;
-
-        // Place start room
         PlaceStartRoom();
-        yield return interval;
-
-        // Random iterations
-        int iterations = Random.Range((int)iterationRanged.x, (int)iterationRanged.y);
-
-        for (int i = 0; i < iterations; i++)
-        {
-            // Place random room from list
-            PlaceRoom();
-            yield return interval;
-        }
-
-        // Place end room
-        PlaceEndRoom();
-        //DeleteOverlappingDoorways();
-        yield return interval;
-
-        // Level generation finished
-        print("Level generation finished");
-
-        yield return new WaitForSeconds(3);
-        ResetLevelGenerator();
     }
-
+    
     void PlaceStartRoom()
     {
         // Instantiate room
@@ -69,6 +42,60 @@ public class LevelGenerator : MonoBehaviour
         // Position the room
         startRoom.transform.position = Vector3.zero;
         startRoom.transform.rotation = Quaternion.identity;
+
+        StartCoroutine(ConnectorPlacement());
+    }
+
+    IEnumerator ConnectorPlacement()
+    {
+        WaitForSeconds startup = new WaitForSeconds(1);
+        WaitForFixedUpdate interval = new WaitForFixedUpdate();
+
+        yield return startup;
+
+        // Random iterations
+        int iterations = Random.Range((int)iterationRanged.x, (int)iterationRanged.y);
+
+        for (int i = 0; i < iterations; i++)
+        {
+            // Place random room from list
+            PlaceConnectorRoom();
+            yield return interval;
+        }
+
+        if(placedEventRooms.Count < eventRoomsToPlace)
+        {
+            StartCoroutine(EventRoomPlacement());
+            StopCoroutine(ConnectorPlacement());
+        }
+        else
+        {
+            PlaceEndRoom();
+        }
+    }
+
+    IEnumerator EventRoomPlacement()
+    {
+        WaitForSeconds startup = new WaitForSeconds(1);
+        WaitForFixedUpdate interval = new WaitForFixedUpdate();
+
+        yield return startup;
+
+        //// Random iterations
+        //int iterations = Random.Range(1, 2);
+
+        //for (int i = 0; i < iterations; i++)
+        //{
+        //    // Place random room from list
+        //    //PlaceEventRoom();
+        //    DetermineEventRoom();
+        //    yield return interval;
+        //}
+
+        DetermineEventRoom();
+        yield return interval;
+
+        //StartCoroutine(ConnectorPlacement());
     }
 
     private void AddDoorwayToList(Room _room, ref List<Doorway> _doorwayList)
@@ -80,7 +107,7 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    void PlaceRoom()
+    void PlaceConnectorRoom()
     {
         // Instantiate Room
         Room currentRoom = Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Count)]) as Room;
@@ -106,7 +133,7 @@ public class LevelGenerator : MonoBehaviour
             PositionRoomAtDoorway(ref currentRoom, currentDoorway, availableDoorway);
 
             //  Check room overlaps
-            if(CheckRoomOverlap(currentRoom))
+            if (CheckRoomOverlap(currentRoom))
             {
                 // If overlap detected - skip to next iteration of the loop
                 continue;
@@ -130,7 +157,7 @@ public class LevelGenerator : MonoBehaviour
         }
 
         // Room couldn't be placed. Restart generator and try again
-        if(!roomPlaced)
+        if (!roomPlaced)
         {
             Destroy(currentRoom.gameObject);
             ResetLevelGenerator();
@@ -182,6 +209,92 @@ public class LevelGenerator : MonoBehaviour
 
         return false;
     }
+    
+    void DetermineEventRoom()
+    {
+        List<string> roomNames = new List<string>();
+        int rand = Random.Range(0, eventRoomPrefabs.Count);
+        EventRoom currentEventRoom = Instantiate(eventRoomPrefabs[rand]) as EventRoom;
+        currentEventRoom.transform.parent = this.transform;
+
+        if (placedEventRooms.Count > 0)
+        {
+            foreach (EventRoom eventRoom in placedEventRooms)
+            {
+                roomNames.Add(eventRoom.roomName);
+            }
+
+            if (roomNames.Contains(currentEventRoom.roomName))
+            {
+                print("Error: Match");
+                Destroy(currentEventRoom.gameObject);
+                StartCoroutine(EventRoomPlacement());
+            }
+            else
+            {
+                //print(_name + " / " + currentEventRoom.roomName + ": no match");
+                PlaceEventRoom(currentEventRoom);
+            }
+        }
+        else
+        {
+            PlaceEventRoom(currentEventRoom);
+        }
+    }
+
+    void PlaceEventRoom(EventRoom currentEventRoom)
+    {
+        // Instantiate Room
+        //EventRoom currentEventRoom = Instantiate(_currentEventRoom) as EventRoom;
+        //currentEventRoom.transform.parent = this.transform;
+
+        // Create doorway lists to loop over
+        List<Doorway> currentAvailableDoorways = new List<Doorway>(allAvailableDoorways);
+        Doorway doorwayEntrance = currentEventRoom.doorways[0];
+        Doorway doorwayExit = currentEventRoom.doorways[1];
+
+        bool roomPlaced = false;
+
+        // Try all available doorways
+        foreach (Doorway availableDoorway in currentAvailableDoorways)
+        {
+            Room room = (Room)currentEventRoom;
+            PositionRoomAtDoorway(ref room, doorwayEntrance, availableDoorway);
+
+            //  Check room overlaps
+            if (CheckRoomOverlap(currentEventRoom))
+            {
+                // If overlap detected - skip to next iteration of the loop
+                continue;
+            }
+
+            // No overlap, set this to true and...
+            roomPlaced = true;
+
+            placedEventRooms.Add(currentEventRoom);
+
+            // Remove occupied doorways
+            doorwayEntrance.gameObject.SetActive(false);
+            allAvailableDoorways.Remove(doorwayEntrance);
+
+            availableDoorway.gameObject.SetActive(false);
+            allAvailableDoorways.Remove(availableDoorway);
+
+            // Exit loop if room has been placed.
+            if (roomPlaced) { break; }
+        }
+
+        // Room couldn't be placed. Restart.
+        if (!roomPlaced)
+        {
+            ResetLevelGenerator();
+        }
+        // WAIT UNTIL PLAYER HAS COMPLETED THE EVENT ROOM TO CONTINUE GENERATING LEVEL?
+        //else
+        //{
+        //    StartCoroutine(ConnectorPlacement());
+        //}
+    }
 
     void PlaceEndRoom()
     {
@@ -198,6 +311,10 @@ public class LevelGenerator : MonoBehaviour
         // Try all available doorways
         foreach (Doorway availableDoorway in currentAvailableDoorways)
         {
+            //if (availableDoorway.transform.GetComponentInParent<StartRoom>() == null)
+            //{
+            //    print("test");
+            //}
             Room room = (Room)endRoom;
             PositionRoomAtDoorway(ref room, doorway, availableDoorway);
 
@@ -227,18 +344,21 @@ public class LevelGenerator : MonoBehaviour
         {
             ResetLevelGenerator();
         }
+
+        //DeleteOverlappingDoorways();
     }   
     
     void DeleteOverlappingDoorways()
     {
         foreach (Doorway doorway in allAvailableDoorways)
         {
-            Collider[] doorColliders = Physics.OverlapBox(doorway.transform.position, Vector3.one, Quaternion.identity);
-            if(doorColliders.Length == 2)
+            Collider[] doorColliders = Physics.OverlapBox(doorway.transform.position, transform.localScale/2, Quaternion.identity);
+            if(doorColliders.Length > 1)
             {
                 foreach (Collider collider in doorColliders)
                 {
-                    Destroy(collider.gameObject);
+                    if(collider.GetComponent<Doorway>() != null)
+                        Destroy(collider.gameObject);
                 }
             }
         }
@@ -248,7 +368,8 @@ public class LevelGenerator : MonoBehaviour
     {
         print("Reset level generator");
 
-        StopCoroutine(generationCoroutine);
+        StopCoroutine(ConnectorPlacement());
+        StopCoroutine(EventRoomPlacement());
 
         // Deleate all rooms
         if (startRoom) { Destroy(startRoom.gameObject); }
@@ -257,12 +378,17 @@ public class LevelGenerator : MonoBehaviour
         {
             Destroy(room.gameObject);
         }
+        foreach (EventRoom eventRoom in placedEventRooms)
+        {
+            Destroy(eventRoom.gameObject);
+        }
 
         // Clear lists
         placedRooms.Clear();
+        placedEventRooms.Clear();
         allAvailableDoorways.Clear();
 
         // Reset coroutine
-        StartCoroutine("GenerateLevel");
+        PlaceStartRoom();
     }
 }

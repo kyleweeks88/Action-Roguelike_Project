@@ -154,16 +154,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startRoomPrefab: {fileID: 4850970351022580312, guid: a6f77efcb48b0c4488fa56c8ac371642,
     type: 3}
-  endRoomPrefab: {fileID: 5456865981981907392, guid: 00a332c7dc5a65e4a83528f2464445d9,
+  endRoomPrefab: {fileID: 4686423364852587991, guid: e1d6d84b49ade2b488ea47d0a6ce542f,
     type: 3}
   roomPrefabs:
   - {fileID: 4409242443460057170, guid: 13774240983247a42903e65f31238b24, type: 3}
   - {fileID: 6280271100551695828, guid: 9ca9ab133d864844e8d21b637c29270c, type: 3}
   - {fileID: 4364434534114219970, guid: 4560e2645ef9d144fbbccb4a47f7d9aa, type: 3}
-  iterationRanged: {x: 20, y: 40}
+  - {fileID: 4975387167755119590, guid: d93c56e47f37d304591b2c6b8c6ac073, type: 3}
+  eventRoomPrefabs:
+  - {fileID: 1533453205245089535, guid: e79175085e44dc54bbb6fb46e26a0693, type: 3}
+  - {fileID: 4258476513611790813, guid: 8e23be2557da78e4186392bd0881097c, type: 3}
+  - {fileID: 2665961960716690602, guid: 89611f18bac9fc949bfcc2535911f542, type: 3}
+  - {fileID: 2665961960716690602, guid: 869eff230e39cce4f8138f3ff52e7ad7, type: 3}
+  - {fileID: 2665961960716690602, guid: c0bf607e11f7dba4680740b69d81765f, type: 3}
+  iterationRanged: {x: 1, y: 4}
   roomLayerMask:
     serializedVersion: 2
     m_Bits: 8
+  eventRoomsToPlace: 4
 --- !u!4 &1367133694
 Transform:
   m_ObjectHideFlags: 0
