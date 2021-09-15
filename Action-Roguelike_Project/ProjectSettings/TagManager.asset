@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Invulnerable
   - Enemy
+  - Start
   layers:
   - Default
   - TransparentFX
