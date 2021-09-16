@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
+    public LayerMask roomLayerMask;
     public Room startRoomPrefab, endRoomPrefab;
     public List<Room> roomPrefabs = new List<Room>();
     public List<EventRoom> eventRoomPrefabs = new List<EventRoom>();
-    public Vector2 iterationRanged = new Vector2(3, 10);
+    public Vector2 connectorIterationRange = new Vector2(3, 10);
+    public int eventRoomsToPlace = 0;
 
     List<Doorway> allAvailableDoorways = new List<Doorway>();
 
@@ -16,16 +18,9 @@ public class LevelGenerator : MonoBehaviour
     List<Room> placedRooms = new List<Room>();
     List<EventRoom> placedEventRooms = new List<EventRoom>();
 
-    public LayerMask roomLayerMask;
-
-    Coroutine generationCoroutine = null;
-
-    public int eventRoomsToPlace = 0;
 
     private void Start()
     {
-        //generationCoroutine = StartCoroutine("GenerateLevel");
-
         PlaceStartRoom();
     }
     
@@ -54,7 +49,7 @@ public class LevelGenerator : MonoBehaviour
         yield return startup;
 
         // Random iterations
-        int iterations = Random.Range((int)iterationRanged.x, (int)iterationRanged.y);
+        int iterations = Random.Range((int)connectorIterationRange.x, (int)connectorIterationRange.y);
 
         for (int i = 0; i < iterations; i++)
         {
@@ -244,10 +239,6 @@ public class LevelGenerator : MonoBehaviour
 
     void PlaceEventRoom(EventRoom currentEventRoom)
     {
-        // Instantiate Room
-        //EventRoom currentEventRoom = Instantiate(_currentEventRoom) as EventRoom;
-        //currentEventRoom.transform.parent = this.transform;
-
         // Create doorway lists to loop over
         List<Doorway> currentAvailableDoorways = new List<Doorway>(allAvailableDoorways);
         Doorway doorwayEntrance = currentEventRoom.doorways[0];

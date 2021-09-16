@@ -31,6 +31,19 @@ MonoBehaviour:
   - {fileID: 4532434296124406477}
   meshCollider: {fileID: 4254240986775449445}
   roomName: Yellow Room
+--- !u!65 &5035401753557758613
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492228410454210285}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 8, y: 3.4719582, z: 0.9969921}
+  m_Center: {x: 3.2867038e-24, y: 1.2359793, z: -6.26}
 --- !u!1 &5714443932099931108
 GameObject:
   m_ObjectHideFlags: 0
