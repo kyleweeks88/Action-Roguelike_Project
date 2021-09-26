@@ -35,6 +35,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public StatModifier combatMovementModifier = new StatModifier(-0.5f, StatModType.PercentMulti);
 
     [Header("Combat Stats")]
+    public Stat attackSpeed_Stat;
     public Stat attackDamage_Stat;
     public Stat attackChargeRate_Stat;
     public Stat blockReduction_Stat;
@@ -47,7 +48,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     #region Vitals Stamina & Health
     [Header("Stamina vital")]
-    public float maxStaminaPoints;
+    public Stat stamina_Stat;
     float currentStaminaPoints;
     public float staminaGainAmount;
     public float staminaGainDelay;
@@ -58,10 +59,10 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     bool drainingStamina;
 
     [Header("Health vital")]
-    //public float maxHealthPoints;
-    protected float currentHealthPoints;
+    public Stat health_Stat;
     [Tooltip("How much health is gained for each healthGainTickrate when regenerating.")]
-    public float healthGainAmount;
+    public Stat healthGainAmount_Stat;
+    //public float healthGainAmount;
     [Tooltip("Delay before health recovery begins.")]
     public float healthGainDelay;
     [Tooltip("Miliseconds between health gain. The lower the number the faster the gain rate.")]
@@ -69,12 +70,12 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     public float healthDrainAmount;
     public float healthDrainDelay;
     bool drainingHealth;
-
-    public Stat health_Stat;
-    public Stat stamina_Stat;
-    [SerializeField] protected Renderer r;
+    protected float currentHealthPoints;
+    
+    // TESTING... //
+    protected Renderer r;
     Color lerpedColor = Color.white;
-    float normalizedHealth = 0f;
+    // ...TESTING //
     #endregion
 
     public virtual void Start()
@@ -88,13 +89,12 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     {
         lerpedColor = Color.Lerp(Color.red, Color.white, GetNormalizedHealth());
         r.material.color = lerpedColor;
-        //print("TEST: " + GetNormalizedHealth());
     }
 
     public void InitializeVitals()
     {
         SetHealth(health_Stat.baseValue);
-        SetStamina(maxStaminaPoints);
+        SetStamina(stamina_Stat.baseValue);
     }
 
     #region Death!!!
@@ -135,7 +135,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     public float GetNormalizedHealth()
     {
-        normalizedHealth = currentHealthPoints / health_Stat.value;
+        float normalizedHealth = currentHealthPoints / health_Stat.value;
         return normalizedHealth;
     }
 
@@ -235,7 +235,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
             drainingHealth = true;
             TakeDamage(null, drainAmount);
             drainInterval = Time.time + drainDelay / 1000f;
-            StartCoroutine(HealthGainDelay(healthGainAmount, currentHealthPoints));
+            StartCoroutine(HealthGainDelay(healthGainAmount_Stat.value, currentHealthPoints));
         }
     }
     #endregion
@@ -250,7 +250,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     public virtual void SetStamina(float setVal)
     {
-        currentStaminaPoints = Mathf.Clamp(setVal, 0f, maxStaminaPoints);
+        currentStaminaPoints = Mathf.Clamp(setVal, 0f, stamina_Stat.value);
         staminaChange_Event?.Invoke(currentStaminaPoints);
     }
 
@@ -267,7 +267,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
 
     public void GainStamina(float gainAmount)
     {
-        currentStaminaPoints = Mathf.Clamp((currentStaminaPoints += gainAmount), 0f, maxStaminaPoints);
+        currentStaminaPoints = Mathf.Clamp((currentStaminaPoints += gainAmount), 0f, stamina_Stat.value);
         staminaChange_Event?.Invoke(currentStaminaPoints);
     }
 
@@ -280,7 +280,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
             drainingStamina = false;
 
             WaitForEndOfFrame wait = new WaitForEndOfFrame();
-            while (currentStaminaPoints < maxStaminaPoints && !drainingStamina)
+            while (currentStaminaPoints < stamina_Stat.value && !drainingStamina)
             {
                 StaminaGainOverTime(gainAmount);
                 yield return wait;
@@ -296,7 +296,7 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #region Stamina Drain
     public void DamageStamina(float dmgVal)
     {
-        currentStaminaPoints = Mathf.Clamp((currentStaminaPoints -= dmgVal), 0f, maxStaminaPoints);
+        currentStaminaPoints = Mathf.Clamp((currentStaminaPoints -= dmgVal), 0f, stamina_Stat.value);
         staminaChange_Event?.Invoke(currentStaminaPoints);
         drainingStamina = true;
 

@@ -21,12 +21,14 @@ public class AnimationManager : MonoBehaviour
     int isSlidingParam = Animator.StringToHash("isSliding");
     int isBlockingParam = Animator.StringToHash("isBlocking");
     int moveAnimSpeedParam = Animator.StringToHash("moveAnimSpeed");
+    int attackAnimSpeedParam = Animator.StringToHash("attackSpeed");
     #endregion
 
 
     void Update()
     {
         animator.SetFloat(moveAnimSpeedParam, 1f);
+        animator.SetFloat(attackAnimSpeedParam, playerMgmt.playerStats.attackSpeed_Stat.value);
         animator.SetBool(isBlockingParam, playerMgmt.combatMgmt.isBlocking);
         animator.SetBool(isSlidingParam, playerMgmt.slideMgmt.isSliding);
         animator.SetBool(isSprintingParam, playerMgmt.playerMovement.isSprinting);
