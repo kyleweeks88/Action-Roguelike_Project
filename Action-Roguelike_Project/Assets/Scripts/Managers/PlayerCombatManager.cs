@@ -87,6 +87,8 @@ public class PlayerCombatManager : CombatManager
             // If you have no equipped weapon, you're unarmed
             else
             {
+                print("test");
+
                 if (playerMgmt.playerStats.GetCurrentStamina() - 10f > 0)
                 {
                     attackAnim = "attackLight";

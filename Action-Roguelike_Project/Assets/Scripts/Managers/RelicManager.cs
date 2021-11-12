@@ -24,7 +24,9 @@ public class RelicManager : MonoBehaviour
         if(!currentRelics.Contains(_relicToAdd_))
         {
             currentRelics.Add(_relicToAdd_);
-            _relicToAdd_.ActivateRelic(this.transform);
+
+            if(_relicToAdd_.GetComponent<RelicMod_Stat>())
+                _relicToAdd_.ActivateRelic(this.transform);
         }
     }
 

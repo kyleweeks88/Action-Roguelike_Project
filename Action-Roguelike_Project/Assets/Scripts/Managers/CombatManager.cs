@@ -269,6 +269,9 @@ public class CombatManager : MonoBehaviour
             dmgVal += GetComponent<CharacterStats>().stealth_Stat.value;
         }
 
+        // FIND THE RelicManager of the target AND OF THIS ATTACKER
+        // CHECK FOR Relics THAT ACTIVATE ON ATTACK OR BEING ATTACKED
+
         target.TakeDamage(this.gameObject, dmgVal);
     }
     #endregion

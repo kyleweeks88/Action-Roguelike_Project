@@ -12,10 +12,10 @@ public class RelicMod_Stat : MonoBehaviour, IActivateRelic
         Stat newStat = null;
         switch(_statType_)
         {
-            case StatType.Speed:
+            case StatType.MoveSpeed:
                 newStat = _stats_.moveSpeed;
                 return newStat;
-            case StatType.Strength:
+            case StatType.AttackDamage:
                 newStat = _stats_.attackDamage_Stat;
                 return newStat;
             case StatType.JumpMultiplier:
@@ -26,6 +26,9 @@ public class RelicMod_Stat : MonoBehaviour, IActivateRelic
                 return newStat;
             case StatType.Health:
                 newStat = _stats_.health_Stat;
+                return newStat;
+            case StatType.AttackSpeed:
+                newStat = _stats_.attackSpeed_Stat;
                 return newStat;
         }
 

@@ -17,11 +17,17 @@ public class PlayerEventChannel : MonoBehaviour
     public delegate void OnRelicGathered(Relic relic);
     public event OnRelicGathered relicGathered_Event;
 
+    public delegate void OnExperienceGained(float xpVal);
+    public event OnExperienceGained experienceGained_Event;
+
+    public delegate void OnEquippableItemGathered(EquippableItem item);
+    public event OnEquippableItemGathered equippableItemGathered_Event;
+
     public void DamageRecieved(float dmgVal)
     {
         damageRecieved_Event?.Invoke(dmgVal);
     }
-
+     
     public void HealthChanged(float currentHealth)
     {
         healthChange_Event?.Invoke(currentHealth);
@@ -35,5 +41,15 @@ public class PlayerEventChannel : MonoBehaviour
     public void RelicGathered(Relic relic)
     {
         relicGathered_Event?.Invoke(relic);
+    }
+
+    public void ExperienceGained(float xpVal)
+    {
+        experienceGained_Event?.Invoke(xpVal);
+    }
+
+    public void EquippableItemGathered(EquippableItem itemToEquip)
+    {
+        equippableItemGathered_Event?.Invoke(itemToEquip);
     }
 }

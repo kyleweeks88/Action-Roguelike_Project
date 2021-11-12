@@ -2,11 +2,12 @@
 
 public enum StatType
 {
-    Speed,
-    Strength,
+    MoveSpeed,
+    AttackDamage,
     JumpForce,
     JumpMultiplier,
-    Health
+    Health,
+    AttackSpeed
 }
 
 [CreateAssetMenu(fileName = "RelicData", menuName = "ItemData/RelicData")]

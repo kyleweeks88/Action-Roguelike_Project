@@ -15,7 +15,6 @@ public class SoulPoint : MonoBehaviour
     {
         if (!isPickupable) { return; }
 
-        // Check if the colliding object has an EquipmentManager component
         PlayerEventChannel playerEvents = col.gameObject.GetComponent<PlayerEventChannel>();
         if (playerEvents != null)
         {
@@ -26,12 +25,11 @@ public class SoulPoint : MonoBehaviour
 
     private IEnumerator Countdown()
     {
-        float duration = 2f; // 3 seconds you can change this 
-                             //to whatever you want
+        float duration = 1f; // x seconds you can change this 
+                             // to whatever you want
         float normalizedTime = 0;
         while (normalizedTime <= 1f)
         {
-            //countdownImage.fillAmount = normalizedTime;
             normalizedTime += Time.deltaTime / duration;
             yield return null;
         }
