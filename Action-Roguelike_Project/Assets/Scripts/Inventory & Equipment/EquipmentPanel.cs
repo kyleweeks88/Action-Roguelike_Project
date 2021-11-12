@@ -7,7 +7,7 @@ public class EquipmentPanel : MonoBehaviour
 {
     [SerializeField] Transform equipmentSlotsParent;
     [SerializeField] EquipmentSlot[] equipmentSlots;
-
+    [SerializeField] PlayerEventChannel playerEventChannel;
     public event Action<ItemData> OnItemRightClickedEvent;
 
     private void Awake()
@@ -16,6 +16,8 @@ public class EquipmentPanel : MonoBehaviour
         {
             equipmentSlots[i].OnRightClickEvent += OnItemRightClickedEvent;
         }
+
+        playerEventChannel.equippableItemGathered_Event += AddItem;
     }
 
     private void OnValidate()
@@ -23,7 +25,7 @@ public class EquipmentPanel : MonoBehaviour
         equipmentSlots = equipmentSlotsParent.GetComponentsInChildren<EquipmentSlot>();
     }
 
-    public bool AddItem(EquippableItem _itemToAdd)
+    public void AddItem(EquippableItem _itemToAdd)
     {
         // Go through each equipment slot
         for (int i = 0; i < equipmentSlots.Length; i++)
@@ -35,11 +37,9 @@ public class EquipmentPanel : MonoBehaviour
                 if (equipmentSlots[i].item == null)
                 {
                     equipmentSlots[i].item = _itemToAdd;
-                    return true;
                 }
             }
         }
-        return false;
     }
 
     public bool RemoveItem(EquippableItem _itemToRemove)

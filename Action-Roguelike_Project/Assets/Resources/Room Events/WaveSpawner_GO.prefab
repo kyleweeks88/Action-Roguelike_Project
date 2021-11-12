@@ -44,8 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a4e64c3a36b2084d9e5e89a42f8df62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waves: []
-  goToSpawn_PF: {fileID: 0}
+  waves:
+  - spawnCount: 1
+    timeBetweenSpawns: 5
+  goToSpawn_PF: {fileID: 2215909438807583485, guid: 93ae65b84b3eaba49938279ac8eb2e82,
+    type: 3}
 --- !u!1 &5174846180978194357
 GameObject:
   m_ObjectHideFlags: 0

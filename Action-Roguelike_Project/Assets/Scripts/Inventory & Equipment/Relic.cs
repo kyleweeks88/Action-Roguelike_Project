@@ -9,6 +9,7 @@ public class Relic : MonoBehaviour
 
     private void Awake()
     {
+        // Creates a new instance of the StatModifier so it's not a duplicate
         StatModifier statInstance = new StatModifier(relicData.stadModifier.value, relicData.stadModifier.type);
         relicData.stadModifier = statInstance;
         statMod = relicData.stadModifier;

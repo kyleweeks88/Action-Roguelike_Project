@@ -18,7 +18,7 @@ public class LevelGenerator : MonoBehaviour
     List<Room> placedRooms = new List<Room>();
     List<EventRoom> placedEventRooms = new List<EventRoom>();
 
-    [HideInInspector] public List<GameObject> roomEventPrefabs = new List<GameObject>();
+    public List<GameObject> roomEventPrefabs = new List<GameObject>();
 
     private void Start()
     {

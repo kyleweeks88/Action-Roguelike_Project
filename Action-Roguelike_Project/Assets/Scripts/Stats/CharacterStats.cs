@@ -257,7 +257,9 @@ public class CharacterStats : MonoBehaviour, IKillable, IDamageable<float>
     #region Stamina Gain
     public void StaminaGainOverTime(float gainAmount)
     {
-        if(GetComponent<CombatManager>().isBlocking) { return; }
+        // BAD BAD BAD BAD BAD
+        if(GetComponent<CombatManager>().isBlocking) { return; } //<--- THIS IS BAD!!!
+        if (GetComponent<CombatManager>().attackInputHeld) { return; } //<--- THIS IS BAD!!!
         if (ShouldAffectVital(gainInterval))
         {
             GainStamina(gainAmount);
