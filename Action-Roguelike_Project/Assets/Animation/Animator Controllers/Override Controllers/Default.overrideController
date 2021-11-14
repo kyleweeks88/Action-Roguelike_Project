@@ -7,5 +7,5 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Default
-  m_Controller: {fileID: 9100000, guid: 4b2f71d24f207594a92d718acc3f8161, type: 2}
+  m_Controller: {fileID: 9100000, guid: 180d693a980667f47a4858817579b32c, type: 2}
   m_Clips: []
