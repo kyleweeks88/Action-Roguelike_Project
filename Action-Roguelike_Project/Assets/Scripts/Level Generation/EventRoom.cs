@@ -7,29 +7,46 @@ public class EventRoom : Room
     [SerializeField] Transform eventSpawnLocation;
     LevelGenerator levelGenerator;
 
-    //List<GameObject> eventPrefabPool = new List<GameObject>();
+    public List<GameObject> eventPrefabPool = new List<GameObject>();
+    //public List<GameObject> roomEventPrefabs = new List<GameObject>();
 
     private void Start()
     {
-        levelGenerator = GetComponentInParent<LevelGenerator>();
-        if(levelGenerator != null)
+        //LoadPrefabEvent();
+        //levelGenerator = GetComponentInParent<LevelGenerator>();
+        //if (levelGenerator != null)
+        //{
+        //    Debug.Log(levelGenerator.transform.name);
+        //    foreach (var item in levelGenerator.roomEventPrefabs)
+        //    {
+        //        Debug.Log(item.name);
+        //    }
+        //}
+        //else
+        //{
+        //    Debug.LogError("Error");
+        //}
+    }
+
+    public void LoadPrefabEvent()
+    {
+        GameObject[] _prefabPool = Resources.LoadAll<GameObject>("Room Events");
+        int length = _prefabPool.Length;
+
+        if (length != 0)
         {
-            Debug.Log(levelGenerator.transform.name);
-            foreach (var item in levelGenerator.roomEventPrefabs)
+            foreach (GameObject eventPrefab in _prefabPool)
             {
-                Debug.Log(item.name);
+                eventPrefabPool.Add(eventPrefab);
             }
-        }
-        else
-        {
-            Debug.LogError("Error");
         }
     }
 
     void SpawnEventObject()
     {
-        int rand = Random.Range(0, levelGenerator.roomEventPrefabs.Count);
-        GameObject eventObject = Instantiate(levelGenerator.roomEventPrefabs[rand], eventSpawnLocation.position, eventSpawnLocation.rotation);
+        //int rand = Random.Range(0, levelGenerator.roomEventPrefabs.Count);
+        int rand = Random.Range(0, eventPrefabPool.Count);
+        GameObject eventObject = Instantiate(eventPrefabPool[rand], eventSpawnLocation.position, eventSpawnLocation.rotation);
         eventObject.transform.parent = this.transform;
     }
 

@@ -18,12 +18,12 @@ public class LevelGenerator : MonoBehaviour
     List<Room> placedRooms = new List<Room>();
     List<EventRoom> placedEventRooms = new List<EventRoom>();
 
-    public List<GameObject> roomEventPrefabs = new List<GameObject>();
+    //public List<GameObject> roomEventPrefabs = new List<GameObject>();
 
     private void Start()
     {
         PlaceStartRoom();
-        LoadPrefabEvent();
+        //LoadPrefabEvent();
     }
     
     void PlaceStartRoom()
@@ -273,6 +273,7 @@ public class LevelGenerator : MonoBehaviour
             availableDoorway.gameObject.SetActive(false);
             allAvailableDoorways.Remove(availableDoorway);
 
+            currentEventRoom.LoadPrefabEvent();
             // Exit loop if room has been placed.
             if (roomPlaced) { break; }
         }
@@ -385,17 +386,17 @@ public class LevelGenerator : MonoBehaviour
         PlaceStartRoom();
     }
 
-    public void LoadPrefabEvent()
-    {
-        GameObject[] _prefabPool = Resources.LoadAll<GameObject>("Room Events");
-        int length = _prefabPool.Length;
+    //public void LoadPrefabEvent()
+    //{
+    //    GameObject[] _prefabPool = Resources.LoadAll<GameObject>("Room Events");
+    //    int length = _prefabPool.Length;
 
-        if (length != 0)
-        {
-            foreach (GameObject eventPrefab in _prefabPool)
-            {
-                roomEventPrefabs.Add(eventPrefab);
-            }
-        }
-    }
+    //    if (length != 0)
+    //    {
+    //        foreach (GameObject eventPrefab in _prefabPool)
+    //        {
+    //            roomEventPrefabs.Add(eventPrefab);
+    //        }
+    //    }
+    //}
 }

@@ -1,50 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!64 &4254240986775449445
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492228410454210285}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -18641639880988777, guid: 0a6a6c117f33eba40940002cdc33f20d, type: 3}
---- !u!65 &5035401753557758613
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492228410454210285}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 8, y: 3.4719582, z: 0.9969921}
-  m_Center: {x: 3.2867038e-24, y: 1.2359793, z: -6.26}
---- !u!114 &1533453205245089535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492228410454210285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8482c339fad85f944983a8ab947baa50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  doorways:
-  - {fileID: 6505014807675072285}
-  - {fileID: 4532434296124406477}
-  meshCollider: {fileID: 4254240986775449445}
-  roomName: Yellow Room
-  eventSpawnLocation: {fileID: 1444964764517646135}
 --- !u!1 &5652484750905186713
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,6 +282,53 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1762064160613682108}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &4254240986775449445
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492228410454210285}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -18641639880988777, guid: 0a6a6c117f33eba40940002cdc33f20d, type: 3}
+--- !u!65 &5035401753557758613
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492228410454210285}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 8, y: 3.4719582, z: 0.9969921}
+  m_Center: {x: 3.2867038e-24, y: 1.2359793, z: -6.26}
+--- !u!114 &1533453205245089535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492228410454210285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8482c339fad85f944983a8ab947baa50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorways:
+  - {fileID: 6505014807675072285}
+  - {fileID: 4532434296124406477}
+  meshCollider: {fileID: 4254240986775449445}
+  roomName: Yellow Room
+  eventSpawnLocation: {fileID: 1444964764517646135}
+  eventPrefabPool:
+  - {fileID: 1274085630551764302, guid: 1a8846f35f7d0dd4b9a15cbf2ef76899, type: 3}
 --- !u!1001 &3053931295723171423
 PrefabInstance:
   m_ObjectHideFlags: 0
