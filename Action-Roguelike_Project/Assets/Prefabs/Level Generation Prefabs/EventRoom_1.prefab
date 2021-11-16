@@ -328,7 +328,7 @@ MonoBehaviour:
   roomName: Yellow Room
   eventSpawnLocation: {fileID: 1444964764517646135}
   eventPrefabPool:
-  - {fileID: 1274085630551764302, guid: 1a8846f35f7d0dd4b9a15cbf2ef76899, type: 3}
+  - {fileID: 2509211374729320122, guid: 1a8846f35f7d0dd4b9a15cbf2ef76899, type: 3}
 --- !u!1001 &3053931295723171423
 PrefabInstance:
   m_ObjectHideFlags: 0

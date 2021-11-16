@@ -18,12 +18,9 @@ public class LevelGenerator : MonoBehaviour
     List<Room> placedRooms = new List<Room>();
     List<EventRoom> placedEventRooms = new List<EventRoom>();
 
-    //public List<GameObject> roomEventPrefabs = new List<GameObject>();
-
     private void Start()
     {
         PlaceStartRoom();
-        //LoadPrefabEvent();
     }
     
     void PlaceStartRoom()
@@ -274,6 +271,8 @@ public class LevelGenerator : MonoBehaviour
             allAvailableDoorways.Remove(availableDoorway);
 
             currentEventRoom.LoadPrefabEvent();
+            currentEventRoom.onRoomCompleteDelegate += ContinueLevelGeneration;
+
             // Exit loop if room has been placed.
             if (roomPlaced) { break; }
         }
@@ -284,10 +283,6 @@ public class LevelGenerator : MonoBehaviour
             ResetLevelGenerator();
         }
         // WAIT UNTIL PLAYER HAS COMPLETED THE EVENT ROOM TO CONTINUE GENERATING LEVEL?
-        //else
-        //{
-        //    StartCoroutine(ConnectorPlacement());
-        //}
     }
 
     void PlaceEndRoom()
@@ -358,6 +353,29 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    void ContinueLevelGeneration(Room currentRoom)
+    {
+        startRoom.gameObject.SetActive(false);
+        foreach(Room room in placedRooms)
+        {
+            if (room != currentRoom)
+                room.gameObject.SetActive(false);
+        }
+
+        foreach(Room room in placedEventRooms)
+        {
+            if (room != currentRoom)
+                room.gameObject.SetActive(false);
+        }
+        
+        allAvailableDoorways.Clear();
+        allAvailableDoorways.Add(currentRoom.doorways[1]);
+        // CLEAR ALL AVAILABLE DOORS
+        // DELETE ROOMS BEFORE EVENT ROOM
+
+        StartCoroutine(ConnectorPlacement());
+    }
+
     void ResetLevelGenerator()
     {
         print("Reset level generator");
@@ -385,18 +403,4 @@ public class LevelGenerator : MonoBehaviour
         // Reset coroutine
         PlaceStartRoom();
     }
-
-    //public void LoadPrefabEvent()
-    //{
-    //    GameObject[] _prefabPool = Resources.LoadAll<GameObject>("Room Events");
-    //    int length = _prefabPool.Length;
-
-    //    if (length != 0)
-    //    {
-    //        foreach (GameObject eventPrefab in _prefabPool)
-    //        {
-    //            roomEventPrefabs.Add(eventPrefab);
-    //        }
-    //    }
-    //}
 }

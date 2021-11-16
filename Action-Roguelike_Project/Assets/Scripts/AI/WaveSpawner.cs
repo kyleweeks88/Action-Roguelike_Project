@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaveSpawner : MonoBehaviour
+public class WaveSpawner : RoomEvent
 {
     [System.Serializable]
     public class Wave 
@@ -57,6 +57,10 @@ public class WaveSpawner : MonoBehaviour
 
             goRemainingToSpawn = currentWave.spawnCount;
             enemiesRemainingAlive = goRemainingToSpawn;
+        }
+        else
+        {
+            EventComplete();
         }
     }
 }
