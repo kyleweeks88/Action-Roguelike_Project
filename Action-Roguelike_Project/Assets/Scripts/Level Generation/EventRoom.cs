@@ -3,17 +3,20 @@ using UnityEngine;
 
 public class EventRoom : Room
 {
+    //public event System.Action OnRoomComplete;
+    public delegate void OnRoomComplete(Room room);
+    public event OnRoomComplete onRoomCompleteDelegate;
     public string roomName;
     [SerializeField] Transform eventSpawnLocation;
     LevelGenerator levelGenerator;
 
-    public List<GameObject> eventPrefabPool = new List<GameObject>();
+    public List<RoomEvent> eventPrefabPool = new List<RoomEvent>();
     //public List<GameObject> roomEventPrefabs = new List<GameObject>();
 
     private void Start()
     {
         //LoadPrefabEvent();
-        //levelGenerator = GetComponentInParent<LevelGenerator>();
+        levelGenerator = GetComponentInParent<LevelGenerator>();
         //if (levelGenerator != null)
         //{
         //    Debug.Log(levelGenerator.transform.name);
@@ -30,12 +33,12 @@ public class EventRoom : Room
 
     public void LoadPrefabEvent()
     {
-        GameObject[] _prefabPool = Resources.LoadAll<GameObject>("Room Events");
+        RoomEvent[] _prefabPool = Resources.LoadAll<RoomEvent>("Room Events");
         int length = _prefabPool.Length;
 
         if (length != 0)
         {
-            foreach (GameObject eventPrefab in _prefabPool)
+            foreach (RoomEvent eventPrefab in _prefabPool)
             {
                 eventPrefabPool.Add(eventPrefab);
             }
@@ -46,7 +49,8 @@ public class EventRoom : Room
     {
         //int rand = Random.Range(0, levelGenerator.roomEventPrefabs.Count);
         int rand = Random.Range(0, eventPrefabPool.Count);
-        GameObject eventObject = Instantiate(eventPrefabPool[rand], eventSpawnLocation.position, eventSpawnLocation.rotation);
+        RoomEvent eventObject = Instantiate(eventPrefabPool[rand], eventSpawnLocation.position, eventSpawnLocation.rotation) as RoomEvent;
+        eventObject.OnEventComplete += RoomComplete;
         eventObject.transform.parent = this.transform;
     }
 
@@ -62,5 +66,16 @@ public class EventRoom : Room
             SpawnEventObject();
             print("Entered");
         }
+    }
+
+    void RoomComplete()
+    {
+        print("ROOM COMPLETE!");
+        onRoomCompleteDelegate?.Invoke(this);
+
+        //foreach (Doorway doorway in doorways)
+        //{
+        //    doorway.gameObject.SetActive(false);
+        //}
     }
 }
