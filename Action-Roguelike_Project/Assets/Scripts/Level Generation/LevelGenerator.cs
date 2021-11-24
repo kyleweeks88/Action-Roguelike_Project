@@ -88,8 +88,6 @@ public class LevelGenerator : MonoBehaviour
 
         DetermineEventRoom();
         yield return interval;
-
-        //StartCoroutine(ConnectorPlacement());
     }
 
     private void AddDoorwayToList(Room _room, ref List<Doorway> _doorwayList)
