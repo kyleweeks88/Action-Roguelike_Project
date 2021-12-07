@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour /*Singleton<GameManager>*/
     public static event Action<GameState> OnGameStateChanged;
 
     // TESTING
-    [SerializeField] GameObject playerObj;
+    public GameObject playerPrefab;
 
     private void Awake()
     {
@@ -33,13 +33,19 @@ public class GameManager : MonoBehaviour /*Singleton<GameManager>*/
         switch (_newGameState_)
         {
             case GameState.MainMenu_State:
-                break;
-            case GameState.LevelGeneration:
-                SceneManager.LoadScene("LvlGen_Test");
+                SceneManager.LoadSceneAsync("StartGame", LoadSceneMode.Additive);
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
                 break;
             case GameState.Gameplay_State:
-                Transform start = GameObject.FindGameObjectWithTag("Start").transform;
-                GameObject player = GameObject.Instantiate(playerObj, start.position, start.rotation);
+                SceneManager.UnloadSceneAsync("StartGame");
+                SceneManager.LoadSceneAsync("Scene_GlobalGameplay", LoadSceneMode.Additive);
+                // This will eventually load the hub scene before the level gen scene
+                SceneManager.LoadSceneAsync("LvlGen_Test", LoadSceneMode.Additive);
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                break;
+            case GameState.LevelGeneration:
                 break;
             case GameState.Fail_State:
                 break;

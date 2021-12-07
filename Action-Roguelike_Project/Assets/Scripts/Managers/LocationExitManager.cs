@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class LocationExitManager : MonoBehaviour
@@ -10,11 +11,53 @@ public class LocationExitManager : MonoBehaviour
     [Header("Broadcasting On...")]
     [SerializeField] LoadEventChannel_SO locationExitLoadChannel;
 
-    private void OnTriggerEnter(Collider other)
+    bool isLoaded;
+
+    private void OnTriggerEnter(Collider col)
     {
-        if(other.CompareTag("Player"))
+        PlayerManager playerMgmt = col.gameObject.GetComponent<PlayerManager>();
+        if (playerMgmt != null)
         {
-            //locationsToLoad
+            //interactingEntity = col.gameObject;
+            HandleEntityInput(playerMgmt, true);
         }
+    }
+
+    private void OnTriggerExit(Collider col)
+    {
+        PlayerManager playerMgmt = col.gameObject.GetComponent<PlayerManager>();
+        if (playerMgmt != null)
+        {
+            //interactingEntity = col.gameObject;
+            HandleEntityInput(playerMgmt, false);
+        }
+    }
+
+    /// <summary>
+    /// Subscribes or Unsubscribes this Weapon Pickup object to an event
+    /// on the interacting entity's InputManager.
+    /// </summary>
+    /// <param name="colObj"></param>
+    /// <param name="boolVal"></param>
+    void HandleEntityInput(PlayerManager playerMgmt, bool boolVal)
+    {
+        if (playerMgmt != null)
+        {
+            if (boolVal)
+                playerMgmt.inputMgmt.interactEvent += ExitLocation;
+
+            if (!boolVal)
+                playerMgmt.inputMgmt.interactEvent -= ExitLocation;
+        }
+    }
+
+    void ExitLocation()
+    {
+        if (isLoaded) { return; }
+        // Show loading scene?
+        SceneManager.LoadSceneAsync("Scene_"+locationToLoad.sceneName, LoadSceneMode.Additive);
+        isLoaded = true;
+        // Deactivate current scene?
+        // Place player in new scene
     }
 }

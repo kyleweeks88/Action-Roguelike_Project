@@ -50,7 +50,7 @@ public class PlayerManager : MonoBehaviour
         dodgeCtrl = gameObject.GetComponent<DodgeControl>();
         //dodgeCtrl.enabled = true;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 }

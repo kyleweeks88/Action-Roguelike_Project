@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
+    [SerializeField] NavigationBaker navBaker;
     public LayerMask roomLayerMask;
     public Room startRoomPrefab, endRoomPrefab;
     public List<Room> roomPrefabs = new List<Room>();
@@ -281,6 +282,7 @@ public class LevelGenerator : MonoBehaviour
             ResetLevelGenerator();
         }
         // WAIT UNTIL PLAYER HAS COMPLETED THE EVENT ROOM TO CONTINUE GENERATING LEVEL?
+        GameObject.FindGameObjectWithTag("Player").SetActive(true);
     }
 
     void PlaceEndRoom()

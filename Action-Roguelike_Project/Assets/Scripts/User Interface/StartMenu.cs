@@ -6,6 +6,6 @@ public class StartMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        GameManager.instance.UpdateGameState(GameManager.GameState.LevelGeneration);
+        GameManager.instance.UpdateGameState(GameManager.GameState.Gameplay_State);
     }
 }
