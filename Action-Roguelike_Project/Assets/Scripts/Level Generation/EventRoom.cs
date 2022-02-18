@@ -13,6 +13,9 @@ public class EventRoom : Room
     public List<RoomEvent> eventPrefabPool = new List<RoomEvent>();
     //public List<GameObject> roomEventPrefabs = new List<GameObject>();
 
+    // !!!TESTING
+    [SerializeField] VoidEventChannel_SO roomComplete_Channel;
+
     private void Start()
     {
         //LoadPrefabEvent();
@@ -52,7 +55,8 @@ public class EventRoom : Room
         //int rand = Random.Range(0, levelGenerator.roomEventPrefabs.Count);
         int rand = Random.Range(0, eventPrefabPool.Count);
         RoomEvent eventObject = Instantiate(eventPrefabPool[rand], eventSpawnLocation.position, eventSpawnLocation.rotation) as RoomEvent;
-        eventObject.OnEventComplete += RoomComplete;
+        //eventObject.OnEventComplete += RoomComplete;
+        roomComplete_Channel.OnEventRaised += RoomComplete;
         eventObject.transform.parent = this.transform;
     }
 

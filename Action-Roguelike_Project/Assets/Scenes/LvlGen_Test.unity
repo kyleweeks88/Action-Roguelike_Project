@@ -168,10 +168,7 @@ MonoBehaviour:
   - {fileID: 4364434534114219970, guid: 4560e2645ef9d144fbbccb4a47f7d9aa, type: 3}
   - {fileID: 4975387167755119590, guid: d93c56e47f37d304591b2c6b8c6ac073, type: 3}
   eventRoomPrefabs:
-  - {fileID: 4258476513611790813, guid: 8e23be2557da78e4186392bd0881097c, type: 3}
-  - {fileID: 2665961960716690602, guid: 89611f18bac9fc949bfcc2535911f542, type: 3}
-  - {fileID: 2665961960716690602, guid: 869eff230e39cce4f8138f3ff52e7ad7, type: 3}
-  - {fileID: 2665961960716690602, guid: c0bf607e11f7dba4680740b69d81765f, type: 3}
+  - {fileID: 868486411143928616, guid: 62d2254fdc1dc2341a37f63eadad31b2, type: 3}
   connectorIterationRange: {x: 4, y: 4}
   eventRoomsToPlace: 2
   eventChannel: {fileID: 11400000, guid: a683d70f3e5497a42a43912741ac05a5, type: 2}

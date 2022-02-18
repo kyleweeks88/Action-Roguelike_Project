@@ -58,6 +58,8 @@ public class LocationExitManager : MonoBehaviour
         SceneManager.LoadSceneAsync("Scene_"+locationToLoad.sceneName, LoadSceneMode.Additive);
         isLoaded = true;
         // Deactivate current scene?
+        LevelGenerator.instance.gameObject.SetActive(false);
         // Place player in new scene
+        GameObject.FindGameObjectWithTag("Player").transform.position = Vector3.zero;
     }
 }
