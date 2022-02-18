@@ -2974,7 +2974,6 @@ MonoBehaviour:
   projectileSpawn: {fileID: 2074600889}
   projectile: {fileID: 8838004633880352292, guid: 9d33f04ced9909c4d9f0f1dfafee6705,
     type: 3}
-  msBetweenShots: 1
   canRecieveAttackInput: 0
   attackInputHeld: 0
   rangedAttackHeld: 0

@@ -45,12 +45,12 @@ public class GameManager : MonoBehaviour /*Singleton<GameManager>*/
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
                 break;
-            case GameState.LevelGeneration:
-                break;
-            case GameState.Fail_State:
-                break;
-            case GameState.Success_State:
-                break;
+            //case GameState.LevelGeneration:
+            //    break;
+            //case GameState.Fail_State:
+            //    break;
+            //case GameState.Success_State:
+            //    break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(_newGameState_), _newGameState_, null);
         }

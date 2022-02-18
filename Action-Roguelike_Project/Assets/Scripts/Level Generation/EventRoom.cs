@@ -41,12 +41,14 @@ public class EventRoom : Room
             foreach (RoomEvent eventPrefab in _prefabPool)
             {
                 eventPrefabPool.Add(eventPrefab);
+                Debug.Log("LoadPrefabEvent");
             }
         }
     }
 
     void SpawnEventObject()
     {
+        Debug.Log("SpawnEventObject");
         //int rand = Random.Range(0, levelGenerator.roomEventPrefabs.Count);
         int rand = Random.Range(0, eventPrefabPool.Count);
         RoomEvent eventObject = Instantiate(eventPrefabPool[rand], eventSpawnLocation.position, eventSpawnLocation.rotation) as RoomEvent;

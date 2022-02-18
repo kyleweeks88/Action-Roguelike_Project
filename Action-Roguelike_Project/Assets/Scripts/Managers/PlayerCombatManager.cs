@@ -33,6 +33,7 @@ public class PlayerCombatManager : CombatManager
     public void AimReleased() => playerMgmt.cameraCtrl.SetAim(false);
 
     // Called by an Animation Event
+    // ATTACK SPEED SHOULD NOT HAVE AN EFFECT ON RANGED WEAPON ATTACKS!!!
     public override void Shoot()
     {
         RangedWeapon rw = playerMgmt.weaponMgmt.currentlyEquippedWeapon as RangedWeapon;

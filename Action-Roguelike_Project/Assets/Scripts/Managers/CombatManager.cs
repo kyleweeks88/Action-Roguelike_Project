@@ -28,7 +28,6 @@ public class CombatManager : MonoBehaviour
     // IT SHOULD NOT BE ON THIS SCRIPT!!!
     [SerializeField] protected Projectile projectile = null; //<<<========== FIX THIS!!!
     float nextShotTime = 0f;
-    [SerializeField] float msBetweenShots = 0f;
 
     public bool canRecieveAttackInput;
     public bool attackInputHeld;
