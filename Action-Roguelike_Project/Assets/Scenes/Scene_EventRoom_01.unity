@@ -398,7 +398,6 @@ GameObject:
   - component: {fileID: 1415870916}
   - component: {fileID: 1415870919}
   - component: {fileID: 1415870918}
-  - component: {fileID: 1415870917}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -420,19 +419,6 @@ Transform:
   m_Father: {fileID: 2020593490}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!65 &1415870917
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1415870915}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10, y: 2.2204466e-16, z: 10.000002}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1415870918
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -566,6 +552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2020593490}
   - component: {fileID: 2020593489}
+  - component: {fileID: 2020593491}
   m_Layer: 0
   m_Name: Location Exit
   m_TagString: Untagged
@@ -582,12 +569,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2020593488}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df2376d7c7c12174da83ba7fdcbe5782, type: 3}
+  m_Script: {fileID: 11500000, guid: d731d92046a1688409279c9bc03cfa8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   locationToLoad: {fileID: 0}
   showLoadingScreen: 0
-  locationExitLoadChannel: {fileID: 0}
+  locationExitLoadChannel: {fileID: 11400000, guid: a37afecd85e5f894fa6ce53ca9996d3b,
+    type: 2}
+  roomComplete_Channel: {fileID: 11400000, guid: 3c9b34b80e8acaa41b7d8bf50013f0a2,
+    type: 2}
 --- !u!4 &2020593490
 Transform:
   m_ObjectHideFlags: 0
@@ -596,10 +586,23 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2020593488}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -24.5}
+  m_LocalPosition: {x: 0, y: -0.5, z: -23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1415870916}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2020593491
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020593488}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 8, z: 1}
+  m_Center: {x: 0, y: 4, z: 0}

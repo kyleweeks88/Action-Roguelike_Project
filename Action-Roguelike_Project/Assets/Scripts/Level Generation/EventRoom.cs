@@ -15,6 +15,7 @@ public class EventRoom : Room
 
     // !!!TESTING
     [SerializeField] VoidEventChannel_SO roomComplete_Channel;
+    [SerializeField] Transform TEST_roomCompleteTrans;
 
     private void Start()
     {
@@ -32,6 +33,8 @@ public class EventRoom : Room
         //{
         //    Debug.LogError("Error");
         //}
+
+        roomComplete_Channel.OnEventRaised += RoomComplete;
     }
 
     public void LoadPrefabEvent()
@@ -76,6 +79,7 @@ public class EventRoom : Room
 
     void RoomComplete()
     {
+        GameObject.FindGameObjectWithTag("Player").transform.position = TEST_roomCompleteTrans.position;
         print("ROOM COMPLETE!");
         onRoomCompleteDelegate?.Invoke(this);
 

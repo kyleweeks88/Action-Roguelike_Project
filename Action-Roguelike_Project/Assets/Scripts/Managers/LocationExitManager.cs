@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class LocationExitManager : MonoBehaviour
 {
-    [SerializeField] GameScene_SO locationToLoad;
+    [SerializeField] protected GameScene_SO locationToLoad;
     [SerializeField] bool showLoadingScreen;
 
     [Header("Broadcasting On...")]
     [SerializeField] LoadEventChannel_SO locationExitLoadChannel;
 
-    bool isLoaded;
+    protected bool isLoaded;
 
     private void OnTriggerEnter(Collider col)
     {
@@ -51,7 +51,7 @@ public class LocationExitManager : MonoBehaviour
         }
     }
 
-    void ExitLocation()
+    public virtual void ExitLocation()
     {
         if (isLoaded) { return; }
         // Show loading scene?

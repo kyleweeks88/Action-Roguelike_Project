@@ -368,7 +368,7 @@ public class LevelGenerator : MonoBehaviour
 
     void ContinueLevelGeneration(Room currentRoom)
     {
-        startRoom.gameObject.SetActive(false);
+        startRoom.gameObject.SetActive(false); 
         foreach(Room room in placedRooms)
         {
             if (room != currentRoom)

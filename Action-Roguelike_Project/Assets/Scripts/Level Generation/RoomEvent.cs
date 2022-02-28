@@ -10,7 +10,7 @@ public class RoomEvent : MonoBehaviour
     // These events will load data from Scriptable Objects?
 
     public virtual void EventComplete()
-    {
+    { 
         OnEventComplete?.Invoke();
     }
 }

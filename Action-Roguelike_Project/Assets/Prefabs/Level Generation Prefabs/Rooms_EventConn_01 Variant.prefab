@@ -247,6 +247,36 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &5237205815938943916
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2342410591407691520}
+  m_Layer: 0
+  m_Name: test transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2342410591407691520
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237205815938943916}
+  m_LocalRotation: {x: -0, y: 0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1120282226735901006}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &164523205165283621
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -447,7 +477,9 @@ MonoBehaviour:
   roomName: Room Conn 1
   eventSpawnLocation: {fileID: 1120282226735901006}
   eventPrefabPool: []
-  roomComplete_Channel: {fileID: 0}
+  roomComplete_Channel: {fileID: 11400000, guid: 3c9b34b80e8acaa41b7d8bf50013f0a2,
+    type: 2}
+  TEST_roomCompleteTrans: {fileID: 2342410591407691520}
 --- !u!1001 &3836117083704869813
 PrefabInstance:
   m_ObjectHideFlags: 0
